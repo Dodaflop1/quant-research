@@ -16,17 +16,20 @@ have no dependency on each other.
 
 ## Status
 
-Early. The shared schema layer and its tests are written; ingestion, strategies
-and models are not. See `docs/` for the methodology write-ups each project is
-building toward — those are the deliverable, not the code.
+Early. Collection and the fee model are in; strategies and the diffusion model
+are not. See `docs/` for the methodology write-ups each project is building
+toward — those are the deliverable, not the code.
 
 | Component | State |
 | --- | --- |
 | `common/db/schema.py` | written, 34 tests |
+| `common/api/kalshi.py` | written, 15 tests, unverified against live API |
+| `ingest/kalshi_collector.py` | written, 17 tests |
+| `kalshi/fees.py` | written, 32 tests, unreconciled against a real fill |
 | `common/db` connection, queries | not started |
-| `common/api` clients | not started |
+| `common/api` reddit, market data | not started |
 | `common/statistics` | not started |
-| `kalshi/` | not started |
+| `kalshi/strategies`, `backtest` | not started |
 | `diffusion/` | not started |
 
 ## Setup
@@ -38,7 +41,34 @@ cp .env.example .env          # then fill in credentials
 pytest
 ```
 
-Tested on Python 3.11.
+Tested on Python 3.11. The whole test suite runs offline: request signing is
+checked against a throwaway key and parsing against recorded response shapes,
+so no test needs credentials or the network.
+
+## Collecting
+
+Order books cannot be backfilled. The dataset starts when the collector first
+runs, which makes getting it running the highest-priority task in the repo and
+is why it exists before anything that consumes its output.
+
+```bash
+python scripts/collect_kalshi.py --discover                    # what would be collected
+python scripts/collect_kalshi.py --auto --interval 30 --out ./data
+```
+
+`--auto` selects open events flagged `mutually_exclusive` with two or more
+markets, which is exactly the family the bucket-sum check applies to.
+
+**This has to run somewhere that stays up.** A laptop that sleeps loses the
+hours it was asleep, permanently. A `systemd` unit, a `launchd` agent, or the
+cheapest available VPS all work; the process is restart-safe and appends to the
+current day's file rather than truncating it.
+
+Raw responses are written verbatim to `data/raw/*.jsonl` before any parsing,
+one JSON object per line, flushed and fsynced periodically. A parsing bug
+therefore costs a reparse rather than a day of data. `parse_raw_file` turns
+those into `OrderBookSnapshot` objects offline, skipping records it cannot
+read rather than aborting the file.
 
 ## Layout
 
@@ -81,6 +111,24 @@ against `scipy.optimize`, which is also the better thing to be able to explain.
 **Sharpe is not stored on a portfolio snapshot.** It is a property of a return
 series, not of an instant; storing it per-snapshot invites quoting a number
 computed over an accidental window.
+
+**Fees are computed in exact decimal arithmetic.** In binary float,
+`20/100 * 80/100` is `0.16000000000000003`, so a fee that is exactly 11200
+cents ceilings to 11201 and the formula stops being symmetric about 50¢. That
+is a one-cent error in the function that decides whether an edge survives its
+costs, so it is not an acceptable rounding artefact.
+
+## Open assumptions
+
+Things asserted here that have not yet been checked against reality, listed so
+they do not quietly become load-bearing:
+
+- The YES/NO book complementarity, against live API payloads.
+- The fee schedule's rounding granularity and its per-series multiplier table
+  (some series carry multipliers from 0 to 2), against a settled trade on the
+  account.
+- Kalshi's applicable rate limit. The client's default of 8 req/s is a guess
+  chosen to be conservative, not a published figure.
 
 ## Disclaimer
 

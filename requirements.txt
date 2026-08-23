@@ -13,6 +13,7 @@ aiohttp>=3.9,<4
 praw>=7.7,<8
 requests>=2.31,<3
 python-dotenv>=1.0
+cryptography>=42          # RSA-PSS request signing for Kalshi
 # NOTE: asyncio is in the standard library - the PyPI package of that name is a
 # dead backport for Python 3.3 and must not be installed.
 
