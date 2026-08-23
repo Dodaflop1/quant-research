@@ -1,0 +1,16 @@
+-r requirements.txt
+
+# Testing
+pytest>=7.4,<9
+pytest-asyncio>=0.23
+pytest-cov>=4.1
+pytest-mock>=3.12
+
+# Static analysis
+mypy>=1.8
+black>=24.1
+ruff>=0.3
+
+# Interactive work
+ipython>=8.18
+jupyterlab>=4.0
