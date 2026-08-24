@@ -103,24 +103,26 @@ def basket_taker_fee_cents(
     return sum(taker_fee_cents(p, contracts, multiplier) for p in prices_cents)
 
 
-def bucket_sum_edge_cents(
+def bucket_sum_long_edge_cents(
     ask_prices_cents: Iterable[float],
     contracts: float = 1.0,
     multiplier: float = 1.0,
 ) -> dict[str, float]:
-    """Evaluate a bucket-sum arbitrage on an exhaustive, mutually exclusive family.
+    """Buy one of every bucket: profitable when the asks sum below 100c.
 
-    Buying one contract of every bucket guarantees exactly 100c at settlement,
-    so the trade is profitable when the summed ask prices plus fees fall below
-    100c per unit.
+    Owning the whole family pays exactly 100c at settlement, so the trade wins
+    when ``sum(asks) + fees < 100``.
 
-    Returns the gross and net edge in cents per unit, and the breakeven price
-    sum. ``net_edge_cents`` at or below zero means there is no trade, however
-    large the raw deviation looks.
+    **This direction requires the family to be collectively exhaustive.** The
+    100c payout depends on some listed bucket resolving YES; if probability can
+    escape to an unlisted outcome the basket can pay nothing, and a sub-100c ask
+    sum is then correct pricing rather than free money.
 
-    This is the underpriced direction only. The overpriced direction requires
-    shorting the basket, whose cost depends on the bid ladder and on collateral
-    treatment, and is not modelled here.
+    That matters because the exchange does not certify exhaustiveness, and
+    prices cannot settle it either: an ask sum below 100c is *either* an
+    arbitrage *or* evidence the family leaks. A snapshot cannot tell those
+    apart. A time series can — a persistently sub-100c ask sum is structure, a
+    transient dip is opportunity.
     """
     asks = list(ask_prices_cents)
     if not asks:
@@ -130,12 +132,65 @@ def bucket_sum_edge_cents(
     gross = 100.0 - price_sum
     fees = basket_taker_fee_cents(asks, contracts, multiplier) / max(contracts, 1.0)
     return {
+        "direction": "long",
         "price_sum_cents": price_sum,
         "gross_edge_cents": gross,
         "fee_cents": fees,
         "net_edge_cents": gross - fees,
         "breakeven_price_sum_cents": 100.0 - fees,
     }
+
+
+def bucket_sum_short_edge_cents(
+    bid_prices_cents: Iterable[float],
+    contracts: float = 1.0,
+    multiplier: float = 1.0,
+) -> dict[str, float]:
+    """Sell one of every bucket: profitable when the bids sum above 100c.
+
+    Selling YES is buying NO at ``100 - price``, so the basket costs
+    ``100N - sum(bids)`` up front. Exactly one leg resolves YES, so ``N-1`` NO
+    legs pay 100c each and the profit is ``sum(bids) - 100`` before fees.
+
+    **This direction needs only mutual exclusivity, not exhaustiveness** — and
+    that asymmetry is the useful part. At most one leg can resolve YES, so the
+    most that can ever be owed is 100c. If probability escapes to an unlisted
+    outcome, every short expires worthless and the whole premium is kept, which
+    only improves the trade.
+
+    So the direction the exchange's own ``mutually_exclusive`` flag is
+    sufficient to identify is the short one. It is also the direction the
+    overround makes plausible: in a large field the minimum tick props up every
+    longshot, which inflates the summed price far above 100c.
+
+    Capital is the binding constraint here rather than edge. A 184-leg field
+    ties up on the order of 100N cents per unit basket, so return on collateral
+    is reported alongside the raw edge.
+    """
+    bids = list(bid_prices_cents)
+    if not bids:
+        raise ValueError("empty basket")
+
+    price_sum = sum(bids)
+    gross = price_sum - 100.0
+    fees = basket_taker_fee_cents(bids, contracts, multiplier) / max(contracts, 1.0)
+    net = gross - fees
+    collateral = 100.0 * len(bids) - price_sum
+    return {
+        "direction": "short",
+        "price_sum_cents": price_sum,
+        "gross_edge_cents": gross,
+        "fee_cents": fees,
+        "net_edge_cents": net,
+        "breakeven_price_sum_cents": 100.0 + fees,
+        "collateral_cents": collateral,
+        "return_on_collateral": (net / collateral) if collateral > 0 else 0.0,
+    }
+
+
+# Retained under the original name; the long direction is what it always
+# computed, and the name no longer says which direction it means.
+bucket_sum_edge_cents = bucket_sum_long_edge_cents
 
 
 def worst_case_fee_price_cents() -> float:

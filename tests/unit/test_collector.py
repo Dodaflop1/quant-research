@@ -221,3 +221,146 @@ def test_discovery_respects_max_events():
         for i in range(10)
     ])
     assert len(discover_markets(client, max_events=3)) == 3
+
+
+# ---------------------------------------------------------------------------
+# Running unattended
+# ---------------------------------------------------------------------------
+
+
+def test_each_cycle_logs_a_heartbeat(tmp_path: Path, caplog):
+    """Silence for hours is indistinguishable from a hang.
+
+    The first live run printed three startup lines and then nothing for 13
+    hours while working perfectly.
+    """
+    import logging as _logging
+    import re
+
+    collector = KalshiCollector(_FakeClient(), tmp_path, interval_sec=0.0)
+    with caplog.at_level(_logging.INFO, logger="quant.ingest.kalshi_collector"):
+        collector.run(["A", "B"], max_cycles=2)
+
+    # Anchored: the pacing warning also opens with "cycle ".
+    beats = [r for r in caplog.records if re.match(r"^cycle \d+:", r.getMessage())]
+    assert len(beats) == 2
+    assert "snapshots" in beats[0].getMessage()
+
+
+def test_unchanged_event_catalogue_written_once(tmp_path: Path):
+    """Rewriting it hourly cost 23MB in 13 hours for data that rarely changes."""
+    collector = KalshiCollector(_FakeClient(), tmp_path, interval_sec=0.0)
+    events = [{"event_ticker": "E1", "market_tickers": ["A"]}]
+
+    assert collector._write_metadata_if_changed(events) is True
+    assert collector._write_metadata_if_changed(events) is False
+    assert collector._write_metadata_if_changed(events) is False
+    collector.meta.close()
+
+    path = next((tmp_path / "raw").glob("kalshi_metadata_*.jsonl"))
+    assert len(path.read_text().splitlines()) == 1
+
+
+def test_changed_catalogue_is_recorded(tmp_path: Path):
+    """When it does change, that moment is the part worth keeping."""
+    collector = KalshiCollector(_FakeClient(), tmp_path, interval_sec=0.0)
+    assert collector._write_metadata_if_changed([{"event_ticker": "E1"}]) is True
+    assert collector._write_metadata_if_changed([{"event_ticker": "E2"}]) is True
+    collector.meta.close()
+
+    path = next((tmp_path / "raw").glob("kalshi_metadata_*.jsonl"))
+    rows = [json.loads(x) for x in path.read_text().splitlines()]
+    assert len(rows) == 2
+    assert rows[0]["digest"] != rows[1]["digest"]
+
+
+def test_catalogue_digest_ignores_key_order(tmp_path: Path):
+    collector = KalshiCollector(_FakeClient(), tmp_path, interval_sec=0.0)
+    assert collector._write_metadata_if_changed([{"a": 1, "b": 2}]) is True
+    assert collector._write_metadata_if_changed([{"b": 2, "a": 1}]) is False
+
+
+# ---------------------------------------------------------------------------
+# Surviving the unexpected
+#
+# A live run died silently after 90 minutes. The poll loop caught only
+# KalshiAPIError, so whatever actually escaped was by definition the failure
+# mode nobody anticipated - which is the argument for not trying to.
+# ---------------------------------------------------------------------------
+
+
+class _ExplodingClient(_FakeClient):
+    """Raises something the collector was never taught about."""
+
+    def __init__(self, exc: Exception, on: str):
+        super().__init__()
+        self.exc = exc
+        self.on = on
+
+    def get_orderbook_raw(self, ticker: str, depth: int = 0):
+        # The parent records the call itself; only the failing path needs it here.
+        if ticker == self.on:
+            self.calls.append(ticker)
+            raise self.exc
+        return super().get_orderbook_raw(ticker, depth)
+
+
+@pytest.mark.parametrize(
+    "exc",
+    [
+        KeyError("payload"),
+        ValueError("malformed price"),
+        RuntimeError("connection reset"),
+        MemoryError(),
+    ],
+)
+def test_unexpected_exception_does_not_kill_the_collector(tmp_path: Path, exc):
+    client = _ExplodingClient(exc, on="BAD")
+    collector = KalshiCollector(client, tmp_path, interval_sec=0.0)
+    stats = collector.run(["A", "BAD", "B"], max_cycles=1)
+
+    assert client.calls == ["A", "BAD", "B"]
+    assert stats.snapshots == 2
+    assert stats.errors == 1
+
+
+def test_unexpected_exception_is_recorded_with_its_type(tmp_path: Path):
+    """A post-mortem needs to know what escaped, not just that something did."""
+    collector = KalshiCollector(
+        _ExplodingClient(KeyError("orderbook_fp"), on="BAD"), tmp_path, interval_sec=0.0
+    )
+    collector.run(["BAD"], max_cycles=1)
+
+    row = json.loads(
+        next((tmp_path / "raw").glob("kalshi_orderbook_*.jsonl")).read_text().splitlines()[0]
+    )
+    assert row["kind"] == "error"
+    assert row["error_type"] == "KeyError"
+
+
+def test_keyboard_interrupt_still_closes_files(tmp_path: Path):
+    """Ctrl+C must flush, not lose the tail of the day."""
+
+    class _Interrupting(_FakeClient):
+        def get_orderbook_raw(self, ticker, depth=0):
+            raise KeyboardInterrupt
+
+    collector = KalshiCollector(_Interrupting(), tmp_path, interval_sec=0.0)
+    with pytest.raises(KeyboardInterrupt):
+        collector.run(["A"], max_cycles=1)
+    assert collector.books._fh is None
+
+
+def test_exit_is_announced_before_going(tmp_path: Path, caplog):
+    import logging as _logging
+
+    class _Interrupting(_FakeClient):
+        def get_orderbook_raw(self, ticker, depth=0):
+            raise KeyboardInterrupt
+
+    collector = KalshiCollector(_Interrupting(), tmp_path, interval_sec=0.0)
+    with caplog.at_level(_logging.CRITICAL, logger="quant.ingest.kalshi_collector"):
+        with pytest.raises(KeyboardInterrupt):
+            collector.run(["A"], max_cycles=1)
+
+    assert any("exiting on KeyboardInterrupt" in r.getMessage() for r in caplog.records)

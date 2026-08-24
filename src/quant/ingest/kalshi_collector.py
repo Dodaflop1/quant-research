@@ -19,6 +19,7 @@ Parsing into :class:`OrderBookSnapshot` happens offline, in ``parse_raw_file``.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -145,10 +146,36 @@ class KalshiCollector:
         self.meta = RawWriter(self.out_dir / "raw", "kalshi_metadata")
         self.stats = CollectorStats()
         self._stop = False
+        self._meta_digest: Optional[str] = None
 
     def request_stop(self, *_args) -> None:
         log.info("stop requested, finishing current cycle")
         self._stop = True
+
+    def _write_metadata_if_changed(self, events: list[dict]) -> bool:
+        """Write the event catalogue only when it actually differs.
+
+        Rewriting it verbatim every hour cost 23MB in the first 13 hours of
+        live collection - roughly 1.8GB over a six-week run - for a catalogue
+        that changes a few times a day. Hashing it first keeps the record of
+        *when* it changed, which is the part with research value, without the
+        repetition.
+        """
+        payload = json.dumps(events, sort_keys=True, separators=(",", ":"))
+        digest = hashlib.sha256(payload.encode()).hexdigest()
+        if digest == self._meta_digest:
+            return False
+        self._meta_digest = digest
+        self.meta.write(
+            {
+                "kind": "events",
+                "at": datetime.now(timezone.utc).isoformat(),
+                "digest": digest,
+                "events": events,
+            }
+        )
+        log.info("event catalogue changed (%d events)", len(events))
+        return True
 
     def _poll_once(self, tickers: list[str]) -> None:
         for ticker in tickers:
@@ -156,15 +183,30 @@ class KalshiCollector:
                 return
             try:
                 raw = self.client.get_orderbook_raw(ticker, depth=self.depth)
-            except KalshiAPIError as exc:
-                # One bad ticker must never stop the loop.
+            except Exception as exc:  # noqa: BLE001
+                # Deliberately catch everything. This process holds the only
+                # copy of data that cannot be re-fetched, so dying on an
+                # unforeseen exception is the worst available outcome - worse
+                # than any wrong answer it might record.
+                #
+                # The narrow `except KalshiAPIError` this replaces let a live
+                # run die silently after 90 minutes, having produced no log of
+                # why. Whatever escaped was not the failure mode anticipated,
+                # which is precisely the argument for not anticipating.
                 self.stats.errors += 1
-                log.warning("orderbook failed for %s: %s", ticker, exc)
+                log.warning(
+                    "orderbook failed for %s: %s: %s",
+                    ticker,
+                    type(exc).__name__,
+                    exc,
+                    exc_info=not isinstance(exc, KalshiAPIError),
+                )
                 self.books.write(
                     {
                         "kind": "error",
                         "ticker": ticker,
                         "at": datetime.now(timezone.utc).isoformat(),
+                        "error_type": type(exc).__name__,
                         "error": str(exc),
                     }
                 )
@@ -197,36 +239,38 @@ class KalshiCollector:
             self.out_dir,
         )
         if events:
-            self.meta.write(
-                {
-                    "kind": "events",
-                    "at": datetime.now(timezone.utc).isoformat(),
-                    "events": events,
-                }
-            )
+            self._write_metadata_if_changed(events)
 
         last_meta = time.monotonic()
         cycles = 0
         try:
             while not self._stop:
                 cycle_start = time.monotonic()
+                before = self.stats.snapshots
                 self._poll_once(tickers)
                 self.stats.polls += 1
                 cycles += 1
+                elapsed = time.monotonic() - cycle_start
+
+                # A heartbeat every cycle. Without it a healthy collector and a
+                # hung one look identical for hours, which is untenable in a
+                # process meant to run unattended for weeks.
+                log.info(
+                    "cycle %d: %d snapshots in %.1fs (%d total, %d errors)",
+                    cycles,
+                    self.stats.snapshots - before,
+                    elapsed,
+                    self.stats.snapshots,
+                    self.stats.errors,
+                )
 
                 if time.monotonic() - last_meta >= self.metadata_every_sec:
                     try:
                         refreshed = discover_markets(self.client, max_events=None)
-                        self.meta.write(
-                            {
-                                "kind": "events",
-                                "at": datetime.now(timezone.utc).isoformat(),
-                                "events": refreshed,
-                            }
-                        )
-                    except KalshiAPIError as exc:
+                        self._write_metadata_if_changed(refreshed)
+                    except Exception as exc:  # noqa: BLE001
                         self.stats.errors += 1
-                        log.warning("metadata refresh failed: %s", exc)
+                        log.warning("metadata refresh failed: %s", exc, exc_info=True)
                     last_meta = time.monotonic()
 
                 if max_cycles is not None and cycles >= max_cycles:
@@ -242,6 +286,13 @@ class KalshiCollector:
                     )
                 else:
                     time.sleep(self.interval_sec - elapsed)
+        except BaseException as exc:  # noqa: BLE001
+            # Whatever ends this run, say so before going. The previous version
+            # exited without a word, leaving no evidence of why.
+            log.critical(
+                "collector exiting on %s: %s", type(exc).__name__, exc, exc_info=True
+            )
+            raise
         finally:
             self.books.close()
             self.meta.close()

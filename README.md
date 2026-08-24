@@ -23,8 +23,9 @@ toward — those are the deliverable, not the code.
 | Component | State |
 | --- | --- |
 | `common/db/schema.py` | written, 34 tests |
-| `common/api/kalshi.py` | written, 15 tests, unverified against live API |
+| `common/api/kalshi.py` | written, 15 tests, auth verified against live API |
 | `ingest/kalshi_collector.py` | written, 17 tests |
+| `ingest/discovery.py` | written, 29 tests |
 | `kalshi/fees.py` | written, 32 tests, unreconciled against a real fill |
 | `common/db` connection, queries | not started |
 | `common/api` reddit, market data | not started |
@@ -53,11 +54,28 @@ is why it exists before anything that consumes its output.
 
 ```bash
 python scripts/collect_kalshi.py --discover                    # what would be collected
-python scripts/collect_kalshi.py --auto --interval 30 --out ./data
+python scripts/collect_kalshi.py --auto --min-volume 100 --max-markets 150 --out ./data
 ```
 
-`--auto` selects open events flagged `mutually_exclusive` with two or more
-markets, which is exactly the family the bucket-sum check applies to.
+**Selection is not optional.** A live discovery run on 2026-08-23 returned 5,344
+open events and 64,837 markets — about 2.25 hours per polling cycle. The
+universe has to be cut to something a 30-second interval can actually sample,
+and `--discover` prints the projected cycle time against the interval so an
+unworkable setting is visible before collection starts rather than after.
+
+Selection turns on a distinction the API does not make. Bucket-sum arbitrage
+needs families that are mutually exclusive **and collectively exhaustive**;
+`mutually_exclusive` only certifies the first half. Titles cannot settle it
+either — "2027 Pro Football Champion" lists 32 teams and is exhaustive, while
+"Who will win the next presidential election?" lists 30 names and is not.
+
+So exhaustiveness is measured instead: the events endpoint already returns
+per-market quotes, so the summed family price is available during discovery for
+free. A family whose YES prices sum near 100¢ partitions the outcome space; one
+summing well below has probability escaping to unlisted outcomes, and a low sum
+there is correct pricing rather than an arbitrage. Liquidity filters apply to
+the **worst** leg of a family, not the total, because one dead leg makes a
+basket untradeable however busy the others are.
 
 **This has to run somewhere that stays up.** A laptop that sleeps loses the
 hours it was asleep, permanently. A `systemd` unit, a `launchd` agent, or the
