@@ -60,4 +60,7 @@ results/*
 results/diffusion/*
 !results/diffusion/hawkes_validation.json
 !results/diffusion/power_law_studies.json
+!results/kalshi/
+results/kalshi/*
+!results/kalshi/complementarity.json
 *.log

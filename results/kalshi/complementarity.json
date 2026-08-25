@@ -1,0 +1,283 @@
+{
+  "lines": 189201,
+  "unparseable": 0,
+  "orderbook_records": 189201,
+  "payload_shapes": {
+    "dollars": 189201
+  },
+  "payload_keys": {
+    "orderbook_fp": 189201
+  },
+  "book_keys": {
+    "no_dollars": 189201,
+    "yes_dollars": 189201
+  },
+  "ladders": {
+    "both_sides": 108489,
+    "yes_only_ASK_UNDEFINED": 11532,
+    "no_only": 11532,
+    "empty": 57648,
+    "fraction_with_a_usable_ask": 0.5734060602216691,
+    "fraction_missing_an_ask": 0.36564288772258075,
+    "fraction_missing_a_bid": 0.36564288772258075
+  },
+  "price_range_cents": [
+    0.1,
+    99.0
+  ],
+  "bid_sum_quantiles": {
+    "p1": 95.0,
+    "p25": 99.0,
+    "p50": 99.0,
+    "p75": 99.0,
+    "p99": 99.89999999999999
+  },
+  "crossings": {
+    "count": 0,
+    "fraction": 0.0,
+    "tolerance_cents": 0.5,
+    "worst": []
+  },
+  "markets_with_undefined_ask": [
+    {
+      "ticker": "KXCZEFLGAME-26AUG23SIGPAR-SIG",
+      "snapshots_without_ask": 1262,
+      "snapshots": 1262,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXCZEFLGAME-26AUG23SIGPAR-PAR",
+      "snapshots_without_ask": 1262,
+      "snapshots": 1262,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXCZEFLGAME-26AUG23SIGPAR-TIE",
+      "snapshots_without_ask": 1262,
+      "snapshots": 1262,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXURYPDGAME-26AUG23TORWAN-TOR",
+      "snapshots_without_ask": 1262,
+      "snapshots": 1262,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXURYPDGAME-26AUG23TORWAN-WAN",
+      "snapshots_without_ask": 1262,
+      "snapshots": 1262,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXURYPDGAME-26AUG23TORWAN-TIE",
+      "snapshots_without_ask": 1262,
+      "snapshots": 1262,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXMAPRIMARY-03D26-LTRA",
+      "snapshots_without_ask": 1262,
+      "snapshots": 1262,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXNCAAFGAME-26SEP05BALLOSU-OSU",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXNCAAFGAME-26SEP05TNSTUGA-UGA",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXNCAAFGAME-26AUG29STETSDST-SDST",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXATPCHALLENGERMATCH-26AUG23ZHUKAD-ZHU",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXATPCHALLENGERMATCH-26AUG23ZHUKAD-KAD",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXLOLGAME-26AUG231400LLLLOS-LLL",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXLOLGAME-26AUG231400LLLLOS-LOS",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXNCAAFGAME-26SEP03ARPBMIZZ-MIZZ",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXPGAH2H-BMC26R4SSCHCAME-SSCH",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXPGAH2H-BMC26R4SSCHCAME-CAME",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXSLGREECEGAME-26AUG23PAOKLEV-PAOK",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXSLGREECEGAME-26AUG23PAOKLEV-LEV",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    },
+    {
+      "ticker": "KXSLGREECEGAME-26AUG23PAOKLEV-TIE",
+      "snapshots_without_ask": 1261,
+      "snapshots": 1261,
+      "fraction": 1.0
+    }
+  ],
+  "one_sided_markets": {
+    "tickers_seen_yes_only_AND_no_only": 0,
+    "tickers_only_ever_yes_only": 10,
+    "tickers_only_ever_no_only": 10,
+    "examples": [],
+    "yes_only_tickers": [
+      {
+        "ticker": "KXMAPRIMARY-03D26-LTRA",
+        "snapshots": 1262,
+        "median_best_price_on_populated_side": 98.0
+      },
+      {
+        "ticker": "KXNCAAFGAME-26SEP05BALLOSU-OSU",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXNCAAFGAME-26SEP05TNSTUGA-UGA",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXNCAAFGAME-26AUG29STETSDST-SDST",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXNCAAFGAME-26SEP03ARPBMIZZ-MIZZ",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXMAPRIMARY-06R26-MJON",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXUELADVANCE-26AUG27THULPO-LPO",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXPRIMARYPLACE-SENATEMID26-2-HSTE",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXWIDGOV2ND-GOVWINOMD26-2-FHON",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXCOUNTYCHAMPMATCH-26AUG200600KENMID-KEN",
+        "snapshots": 182,
+        "median_best_price_on_populated_side": 99.0
+      }
+    ],
+    "no_only_tickers": [
+      {
+        "ticker": "KXMAPRIMARY-03D26-GCLA",
+        "snapshots": 1262,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXNCAAFGAME-26AUG29STETSDST-STET",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXNCAAFGAME-26SEP03ARPBMIZZ-ARPB",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXMAPRIMARY-06R26-JFIE",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXUELADVANCE-26AUG27THULPO-THU",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXPRIMARYPLACE-SENATEMID26-2-MMCM",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXPRIMARYPLACE-SENATEMID26-2-AELS",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXWIDGOV2ND-GOVWINOMD26-2-DCRO",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXWIDGOV2ND-GOVWINOMD26-2-MBAR",
+        "snapshots": 1261,
+        "median_best_price_on_populated_side": 99.0
+      },
+      {
+        "ticker": "KXCOUNTYCHAMPMATCH-26AUG200600KENMID-MID",
+        "snapshots": 182,
+        "median_best_price_on_populated_side": 99.0
+      }
+    ],
+    "shared_event_roots": [
+      "KXCOUNTYCHAMPMATCH-26AUG200600KENMID",
+      "KXMAPRIMARY-03D26",
+      "KXMAPRIMARY-06R26",
+      "KXNCAAFGAME-26AUG29STETSDST",
+      "KXNCAAFGAME-26SEP03ARPBMIZZ",
+      "KXPRIMARYPLACE-SENATEMID26-2",
+      "KXUELADVANCE-26AUG27THULPO",
+      "KXWIDGOV2ND-GOVWINOMD26-2"
+    ]
+  }
+}
