@@ -1,0 +1,5057 @@
+{
+  "status": "settled",
+  "min_volume": 100.0,
+  "horizons_hours": [
+    1,
+    6,
+    24,
+    72,
+    168
+  ],
+  "collected_at": "2026-08-25T22:58:51.279350+00:00",
+  "records": [
+    {
+      "ticker": "KXLOWTLV-26JUN21-T75",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1782115200.0,
+      "volume": 1472.15,
+      "n_trades": 103,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.86
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL05GISJEJ-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1783254643.0,
+      "volume": 32992.51,
+      "n_trades": 926,
+      "prices": {
+        "1": 0.4,
+        "6": 0.28
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL11GISBUC-GIS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1783773072.0,
+      "volume": 47172.83,
+      "n_trades": 1557,
+      "prices": {
+        "1": 0.43,
+        "6": 0.49,
+        "24": 0.48
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG20-B82.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1787299200.0,
+      "volume": 111.01,
+      "n_trades": 11,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL06SINTOWMUHSTO-SINTOW",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783430992.0,
+      "volume": 25076.82,
+      "n_trades": 123,
+      "prices": {
+        "1": 0.9,
+        "6": 0.9,
+        "24": 0.89
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG02DAJGWA-GWA",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785673962.0,
+      "volume": 73291.12,
+      "n_trades": 1391,
+      "prices": {
+        "1": 0.15,
+        "6": 0.15,
+        "24": 0.14
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG15SEODAJ-SEO",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1786799174.0,
+      "volume": 146813.69,
+      "n_trades": 3497,
+      "prices": {
+        "1": 0.09,
+        "6": 0.5,
+        "24": 0.49,
+        "72": 0.49
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG16INCGIS-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1786885543.0,
+      "volume": 33866.03,
+      "n_trades": 1282,
+      "prices": {
+        "1": 0.17,
+        "6": 0.28
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL11-B79.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783843200.0,
+      "volume": 124.4,
+      "n_trades": 9,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL07-B79.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783497600.0,
+      "volume": 1583.76,
+      "n_trades": 38,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.04
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG22BOUNOSKEMPAN-KEMPAN",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1787415605.0,
+      "volume": 99902.34,
+      "n_trades": 420,
+      "prices": {
+        "1": 0.33,
+        "6": 0.58
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL04PITSISMALSKO-MALSKO",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783263282.0,
+      "volume": 28682.05,
+      "n_trades": 553,
+      "prices": {
+        "1": 0.71,
+        "6": 0.48
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG22FCZFCB-FCZ",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1787432722.0,
+      "volume": 12992.39,
+      "n_trades": 395,
+      "prices": {
+        "1": 0.19,
+        "6": 0.32
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG012100PDPLDY-LDY",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785703286.0,
+      "volume": 12082.84,
+      "n_trades": 651,
+      "prices": {
+        "1": 0.39,
+        "6": 0.39
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG092000BLEODT-BLE",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786331388.0,
+      "volume": 11547.86,
+      "n_trades": 582,
+      "prices": {
+        "1": 0.42,
+        "6": 0.45
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL25POHJEO-JEO",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1784983320.0,
+      "volume": 126793.93,
+      "n_trades": 2389,
+      "prices": {
+        "1": 0.65,
+        "6": 0.41,
+        "24": 0.41
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL19ANYGWA-ANY",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784464270.0,
+      "volume": 103754.47,
+      "n_trades": 2519,
+      "prices": {
+        "1": 0.42,
+        "6": 0.61,
+        "24": 0.6
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG192130SDMCAL-CAL",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1787202606.0,
+      "volume": 4527.06,
+      "n_trades": 161,
+      "prices": {
+        "1": 0.99,
+        "6": 0.61
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL302100BLEGUE-GUE",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785469786.0,
+      "volume": 1669.89,
+      "n_trades": 105,
+      "prices": {
+        "1": 0.79,
+        "6": 0.55
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL282100ODTAGU-AGU",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785302081.0,
+      "volume": 5343.71,
+      "n_trades": 224,
+      "prices": {
+        "1": 0.68,
+        "6": 0.45
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG25SEOBUC-BUC",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1787661430.0,
+      "volume": 81570.4,
+      "n_trades": 1798,
+      "prices": {
+        "1": 0.1,
+        "6": 0.13,
+        "24": 0.16,
+        "72": 0.17
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG12-T84",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786608000.0,
+      "volume": 6143.63,
+      "n_trades": 396,
+      "prices": {
+        "1": 0.01,
+        "6": 0.72,
+        "24": 0.07
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL222130DIABLE-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784780680.0,
+      "volume": 4540.8,
+      "n_trades": 208,
+      "prices": {
+        "1": 0.63,
+        "6": 0.62,
+        "24": 0.9,
+        "72": 0.75
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG092015PDPPDC-PDP",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786423793.0,
+      "volume": 18892.07,
+      "n_trades": 571,
+      "prices": {
+        "1": 0.02,
+        "6": 0.55,
+        "24": 0.66,
+        "72": 0.54
+      }
+    },
+    {
+      "ticker": "KXCBDECISIONMEXICO-26AUG06-C50P",
+      "series": "KXCBDECISIONMEXICO",
+      "outcome": 0,
+      "close_ts": 1786042740.0,
+      "volume": 1217.97,
+      "n_trades": 3,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26JUL26FCCLBY-LBY",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785081740.0,
+      "volume": 152884.18,
+      "n_trades": 2473,
+      "prices": {
+        "1": 0.44,
+        "6": 0.15
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG09-B78.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1786341600.0,
+      "volume": 4138.81,
+      "n_trades": 206,
+      "prices": {
+        "1": 0.97,
+        "6": 0.98,
+        "24": 0.48
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL21JEODAJ-DAJ",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784637060.0,
+      "volume": 56826.26,
+      "n_trades": 1061,
+      "prices": {
+        "1": 0.22,
+        "6": 0.24,
+        "24": 0.22
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG10-B75.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1786428000.0,
+      "volume": 4149.32,
+      "n_trades": 228,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.12
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26JUL26FCCLBY-FCC",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1785081740.0,
+      "volume": 285179.28,
+      "n_trades": 4704,
+      "prices": {
+        "1": 0.29,
+        "6": 0.68
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG06HSIOSTSAKVEK-HSIOST",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786059291.0,
+      "volume": 31336.68,
+      "n_trades": 405,
+      "prices": {
+        "1": 0.84,
+        "6": 0.85
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG08ANNTAUNEEOLM-NEEOLM",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786214087.0,
+      "volume": 138148.74,
+      "n_trades": 1666,
+      "prices": {
+        "1": 0.89,
+        "6": 0.7
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG06FERFERMERSHN-MERSHN",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786062603.0,
+      "volume": 19416.44,
+      "n_trades": 302,
+      "prices": {
+        "1": 0.96,
+        "6": 0.89,
+        "24": 0.74
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG06-B75.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1786082400.0,
+      "volume": 1500.4,
+      "n_trades": 74,
+      "prices": {
+        "1": 0.11,
+        "6": 0.11,
+        "24": 0.12
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL19-B80.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784534400.0,
+      "volume": 130.27,
+      "n_trades": 14,
+      "prices": {
+        "1": 0.01,
+        "6": 0.03,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02JURRUZEIKGLE-JURRUZ",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1782990905.0,
+      "volume": 11664.54,
+      "n_trades": 28,
+      "prices": {
+        "1": 0.21,
+        "6": 0.21,
+        "24": 0.95
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG23RIJIST-RIJ",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1787510091.0,
+      "volume": 12228.67,
+      "n_trades": 206,
+      "prices": {
+        "1": 0.95,
+        "6": 0.65,
+        "24": 0.67,
+        "72": 0.7
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL31-T85",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785571200.0,
+      "volume": 4112.63,
+      "n_trades": 266,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.73
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN24-B81.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782374400.0,
+      "volume": 1409.1,
+      "n_trades": 174,
+      "prices": {
+        "1": 0.01,
+        "6": 0.03,
+        "24": 0.06
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL02-B74.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783065600.0,
+      "volume": 2441.88,
+      "n_trades": 155,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.21
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL292110SDMCAL-SDM",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785386083.0,
+      "volume": 1746.44,
+      "n_trades": 99,
+      "prices": {
+        "1": 0.28
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG132100PDCPDP-PDP",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786766992.0,
+      "volume": 3739.27,
+      "n_trades": 146,
+      "prices": {
+        "1": 0.82,
+        "6": 0.51,
+        "24": 0.8
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG16INCGIS-GIS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786885543.0,
+      "volume": 31639.76,
+      "n_trades": 1220,
+      "prices": {
+        "1": 0.04,
+        "6": 0.27,
+        "24": 0.27
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG16-T79",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786953600.0,
+      "volume": 3441.47,
+      "n_trades": 145,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.18
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG23SONNJA-NJA",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1787487278.0,
+      "volume": 51618.69,
+      "n_trades": 676,
+      "prices": {
+        "1": 0.78,
+        "6": 0.56,
+        "24": 0.54,
+        "72": 0.51
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL06-B75.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783411200.0,
+      "volume": 320.0,
+      "n_trades": 10,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG18AOYLIAROUSUT-ROUSUT",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1787070419.0,
+      "volume": 43437.52,
+      "n_trades": 259,
+      "prices": {
+        "1": 0.51,
+        "6": 0.56
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG122100PDCPDP-PDC",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786598394.0,
+      "volume": 3514.94,
+      "n_trades": 182,
+      "prices": {
+        "1": 0.18,
+        "6": 0.48
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL31-B82.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785571200.0,
+      "volume": 423.24,
+      "n_trades": 51,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.05
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG112100PDCPDP-PDC",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786669200.0,
+      "volume": 134.88,
+      "n_trades": 16,
+      "prices": {
+        "1": 0.8,
+        "6": 0.8,
+        "24": 0.8,
+        "72": 0.62
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL29ERRMELKLENIN-KLENIN",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1785430479.0,
+      "volume": 15229.85,
+      "n_trades": 311,
+      "prices": {
+        "1": 0.12,
+        "6": 0.04,
+        "24": 0.04
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG231600DIAPDP-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1787529890.0,
+      "volume": 1781.92,
+      "n_trades": 103,
+      "prices": {
+        "1": 0.99,
+        "6": 0.56
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL05-B74.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783324800.0,
+      "volume": 218.0,
+      "n_trades": 15,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG08LOKGOR-GOR",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1786223054.0,
+      "volume": 9541.37,
+      "n_trades": 210,
+      "prices": {
+        "1": 0.02,
+        "6": 0.25
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL04NEEOLMEIKGLE-NEEOLM",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783261804.0,
+      "volume": 26403.52,
+      "n_trades": 499,
+      "prices": {
+        "1": 0.5,
+        "6": 0.46,
+        "24": 0.45
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL18-B72.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784440800.0,
+      "volume": 284.0,
+      "n_trades": 8,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG012205ADMTDT-ADM",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785650084.0,
+      "volume": 4542.33,
+      "n_trades": 189,
+      "prices": {
+        "1": 0.73,
+        "6": 0.41,
+        "24": 0.54
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG10-T87",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1786435200.0,
+      "volume": 2962.08,
+      "n_trades": 135,
+      "prices": {
+        "1": 0.95,
+        "6": 0.94,
+        "24": 0.92
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL282145DORADM-ADM",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785303593.0,
+      "volume": 10369.84,
+      "n_trades": 355,
+      "prices": {
+        "1": 0.09,
+        "6": 0.6
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG02VARHAJ-TIE",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1785695165.0,
+      "volume": 71620.82,
+      "n_trades": 1422,
+      "prices": {
+        "1": 0.41,
+        "6": 0.31,
+        "24": 0.31
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG01JEOSEO-SEO",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785587558.0,
+      "volume": 88552.89,
+      "n_trades": 2131,
+      "prices": {
+        "1": 0.32,
+        "6": 0.37,
+        "24": 0.35,
+        "72": 0.33
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG23AOYLIAPERSCH-AOYLIA",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1787611514.0,
+      "volume": 65303.05,
+      "n_trades": 267,
+      "prices": {
+        "1": 0.67
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG09STGLUZ-TIE",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1786295073.0,
+      "volume": 155442.08,
+      "n_trades": 4110,
+      "prices": {
+        "1": 0.44,
+        "6": 0.23
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG08BUCGWA-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1786194291.0,
+      "volume": 20166.28,
+      "n_trades": 702,
+      "prices": {
+        "1": 0.43,
+        "6": 0.29,
+        "24": 0.29
+      }
+    },
+    {
+      "ticker": "KXFIRSTHURRICANE-26DEC01EPAC-ELI",
+      "series": "KXFIRSTHURRICANE",
+      "outcome": 0,
+      "close_ts": 1784907613.0,
+      "volume": 60167.35,
+      "n_trades": 1341,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01,
+        "72": 0.01,
+        "168": 0.49
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL20-T77",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784613600.0,
+      "volume": 2264.02,
+      "n_trades": 75,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.22
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02KATRAKPERSCH-KATRAK",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783089004.0,
+      "volume": 2608.5,
+      "n_trades": 33,
+      "prices": {
+        "1": 0.16,
+        "6": 0.95,
+        "24": 0.95
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26JUL31DINSLA-TIE",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1785527521.0,
+      "volume": 84525.42,
+      "n_trades": 736,
+      "prices": {
+        "1": 0.09,
+        "6": 0.13,
+        "24": 0.14,
+        "72": 0.18
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL14-B73.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1784095200.0,
+      "volume": 2451.86,
+      "n_trades": 139,
+      "prices": {
+        "1": 0.98,
+        "6": 0.94,
+        "24": 0.46
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL16-B86.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784275200.0,
+      "volume": 3232.31,
+      "n_trades": 206,
+      "prices": {
+        "1": 0.04,
+        "6": 0.26,
+        "24": 0.06
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL302100CONPDP-CON",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785469480.0,
+      "volume": 1250.2,
+      "n_trades": 99,
+      "prices": {
+        "1": 0.34,
+        "6": 0.41
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG062130SDSALG-SDS",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786074590.0,
+      "volume": 2450.21,
+      "n_trades": 82,
+      "prices": {
+        "1": 0.58,
+        "6": 0.49
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN22-T69",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782201600.0,
+      "volume": 428.3,
+      "n_trades": 3,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02
+      }
+    },
+    {
+      "ticker": "KXFIRSTHURRICANE-26DEC01EPAC-KAR",
+      "series": "KXFIRSTHURRICANE",
+      "outcome": 0,
+      "close_ts": 1784907613.0,
+      "volume": 3274.05,
+      "n_trades": 3,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01,
+        "72": 0.01,
+        "168": 0.01
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG23PITTJEJIAZHA-PITTJE",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1787540997.0,
+      "volume": 409101.92,
+      "n_trades": 5479,
+      "prices": {
+        "1": 0.62,
+        "6": 0.55
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG16-B77.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1786946400.0,
+      "volume": 4502.54,
+      "n_trades": 136,
+      "prices": {
+        "1": 0.98,
+        "6": 0.99,
+        "24": 0.5
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL242130LDYODT-LDY",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784952887.0,
+      "volume": 1175.15,
+      "n_trades": 51,
+      "prices": {
+        "1": 0.31,
+        "6": 0.39
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG132145CALADM-CAL",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786682683.0,
+      "volume": 1688.29,
+      "n_trades": 92,
+      "prices": {
+        "1": 0.92,
+        "6": 0.5
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL04FOSKORNOSSRA-NOSSRA",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783272312.0,
+      "volume": 18396.54,
+      "n_trades": 228,
+      "prices": {
+        "1": 0.8,
+        "6": 0.73,
+        "24": 0.73
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN23-B74.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782288000.0,
+      "volume": 823.59,
+      "n_trades": 9,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL22SEOPOH-SEO",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1784723164.0,
+      "volume": 187810.3,
+      "n_trades": 3647,
+      "prices": {
+        "1": 0.8,
+        "6": 0.54,
+        "24": 0.53
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL31-T72",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785564000.0,
+      "volume": 470.22,
+      "n_trades": 34,
+      "prices": {
+        "1": 0.02,
+        "6": 0.01,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG13-B77.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786694400.0,
+      "volume": 4425.0,
+      "n_trades": 226,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.29
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG01THUYB-TIE",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785615740.0,
+      "volume": 21250.97,
+      "n_trades": 387,
+      "prices": {
+        "1": 0.02,
+        "6": 0.24
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG23-B80.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787551200.0,
+      "volume": 1032.3,
+      "n_trades": 40,
+      "prices": {
+        "1": 0.34,
+        "6": 0.34,
+        "24": 0.36
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL05SEOINC-SEO",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1783254642.0,
+      "volume": 84308.61,
+      "n_trades": 2319,
+      "prices": {
+        "1": 0.35,
+        "6": 0.54
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL31-T78",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785571200.0,
+      "volume": 141.27,
+      "n_trades": 15,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.05
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG15ISTSLA-TIE",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1786819219.0,
+      "volume": 13498.17,
+      "n_trades": 137,
+      "prices": {
+        "1": 0.03
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG25JEJPOH-JEJ",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1787661150.0,
+      "volume": 104964.24,
+      "n_trades": 1791,
+      "prices": {
+        "1": 0.11,
+        "6": 0.42,
+        "24": 0.39
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL312130PDPLDY-PDP",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785565195.0,
+      "volume": 982.76,
+      "n_trades": 76,
+      "prices": {
+        "1": 0.1,
+        "6": 0.53
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG06-B79.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1786082400.0,
+      "volume": 8681.45,
+      "n_trades": 304,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.52
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN28-B66.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782720000.0,
+      "volume": 235.96,
+      "n_trades": 25,
+      "prices": {
+        "1": 0.01,
+        "6": 0.02,
+        "24": 0.05
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN22-B75.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782201600.0,
+      "volume": 1342.71,
+      "n_trades": 38,
+      "prices": {
+        "1": 0.01,
+        "6": 0.02,
+        "24": 0.1
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG22BOUNOSKEMPAN-BOUNOS",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1787415605.0,
+      "volume": 103201.16,
+      "n_trades": 547,
+      "prices": {
+        "1": 0.67,
+        "6": 0.69
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL06-B79.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783411200.0,
+      "volume": 2763.35,
+      "n_trades": 91,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.07
+      }
+    },
+    {
+      "ticker": "KXFIRSTHURRICANE-26DEC01EPAC-HER",
+      "series": "KXFIRSTHURRICANE",
+      "outcome": 0,
+      "close_ts": 1784907613.0,
+      "volume": 15403.89,
+      "n_trades": 191,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01,
+        "72": 0.01,
+        "168": 0.03
+      }
+    },
+    {
+      "ticker": "KXPARDONSTRUMP-26JUN-174",
+      "series": "KXPARDONSTRUMP",
+      "outcome": 0,
+      "close_ts": 1782914400.0,
+      "volume": 3847.62,
+      "n_trades": 11,
+      "prices": {
+        "1": 0.03,
+        "6": 0.03,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG23PITTJEJIAZHA-JIAZHA",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1787540997.0,
+      "volume": 622754.25,
+      "n_trades": 6510,
+      "prices": {
+        "1": 0.39,
+        "6": 0.55,
+        "24": 0.74
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN20-B73.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782028800.0,
+      "volume": 128.56,
+      "n_trades": 8,
+      "prices": {
+        "1": 0.03,
+        "6": 0.03
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL14-B77.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784095200.0,
+      "volume": 610.69,
+      "n_trades": 40,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG16BUCJEO-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786885543.0,
+      "volume": 19692.11,
+      "n_trades": 969,
+      "prices": {
+        "1": 0.05,
+        "6": 0.25
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG19KEMPANDANKA-DANKA",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1787156401.0,
+      "volume": 25895.9,
+      "n_trades": 179,
+      "prices": {
+        "1": 0.86,
+        "6": 0.53
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG122145CALADM-ADM",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786597211.0,
+      "volume": 3291.57,
+      "n_trades": 98,
+      "prices": {
+        "1": 0.07,
+        "6": 0.53
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL16-B73.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784268000.0,
+      "volume": 416.44,
+      "n_trades": 32,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.1
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL17-B80.5",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1784361600.0,
+      "volume": 3043.07,
+      "n_trades": 302,
+      "prices": {
+        "1": 0.02,
+        "6": 0.11,
+        "24": 0.12
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL18GAWGIS-GIS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784377864.0,
+      "volume": 30460.61,
+      "n_trades": 515,
+      "prices": {
+        "1": 0.01,
+        "6": 0.2
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG08SINZHAGAUMCC-SINZHA",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786225807.0,
+      "volume": 144249.01,
+      "n_trades": 914,
+      "prices": {
+        "1": 0.7,
+        "6": 0.63
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG20-B84.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1787299200.0,
+      "volume": 296.53,
+      "n_trades": 34,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.12
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL24-B83.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784966400.0,
+      "volume": 449.51,
+      "n_trades": 13,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG01POHGIS-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785587559.0,
+      "volume": 42411.27,
+      "n_trades": 1351,
+      "prices": {
+        "1": 0.4,
+        "6": 0.3,
+        "24": 0.3,
+        "72": 0.3
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL08PERSCHAOYLIA-AOYLIA",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783524599.0,
+      "volume": 18872.27,
+      "n_trades": 424,
+      "prices": {
+        "1": 0.53,
+        "6": 0.45
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL21ULSINC-ULS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784637650.0,
+      "volume": 104374.88,
+      "n_trades": 2362,
+      "prices": {
+        "1": 0.3,
+        "6": 0.45,
+        "24": 0.44
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL282130RDASDS-SDS",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785300280.0,
+      "volume": 2990.88,
+      "n_trades": 75,
+      "prices": {
+        "1": 0.99
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26JUL27RANSIL-RAN",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785178308.0,
+      "volume": 104572.04,
+      "n_trades": 2795,
+      "prices": {
+        "1": 0.48,
+        "6": 0.57
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26JUL26FCCLBY-TIE",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785081740.0,
+      "volume": 123533.2,
+      "n_trades": 2816,
+      "prices": {
+        "1": 0.29,
+        "6": 0.18
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG15-B70.5",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1786867200.0,
+      "volume": 5052.42,
+      "n_trades": 200,
+      "prices": {
+        "1": 0.97,
+        "6": 0.98,
+        "24": 0.23
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL21ULSINC-INC",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1784637650.0,
+      "volume": 114040.38,
+      "n_trades": 2606,
+      "prices": {
+        "1": 0.31,
+        "6": 0.28,
+        "24": 0.27
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN19-T81",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1781942400.0,
+      "volume": 4554.73,
+      "n_trades": 380,
+      "prices": {
+        "1": 0.98,
+        "6": 0.97,
+        "24": 0.51
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG16-T72",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786953600.0,
+      "volume": 338.14,
+      "n_trades": 25,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.05
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG10-B79.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1786428000.0,
+      "volume": 13352.57,
+      "n_trades": 621,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.31
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG22LUZLAU-LUZ",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1787421963.0,
+      "volume": 18760.0,
+      "n_trades": 273,
+      "prices": {
+        "1": 0.73,
+        "6": 0.47,
+        "24": 0.48,
+        "72": 0.48
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG02FCMHOR-HOR",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785679379.0,
+      "volume": 72238.03,
+      "n_trades": 666,
+      "prices": {
+        "1": 0.01,
+        "6": 0.11,
+        "24": 0.12,
+        "72": 0.18
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL14-T86",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1784102400.0,
+      "volume": 1942.34,
+      "n_trades": 200,
+      "prices": {
+        "1": 0.99,
+        "6": 0.98,
+        "24": 0.58
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN26-T78",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1782547200.0,
+      "volume": 8512.33,
+      "n_trades": 253,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.9
+      }
+    },
+    {
+      "ticker": "KXMYSLGAME-26AUG22KELSEL-TIE",
+      "series": "KXMYSLGAME",
+      "outcome": 0,
+      "close_ts": 1787412935.0,
+      "volume": 2400.98,
+      "n_trades": 121,
+      "prices": {
+        "1": 0.02
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG20-B80.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1787299200.0,
+      "volume": 173.51,
+      "n_trades": 6,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG11ERRMELHSIOST-ERRMEL",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786492193.0,
+      "volume": 262463.24,
+      "n_trades": 2960,
+      "prices": {
+        "1": 0.79,
+        "6": 0.46,
+        "24": 0.72
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL05-B78.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783324800.0,
+      "volume": 1054.19,
+      "n_trades": 37,
+      "prices": {
+        "1": 0.04,
+        "6": 0.02,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG15BOUNOSDOLNAV-DOLNAV",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786918211.0,
+      "volume": 33320.23,
+      "n_trades": 295,
+      "prices": {
+        "1": 0.22,
+        "6": 0.4
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG02JEJINC-JEJ",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785673963.0,
+      "volume": 57235.39,
+      "n_trades": 2059,
+      "prices": {
+        "1": 0.29,
+        "6": 0.31,
+        "24": 0.31
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG15MERSHNCHAJOI-CHAJOI",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786911615.0,
+      "volume": 89457.69,
+      "n_trades": 914,
+      "prices": {
+        "1": 0.59
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG052030DIATDQ-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785985788.0,
+      "volume": 6272.52,
+      "n_trades": 188,
+      "prices": {
+        "1": 0.62,
+        "6": 0.65,
+        "24": 0.78,
+        "72": 0.77
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL30-T76",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785484800.0,
+      "volume": 364.0,
+      "n_trades": 11,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG19-B79.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1787205600.0,
+      "volume": 2334.52,
+      "n_trades": 169,
+      "prices": {
+        "1": 0.95,
+        "6": 0.97,
+        "24": 0.63
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL251800AGUDIA-AGU",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785029391.0,
+      "volume": 2494.2,
+      "n_trades": 172,
+      "prices": {
+        "1": 0.29,
+        "6": 0.35
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG24BROSIL-BRO",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1787598246.0,
+      "volume": 84195.3,
+      "n_trades": 956,
+      "prices": {
+        "1": 0.35,
+        "6": 0.67,
+        "24": 0.69,
+        "72": 0.7
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG102130CDJSDM-SDM",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786421994.0,
+      "volume": 4009.24,
+      "n_trades": 268,
+      "prices": {
+        "1": 0.7,
+        "6": 0.66,
+        "24": 0.57
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL232100TDQGUE-GUE",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784866801.0,
+      "volume": 22699.81,
+      "n_trades": 1068,
+      "prices": {
+        "1": 0.3,
+        "6": 0.62
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL23-B80.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784872800.0,
+      "volume": 6787.43,
+      "n_trades": 220,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.3
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG012100BLEODT-ODT",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785702201.0,
+      "volume": 2537.7,
+      "n_trades": 67,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.56
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG07-B86.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786176000.0,
+      "volume": 381.3,
+      "n_trades": 32,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.09
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG09HAJIST-HAJ",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1786309425.0,
+      "volume": 59775.89,
+      "n_trades": 991,
+      "prices": {
+        "1": 0.57,
+        "6": 0.7,
+        "24": 0.7
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02DANKAFERPUT-FERPUT",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1782994506.0,
+      "volume": 1236.03,
+      "n_trades": 27,
+      "prices": {
+        "1": 0.17,
+        "6": 0.28
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL10-B76.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783756800.0,
+      "volume": 167.36,
+      "n_trades": 17,
+      "prices": {
+        "1": 0.02,
+        "6": 0.01,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL23-B80.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784880000.0,
+      "volume": 225.51,
+      "n_trades": 16,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG11-B82.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786521600.0,
+      "volume": 575.82,
+      "n_trades": 65,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL242100TELDOR-TEL",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784955284.0,
+      "volume": 9495.46,
+      "n_trades": 106,
+      "prices": {
+        "1": 0.01,
+        "6": 0.73
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL302100ODTAGU-AGU",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785474003.0,
+      "volume": 9279.03,
+      "n_trades": 91,
+      "prices": {
+        "1": 0.01,
+        "6": 0.46
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG15BOUNOSDOLNAV-BOUNOS",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786918211.0,
+      "volume": 19421.64,
+      "n_trades": 242,
+      "prices": {
+        "1": 0.8,
+        "6": 0.67
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02SINTOWCHATAU-SINTOW",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783011311.0,
+      "volume": 5300.35,
+      "n_trades": 40,
+      "prices": {
+        "1": 0.94,
+        "6": 0.9
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG11-B73.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1786514400.0,
+      "volume": 1250.79,
+      "n_trades": 86,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.09
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL302100ODTAGU-ODT",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785474003.0,
+      "volume": 1743.13,
+      "n_trades": 106,
+      "prices": {
+        "1": 0.99,
+        "6": 0.61
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL29-T85",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1785398400.0,
+      "volume": 3132.29,
+      "n_trades": 151,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.86
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL19ANYGWA-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1784464270.0,
+      "volume": 49713.44,
+      "n_trades": 1392,
+      "prices": {
+        "1": 0.38,
+        "6": 0.25
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG14-B74.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786780800.0,
+      "volume": 4780.07,
+      "n_trades": 299,
+      "prices": {
+        "1": 0.01,
+        "6": 0.08,
+        "24": 0.19
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26JUL27RANSIL-SIL",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785178308.0,
+      "volume": 251041.01,
+      "n_trades": 3672,
+      "prices": {
+        "1": 0.21,
+        "6": 0.23
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL251900PDPTDQ-TDQ",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785035079.0,
+      "volume": 1153.29,
+      "n_trades": 75,
+      "prices": {
+        "1": 0.65,
+        "6": 0.44
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG06KATSAMEALWIL-EALWIL",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786069497.0,
+      "volume": 193458.55,
+      "n_trades": 2469,
+      "prices": {
+        "1": 0.33,
+        "6": 0.69,
+        "24": 0.74
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG221900ODTGUE-ODT",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1787454286.0,
+      "volume": 1308.52,
+      "n_trades": 110,
+      "prices": {
+        "1": 0.66,
+        "6": 0.55
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG15SEODAJ-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786799174.0,
+      "volume": 41687.05,
+      "n_trades": 1847,
+      "prices": {
+        "1": 0.33,
+        "6": 0.27
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL18-T72",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784440800.0,
+      "volume": 175.0,
+      "n_trades": 7,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG02NJARAN-NJA",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1785679379.0,
+      "volume": 43910.74,
+      "n_trades": 940,
+      "prices": {
+        "1": 0.57,
+        "6": 0.6
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG022000BLEODT-BLE",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785724794.0,
+      "volume": 1263.27,
+      "n_trades": 79,
+      "prices": {
+        "1": 0.22,
+        "6": 0.42
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG23YBVAD-VAD",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1787493927.0,
+      "volume": 42417.02,
+      "n_trades": 549,
+      "prices": {
+        "1": 0.13,
+        "6": 0.09,
+        "24": 0.09,
+        "72": 0.09
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG10SINZHAHUNKRA-HUNKRA",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786400999.0,
+      "volume": 761415.53,
+      "n_trades": 5070,
+      "prices": {
+        "1": 0.15,
+        "6": 0.3,
+        "24": 0.4
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL01-T73",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1782979200.0,
+      "volume": 4955.22,
+      "n_trades": 131,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.89
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG122100DIAGUE-GUE",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786594194.0,
+      "volume": 2572.74,
+      "n_trades": 166,
+      "prices": {
+        "1": 0.95,
+        "6": 0.42
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG132130SDMCDJ-SDM",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786686884.0,
+      "volume": 7667.82,
+      "n_trades": 157,
+      "prices": {
+        "1": 0.05,
+        "6": 0.52,
+        "24": 0.25
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL17-B86.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784361600.0,
+      "volume": 11327.91,
+      "n_trades": 87,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.15
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL26GWAJEJ-JEJ",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1785069709.0,
+      "volume": 123855.66,
+      "n_trades": 2826,
+      "prices": {
+        "1": 0.36,
+        "6": 0.5,
+        "24": 0.48
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG06JIAFANBOUNOS-JIAFAN",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786069498.0,
+      "volume": 83015.05,
+      "n_trades": 822,
+      "prices": {
+        "1": 0.63,
+        "6": 0.26
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG12-T77",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786608000.0,
+      "volume": 3339.16,
+      "n_trades": 66,
+      "prices": {
+        "1": 0.02,
+        "6": 0.01,
+        "24": 0.06
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG17KORWEBERRFER-ERRFER",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1787019608.0,
+      "volume": 20553.42,
+      "n_trades": 341,
+      "prices": {
+        "1": 0.95
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG06CHAJOIAOYLIA-AOYLIA",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786067691.0,
+      "volume": 49926.4,
+      "n_trades": 442,
+      "prices": {
+        "1": 0.55
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL15-B85.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784188800.0,
+      "volume": 726.23,
+      "n_trades": 55,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.08
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL17-B82.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784361600.0,
+      "volume": 18920.52,
+      "n_trades": 553,
+      "prices": {
+        "1": 0.98,
+        "6": 0.88,
+        "24": 0.13
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL312130ALGRDA-RDA",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785560082.0,
+      "volume": 1105.45,
+      "n_trades": 51,
+      "prices": {
+        "1": 0.67,
+        "6": 0.51
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL22GWAGIS-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1784723165.0,
+      "volume": 117431.4,
+      "n_trades": 2707,
+      "prices": {
+        "1": 0.37,
+        "6": 0.29,
+        "24": 0.27
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG091900ADMCAL-CAL",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786328674.0,
+      "volume": 5672.69,
+      "n_trades": 418,
+      "prices": {
+        "1": 0.93,
+        "6": 0.5
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG051900TELSDM-TEL",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785983402.0,
+      "volume": 2630.08,
+      "n_trades": 78,
+      "prices": {
+        "1": 0.05,
+        "6": 0.47
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG20HSIOSTGUOMLA-GUOMLA",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1787257920.0,
+      "volume": 66734.32,
+      "n_trades": 301,
+      "prices": {
+        "1": 0.24,
+        "6": 0.74
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN30-T72",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1782892800.0,
+      "volume": 1436.17,
+      "n_trades": 86,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.44
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN28-T73",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782720000.0,
+      "volume": 1386.19,
+      "n_trades": 134,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.36
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG19-B80.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1787212800.0,
+      "volume": 148.77,
+      "n_trades": 9,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG08JIAFANMERSHN-JIAFAN",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786231802.0,
+      "volume": 261034.67,
+      "n_trades": 2114,
+      "prices": {
+        "1": 0.27,
+        "6": 0.33
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL06HUNMCCDABSTE-HUNMCC",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783431290.0,
+      "volume": 9638.63,
+      "n_trades": 126,
+      "prices": {
+        "1": 0.14,
+        "6": 0.3,
+        "24": 0.31
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG21-B85.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1787385600.0,
+      "volume": 494.65,
+      "n_trades": 35,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.17
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL302100CDJTEL-CDJ",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785469786.0,
+      "volume": 2848.88,
+      "n_trades": 139,
+      "prices": {
+        "1": 0.82,
+        "6": 0.56
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL252000ADMCDJ-CDJ",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785035386.0,
+      "volume": 1488.38,
+      "n_trades": 88,
+      "prices": {
+        "1": 0.83
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG20-B78.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787292000.0,
+      "volume": 2394.06,
+      "n_trades": 88,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.47
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG07KESPEGERRMEL-KESPEG",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786133815.0,
+      "volume": 64709.1,
+      "n_trades": 1572,
+      "prices": {
+        "1": 0.22,
+        "6": 0.43
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL26-B71.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785132000.0,
+      "volume": 120.52,
+      "n_trades": 11,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.05
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL18DAJULS-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1784377865.0,
+      "volume": 59219.63,
+      "n_trades": 1772,
+      "prices": {
+        "1": 0.24,
+        "6": 0.29
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG082235ALGTDT-ALG",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786253990.0,
+      "volume": 4671.23,
+      "n_trades": 250,
+      "prices": {
+        "1": 0.13,
+        "6": 0.39,
+        "24": 0.35
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG14-T70",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786780800.0,
+      "volume": 3360.35,
+      "n_trades": 157,
+      "prices": {
+        "1": 0.11,
+        "6": 0.02
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG25SEOBUC-SEO",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1787661430.0,
+      "volume": 220914.63,
+      "n_trades": 4322,
+      "prices": {
+        "1": 0.71,
+        "6": 0.69,
+        "24": 0.62,
+        "72": 0.66
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG042130SDSALG-ALG",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785928915.0,
+      "volume": 2232.02,
+      "n_trades": 107,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN23-B76.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782288000.0,
+      "volume": 2178.01,
+      "n_trades": 55,
+      "prices": {
+        "1": 0.01,
+        "6": 0.03,
+        "24": 0.09
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL27KENPOTROUSUT-KENPOT",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1785196193.0,
+      "volume": 16962.39,
+      "n_trades": 398,
+      "prices": {
+        "1": 0.16
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG09SIOVAD-TIE",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786293279.0,
+      "volume": 86634.18,
+      "n_trades": 2474,
+      "prices": {
+        "1": 0.3
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL21-T79",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784707200.0,
+      "volume": 331.55,
+      "n_trades": 10,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG14VIBAGF-TIE",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1786734299.0,
+      "volume": 41046.17,
+      "n_trades": 949,
+      "prices": {
+        "1": 0.34,
+        "6": 0.24,
+        "24": 0.24,
+        "72": 0.24
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL24-B76.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784959200.0,
+      "volume": 1610.47,
+      "n_trades": 108,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.49
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG16GORHAJ-GOR",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1786915857.0,
+      "volume": 12835.49,
+      "n_trades": 231,
+      "prices": {
+        "1": 0.04,
+        "6": 0.19
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL292100ODTAGU-ODT",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785384277.0,
+      "volume": 2140.01,
+      "n_trades": 94,
+      "prices": {
+        "1": 0.94,
+        "6": 0.58
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL232130SDSSDM-SDS",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784867996.0,
+      "volume": 2859.25,
+      "n_trades": 158,
+      "prices": {
+        "1": 0.15
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG091600GUEDIA-GUE",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786320596.0,
+      "volume": 4071.03,
+      "n_trades": 155,
+      "prices": {
+        "1": 0.93,
+        "6": 0.34
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG15HSIOSTMIHNIC-MIHNIC",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786905615.0,
+      "volume": 21374.58,
+      "n_trades": 193,
+      "prices": {
+        "1": 0.49,
+        "6": 0.37
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG22DINVAR-DIN",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1787433256.0,
+      "volume": 50277.71,
+      "n_trades": 660,
+      "prices": {
+        "1": 0.24,
+        "6": 0.6,
+        "24": 0.68,
+        "72": 0.73
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG05-B77.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785996000.0,
+      "volume": 2668.81,
+      "n_trades": 107,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.35
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL22BUCANY-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784723518.0,
+      "volume": 65177.31,
+      "n_trades": 1817,
+      "prices": {
+        "1": 0.37,
+        "6": 0.33,
+        "24": 0.31
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL18-T79",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784440800.0,
+      "volume": 2222.49,
+      "n_trades": 78,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.16
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG01LBYAGF-AGF",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785607375.0,
+      "volume": 108021.23,
+      "n_trades": 2641,
+      "prices": {
+        "1": 0.64,
+        "6": 0.41
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG02GCZLUG-LUG",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1785688370.0,
+      "volume": 89511.2,
+      "n_trades": 1625,
+      "prices": {
+        "1": 0.21,
+        "6": 0.51
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG06-T86",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1786089600.0,
+      "volume": 7191.83,
+      "n_trades": 210,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.84
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL09-B76.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783670400.0,
+      "volume": 173.0,
+      "n_trades": 17,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.05
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG01POHGIS-POH",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785587559.0,
+      "volume": 60333.74,
+      "n_trades": 1160,
+      "prices": {
+        "1": 0.26,
+        "6": 0.44,
+        "24": 0.46,
+        "72": 0.47
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG23AOYLIAPERSCH-PERSCH",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1787611514.0,
+      "volume": 22933.66,
+      "n_trades": 220,
+      "prices": {
+        "1": 0.33
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL252105RDACAL-CAL",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785033453.0,
+      "volume": 2830.1,
+      "n_trades": 42,
+      "prices": {
+        "1": 0.98,
+        "6": 0.58
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL242100AGUDIA-AGU",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784952600.0,
+      "volume": 3033.06,
+      "n_trades": 95,
+      "prices": {
+        "1": 0.19,
+        "6": 0.3
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG011800GUEDIA-GUE",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785641686.0,
+      "volume": 648.11,
+      "n_trades": 75,
+      "prices": {
+        "1": 0.6,
+        "6": 0.11
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG09HAJIST-TIE",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1786309425.0,
+      "volume": 31388.0,
+      "n_trades": 943,
+      "prices": {
+        "1": 0.33,
+        "6": 0.21
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL261600RDACAL-CAL",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785115931.0,
+      "volume": 27502.45,
+      "n_trades": 765,
+      "prices": {
+        "1": 0.01,
+        "6": 0.56,
+        "24": 0.65
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG02RIJRUD-TIE",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1785703925.0,
+      "volume": 51166.6,
+      "n_trades": 641,
+      "prices": {
+        "1": 0.07,
+        "6": 0.13,
+        "24": 0.17
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL242100GUECON-CON",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784952886.0,
+      "volume": 3678.4,
+      "n_trades": 84,
+      "prices": {
+        "1": 0.03,
+        "6": 0.37
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG11-T87",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1786521600.0,
+      "volume": 7279.43,
+      "n_trades": 655,
+      "prices": {
+        "1": 0.94,
+        "6": 0.87,
+        "24": 0.75
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG122130TDTALG-ALG",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786595081.0,
+      "volume": 822.27,
+      "n_trades": 62,
+      "prices": {
+        "1": 0.09,
+        "6": 0.58
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL31TANYIFROUSUT-TANYIF",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1785518994.0,
+      "volume": 3603.14,
+      "n_trades": 94,
+      "prices": {
+        "1": 0.37,
+        "6": 0.46
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL252000ADMCDJ-ADM",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785035386.0,
+      "volume": 1188.28,
+      "n_trades": 65,
+      "prices": {
+        "1": 0.18,
+        "6": 0.52
+      }
+    },
+    {
+      "ticker": "KXCBDECISIONMEXICO-26AUG06-C50",
+      "series": "KXCBDECISIONMEXICO",
+      "outcome": 0,
+      "close_ts": 1786042740.0,
+      "volume": 4048.29,
+      "n_trades": 7,
+      "prices": {
+        "1": 0.04,
+        "6": 0.04,
+        "24": 0.04
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL06AOYLIAHSIWAN-HSIWAN",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783341000.0,
+      "volume": 19900.35,
+      "n_trades": 262,
+      "prices": {
+        "1": 0.63,
+        "6": 0.88
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG15GWAPOH-GWA",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786797932.0,
+      "volume": 24616.56,
+      "n_trades": 841,
+      "prices": {
+        "1": 0.1,
+        "6": 0.25,
+        "24": 0.23
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL23-T76",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784872800.0,
+      "volume": 5625.24,
+      "n_trades": 242,
+      "prices": {
+        "1": 0.03,
+        "6": 0.35,
+        "24": 0.04
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG04-B84.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785916800.0,
+      "volume": 310.77,
+      "n_trades": 29,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.08
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG07MUHSTOTANYIF-TANYIF",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786135810.0,
+      "volume": 74243.72,
+      "n_trades": 1072,
+      "prices": {
+        "1": 0.63
+      }
+    },
+    {
+      "ticker": "KXCBDECISIONMEXICO-26JUN25-C50P",
+      "series": "KXCBDECISIONMEXICO",
+      "outcome": 0,
+      "close_ts": 1782413940.0,
+      "volume": 3128.72,
+      "n_trades": 2,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01,
+        "72": 0.01,
+        "168": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN26-T71",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782547200.0,
+      "volume": 148.65,
+      "n_trades": 10,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG01GOROSI-GOR",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1785617575.0,
+      "volume": 33858.27,
+      "n_trades": 238,
+      "prices": {
+        "1": 0.02,
+        "6": 0.38
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL11GWAPOH-POH",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1783773071.0,
+      "volume": 63925.44,
+      "n_trades": 1458,
+      "prices": {
+        "1": 0.79,
+        "6": 0.62,
+        "24": 0.61
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL312130BLEODT-ODT",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785559196.0,
+      "volume": 1488.57,
+      "n_trades": 88,
+      "prices": {
+        "1": 0.92,
+        "6": 0.55
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG13-B75.5",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1786694400.0,
+      "volume": 6036.19,
+      "n_trades": 319,
+      "prices": {
+        "1": 0.99,
+        "6": 0.87,
+        "24": 0.12
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL05AOYLIABIRGIB-BIRGIB",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783253685.0,
+      "volume": 11460.49,
+      "n_trades": 148,
+      "prices": {
+        "1": 0.44
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL04CHOTIKSIEZVO-SIEZVO",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783164605.0,
+      "volume": 12637.53,
+      "n_trades": 95,
+      "prices": {
+        "1": 0.89,
+        "6": 0.86
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG09PERSCHERRMEL-ERRMEL",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786309797.0,
+      "volume": 123377.55,
+      "n_trades": 1141,
+      "prices": {
+        "1": 0.64,
+        "6": 0.57
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG012100PDPLDY-PDP",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785703286.0,
+      "volume": 8610.61,
+      "n_trades": 544,
+      "prices": {
+        "1": 0.61,
+        "6": 0.61,
+        "24": 0.62
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL05-B80.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783324800.0,
+      "volume": 1136.98,
+      "n_trades": 62,
+      "prices": {
+        "1": 0.03,
+        "6": 0.02,
+        "24": 0.04
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL18-B81.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784448000.0,
+      "volume": 15002.93,
+      "n_trades": 132,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.33
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL26SEOULS-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785069107.0,
+      "volume": 41392.73,
+      "n_trades": 1458,
+      "prices": {
+        "1": 0.18,
+        "6": 0.25,
+        "24": 0.26,
+        "72": 0.27
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL20-T70",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784613600.0,
+      "volume": 200.06,
+      "n_trades": 23,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG09STGLUZ-STG",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786295073.0,
+      "volume": 120917.17,
+      "n_trades": 1923,
+      "prices": {
+        "1": 0.38,
+        "6": 0.52,
+        "24": 0.51
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL25-B88.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785052800.0,
+      "volume": 558.62,
+      "n_trades": 47,
+      "prices": {
+        "1": 0.02,
+        "6": 0.01,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG01FCZSER-FCZ",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1785606993.0,
+      "volume": 92091.73,
+      "n_trades": 2382,
+      "prices": {
+        "1": 0.56,
+        "6": 0.28
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG22JEOULS-ULS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1787403941.0,
+      "volume": 11059.85,
+      "n_trades": 425,
+      "prices": {
+        "1": 0.03,
+        "6": 0.28,
+        "24": 0.29,
+        "72": 0.29
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG15AOYLIANEEOLM-NEEOLM",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786897823.0,
+      "volume": 31023.71,
+      "n_trades": 169,
+      "prices": {
+        "1": 0.16
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL302305ALGTDT-TDT",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785480879.0,
+      "volume": 9184.64,
+      "n_trades": 314,
+      "prices": {
+        "1": 0.1,
+        "6": 0.68
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL282135TDQPDC-PDC",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785288882.0,
+      "volume": 3924.78,
+      "n_trades": 89,
+      "prices": {
+        "1": 0.82,
+        "6": 0.64
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG192335CDJTDT-TDT",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1787206200.0,
+      "volume": 9091.27,
+      "n_trades": 459,
+      "prices": {
+        "1": 0.57,
+        "6": 0.65,
+        "24": 0.77
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG021900DORSDM-SDM",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785730192.0,
+      "volume": 10915.79,
+      "n_trades": 806,
+      "prices": {
+        "1": 0.25,
+        "6": 0.61,
+        "24": 0.47
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG23HAJOSI-HAJ",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1787519105.0,
+      "volume": 58666.9,
+      "n_trades": 397,
+      "prices": {
+        "1": 0.84,
+        "6": 0.44,
+        "24": 0.46,
+        "72": 0.51
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL261600TELDOR-DOR",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785106797.0,
+      "volume": 2317.94,
+      "n_trades": 148,
+      "prices": {
+        "1": 0.98,
+        "6": 0.56
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG22JEJGIS-JEJ",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1787402759.0,
+      "volume": 30844.86,
+      "n_trades": 860,
+      "prices": {
+        "1": 0.27,
+        "6": 0.35,
+        "24": 0.38,
+        "72": 0.37
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG02SIOLUZ-TIE",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785687711.0,
+      "volume": 53891.18,
+      "n_trades": 664,
+      "prices": {
+        "1": 0.09,
+        "6": 0.24
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG23AGFOBK-TIE",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1787493918.0,
+      "volume": 43862.18,
+      "n_trades": 1105,
+      "prices": {
+        "1": 0.29,
+        "6": 0.23
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL04-B72.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783238400.0,
+      "volume": 288.0,
+      "n_trades": 20,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG122100PDCPDP-PDP",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786598394.0,
+      "volume": 5207.99,
+      "n_trades": 215,
+      "prices": {
+        "1": 0.84,
+        "6": 0.56
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG07-B73.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1786168800.0,
+      "volume": 343.25,
+      "n_trades": 30,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.05
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG08HUNKRACHAJOI-HUNKRA",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786222189.0,
+      "volume": 46113.42,
+      "n_trades": 541,
+      "prices": {
+        "1": 0.63,
+        "6": 0.57
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL26SEOULS-SEO",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785069107.0,
+      "volume": 258364.0,
+      "n_trades": 3317,
+      "prices": {
+        "1": 0.09,
+        "6": 0.55,
+        "24": 0.53,
+        "72": 0.51
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG25GISJEO-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1787661430.0,
+      "volume": 107497.06,
+      "n_trades": 2833,
+      "prices": {
+        "1": 0.4,
+        "6": 0.28,
+        "24": 0.28
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG062100AGUPDP-AGU",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786079993.0,
+      "volume": 4735.35,
+      "n_trades": 361,
+      "prices": {
+        "1": 0.25,
+        "6": 0.34
+      }
+    },
+    {
+      "ticker": "KXCBDECISIONMEXICO-26JUN25-H25P",
+      "series": "KXCBDECISIONMEXICO",
+      "outcome": 0,
+      "close_ts": 1782413940.0,
+      "volume": 8086.9,
+      "n_trades": 70,
+      "prices": {
+        "1": 0.03,
+        "6": 0.01,
+        "24": 0.03,
+        "72": 0.01,
+        "168": 0.03
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL13-T86",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1784016000.0,
+      "volume": 2706.13,
+      "n_trades": 191,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.94
+      }
+    },
+    {
+      "ticker": "KXMYSLGAME-26AUG22TERMEL-TIE",
+      "series": "KXMYSLGAME",
+      "outcome": 0,
+      "close_ts": 1787411763.0,
+      "volume": 2687.17,
+      "n_trades": 234,
+      "prices": {
+        "1": 0.03
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG02-B86.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785744000.0,
+      "volume": 304.96,
+      "n_trades": 19,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.1
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02KEMPANJOVLIN-KEMPAN",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783009503.0,
+      "volume": 20569.35,
+      "n_trades": 389,
+      "prices": {
+        "1": 0.83,
+        "6": 0.95,
+        "24": 0.95
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG21-B83.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1787385600.0,
+      "volume": 138.0,
+      "n_trades": 15,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL19BUCSEO-BUC",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784464860.0,
+      "volume": 32112.64,
+      "n_trades": 756,
+      "prices": {
+        "1": 0.05,
+        "6": 0.19
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUN23-T79",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1782288000.0,
+      "volume": 6627.7,
+      "n_trades": 175,
+      "prices": {
+        "1": 0.99,
+        "6": 0.97,
+        "24": 0.66
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG08JEOJEJ-JEJ",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1786196019.0,
+      "volume": 99958.6,
+      "n_trades": 3042,
+      "prices": {
+        "1": 0.63,
+        "6": 0.22,
+        "24": 0.18,
+        "72": 0.21
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL30-B82.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785484800.0,
+      "volume": 101.4,
+      "n_trades": 15,
+      "prices": {
+        "1": 0.01,
+        "6": 0.02,
+        "24": 0.06
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG15SINTOWJURFAN-JURFAN",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1787008818.0,
+      "volume": 301525.25,
+      "n_trades": 1884,
+      "prices": {
+        "1": 0.05,
+        "6": 0.1,
+        "24": 0.12
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL242130ADMCDJ-ADM",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784954991.0,
+      "volume": 2689.69,
+      "n_trades": 182,
+      "prices": {
+        "1": 0.95,
+        "6": 0.74
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL30-B76.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785477600.0,
+      "volume": 647.25,
+      "n_trades": 35,
+      "prices": {
+        "1": 0.01,
+        "6": 0.02,
+        "24": 0.09
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG18CHAJOIERRFER-CHAJOI",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1787092228.0,
+      "volume": 63121.6,
+      "n_trades": 1140,
+      "prices": {
+        "1": 0.49
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG01ISTLOK-LOK",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1785609171.0,
+      "volume": 196942.53,
+      "n_trades": 3987,
+      "prices": {
+        "1": 0.62,
+        "6": 0.31
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL27-B74.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785218400.0,
+      "volume": 274.22,
+      "n_trades": 22,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG08GISSEO-GIS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786194292.0,
+      "volume": 25726.06,
+      "n_trades": 1045,
+      "prices": {
+        "1": 0.26,
+        "6": 0.25,
+        "24": 0.26
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL28TANYIFDANFER-TANYIF",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1785261609.0,
+      "volume": 20283.05,
+      "n_trades": 259,
+      "prices": {
+        "1": 0.45,
+        "6": 0.06
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG22ANYSEO-ANY",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1787402759.0,
+      "volume": 7277.09,
+      "n_trades": 195,
+      "prices": {
+        "1": 0.01,
+        "6": 0.23,
+        "24": 0.24,
+        "72": 0.22
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL02-B68.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783065600.0,
+      "volume": 1830.75,
+      "n_trades": 30,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG06-B85.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1786089600.0,
+      "volume": 1595.9,
+      "n_trades": 67,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.11
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26JUL26SONFCM-FCM",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1785074536.0,
+      "volume": 85024.36,
+      "n_trades": 1794,
+      "prices": {
+        "1": 0.51,
+        "6": 0.63
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL02-T68",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783065600.0,
+      "volume": 1581.0,
+      "n_trades": 54,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG21RUDLOK-RUD",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1787342637.0,
+      "volume": 34103.58,
+      "n_trades": 598,
+      "prices": {
+        "1": 0.33,
+        "6": 0.12
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL21JEJGAW-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1784637061.0,
+      "volume": 160499.03,
+      "n_trades": 3938,
+      "prices": {
+        "1": 0.38,
+        "6": 0.29,
+        "24": 0.29
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG03OBKSON-OBK",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1785783318.0,
+      "volume": 196899.6,
+      "n_trades": 3957,
+      "prices": {
+        "1": 0.34,
+        "6": 0.45,
+        "24": 0.45
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL08SINTOWGUOMLA-GUOMLA",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783599585.0,
+      "volume": 27743.58,
+      "n_trades": 766,
+      "prices": {
+        "1": 0.32,
+        "6": 0.12,
+        "24": 0.13
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL261600AGUDIA-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785106475.0,
+      "volume": 1412.69,
+      "n_trades": 125,
+      "prices": {
+        "1": 0.94,
+        "6": 0.69
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG052130ADMRDA-RDA",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785990881.0,
+      "volume": 2736.28,
+      "n_trades": 151,
+      "prices": {
+        "1": 0.75,
+        "6": 0.5
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG09SLAVAR-SLA",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1786300448.0,
+      "volume": 14679.44,
+      "n_trades": 381,
+      "prices": {
+        "1": 0.02,
+        "6": 0.37
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG21HSIOSTKEMPAN-KEMPAN",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1787330394.0,
+      "volume": 187256.04,
+      "n_trades": 2337,
+      "prices": {
+        "1": 0.44,
+        "6": 0.25
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL272100TDQPDC-TDQ",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785246875.0,
+      "volume": 335.35,
+      "n_trades": 64,
+      "prices": {
+        "1": 0.2,
+        "6": 0.2,
+        "24": 0.57,
+        "72": 0.74
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL272100PDCTDQ-PDC",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785251371.0,
+      "volume": 5907.42,
+      "n_trades": 164,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.52
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG23-T84",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1787558400.0,
+      "volume": 943.81,
+      "n_trades": 52,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.89
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG052130CONBLE-CON",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785990279.0,
+      "volume": 1397.02,
+      "n_trades": 70,
+      "prices": {
+        "1": 0.7,
+        "6": 0.49
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG08RUDOSI-OSI",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1786214379.0,
+      "volume": 26093.74,
+      "n_trades": 355,
+      "prices": {
+        "1": 0.99,
+        "6": 0.56
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG05-T80",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785996000.0,
+      "volume": 1993.08,
+      "n_trades": 28,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.08
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL25GISDAJ-DAJ",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784982744.0,
+      "volume": 46322.07,
+      "n_trades": 1181,
+      "prices": {
+        "1": 0.17,
+        "6": 0.42,
+        "24": 0.39,
+        "72": 0.36
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL19-T85",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1784534400.0,
+      "volume": 5079.14,
+      "n_trades": 313,
+      "prices": {
+        "1": 0.99,
+        "6": 0.98,
+        "24": 0.77
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL06GUOMLADETKHR-DETKHR",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783341288.0,
+      "volume": 23659.3,
+      "n_trades": 453,
+      "prices": {
+        "1": 0.57,
+        "6": 0.26
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG02BROVIB-BRO",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 1,
+      "close_ts": 1785686572.0,
+      "volume": 98796.67,
+      "n_trades": 2126,
+      "prices": {
+        "1": 0.41,
+        "6": 0.51,
+        "24": 0.49
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL07-B81.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783497600.0,
+      "volume": 2805.27,
+      "n_trades": 207,
+      "prices": {
+        "1": 0.05,
+        "6": 0.04,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG012000LDYPDP-LDY",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785703068.0,
+      "volume": 2719.97,
+      "n_trades": 204,
+      "prices": {
+        "1": 0.7,
+        "6": 0.7,
+        "24": 0.52
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG042100CDJDOR-CDJ",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785928918.0,
+      "volume": 13285.92,
+      "n_trades": 698,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99
+      }
+    },
+    {
+      "ticker": "KXFIRSTHURRICANE-26DEC01CPAC-HON",
+      "series": "KXFIRSTHURRICANE",
+      "outcome": 0,
+      "close_ts": 1785189864.0,
+      "volume": 1003.59,
+      "n_trades": 4,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01,
+        "72": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG04-B76.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785909600.0,
+      "volume": 1102.73,
+      "n_trades": 84,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.3
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL16-T78",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784268000.0,
+      "volume": 1860.23,
+      "n_trades": 30,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.16
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL26INCBUC-INC",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785069710.0,
+      "volume": 74249.85,
+      "n_trades": 2098,
+      "prices": {
+        "1": 0.25,
+        "6": 0.58,
+        "24": 0.58
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL22GWAGIS-GIS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784723165.0,
+      "volume": 83718.07,
+      "n_trades": 2393,
+      "prices": {
+        "1": 0.44,
+        "6": 0.51,
+        "24": 0.53
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL20-B76.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1784613600.0,
+      "volume": 5372.63,
+      "n_trades": 308,
+      "prices": {
+        "1": 0.99,
+        "6": 0.98,
+        "24": 0.45
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG062130SDSALG-ALG",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786074590.0,
+      "volume": 2796.35,
+      "n_trades": 88,
+      "prices": {
+        "1": 0.52,
+        "6": 0.74
+      }
+    },
+    {
+      "ticker": "KXMYSLGAME-26AUG22KELSEL-KEL",
+      "series": "KXMYSLGAME",
+      "outcome": 0,
+      "close_ts": 1787412935.0,
+      "volume": 14064.2,
+      "n_trades": 429,
+      "prices": {
+        "1": 0.11,
+        "6": 0.06
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG07KESPEGERRMEL-ERRMEL",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786133815.0,
+      "volume": 45043.92,
+      "n_trades": 865,
+      "prices": {
+        "1": 0.82,
+        "6": 0.6
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG15OSILOK-OSI",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1786828192.0,
+      "volume": 23220.34,
+      "n_trades": 416,
+      "prices": {
+        "1": 0.46,
+        "6": 0.49
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG01FCBLAU-TIE",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785606992.0,
+      "volume": 135299.47,
+      "n_trades": 3503,
+      "prices": {
+        "1": 0.38,
+        "6": 0.24
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG092005ALGTDT-TDT",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786330799.0,
+      "volume": 8890.58,
+      "n_trades": 293,
+      "prices": {
+        "1": 0.09,
+        "6": 0.61
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG14-B72.5",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1786780800.0,
+      "volume": 6678.94,
+      "n_trades": 492,
+      "prices": {
+        "1": 0.58,
+        "6": 0.06,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG20-B72.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787292000.0,
+      "volume": 799.51,
+      "n_trades": 63,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL28-B76.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1785304800.0,
+      "volume": 7372.45,
+      "n_trades": 302,
+      "prices": {
+        "1": 0.99,
+        "6": 0.98,
+        "24": 0.33
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL13-B83.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784016000.0,
+      "volume": 272.7,
+      "n_trades": 30,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.08
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL22SEOPOH-POH",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1784723164.0,
+      "volume": 126687.8,
+      "n_trades": 1915,
+      "prices": {
+        "1": 0.05,
+        "6": 0.2,
+        "24": 0.21
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG08LOKGOR-TIE",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1786223054.0,
+      "volume": 3751.25,
+      "n_trades": 143,
+      "prices": {
+        "1": 0.07,
+        "6": 0.26,
+        "24": 0.26
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL14-B85.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784102400.0,
+      "volume": 1441.21,
+      "n_trades": 100,
+      "prices": {
+        "1": 0.01,
+        "6": 0.11,
+        "24": 0.33
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG15KLELUMDETKHR-DETKHR",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1787009418.0,
+      "volume": 27218.71,
+      "n_trades": 226,
+      "prices": {
+        "1": 0.18,
+        "6": 0.53
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG10MIHNICMERSHN-MERSHN",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786485608.0,
+      "volume": 480209.3,
+      "n_trades": 3914,
+      "prices": {
+        "1": 0.56,
+        "6": 0.77,
+        "24": 0.84
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL13-B79.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784008800.0,
+      "volume": 2339.66,
+      "n_trades": 166,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.27
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL20-B86.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784620800.0,
+      "volume": 2623.99,
+      "n_trades": 161,
+      "prices": {
+        "1": 0.01,
+        "6": 0.03,
+        "24": 0.14
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL282100BLEGUE-GUE",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1785303879.0,
+      "volume": 2894.33,
+      "n_trades": 119,
+      "prices": {
+        "1": 0.93,
+        "6": 0.51
+      }
+    },
+    {
+      "ticker": "KXSWISSLEAGUEGAME-26AUG02VADSTG-STG",
+      "series": "KXSWISSLEAGUEGAME",
+      "outcome": 1,
+      "close_ts": 1785678999.0,
+      "volume": 64298.34,
+      "n_trades": 1482,
+      "prices": {
+        "1": 0.45,
+        "6": 0.49,
+        "24": 0.49
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL272100LDYDIA-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785210582.0,
+      "volume": 10682.15,
+      "n_trades": 523,
+      "prices": {
+        "1": 0.21,
+        "6": 0.72,
+        "24": 0.73
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL232130CONLDY-CON",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1784867080.0,
+      "volume": 4234.46,
+      "n_trades": 277,
+      "prices": {
+        "1": 0.92,
+        "6": 0.51
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL04CHOTIKSIEZVO-CHOTIK",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783164605.0,
+      "volume": 8127.66,
+      "n_trades": 64,
+      "prices": {
+        "1": 0.11,
+        "6": 0.19
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL26GWAJEJ-GWA",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785069709.0,
+      "volume": 78106.79,
+      "n_trades": 2036,
+      "prices": {
+        "1": 0.24,
+        "6": 0.22,
+        "24": 0.24
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG042110TDTCAL-CAL",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785928917.0,
+      "volume": 3935.23,
+      "n_trades": 77,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.79,
+        "72": 0.47
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL05SEOINC-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1783254642.0,
+      "volume": 24714.74,
+      "n_trades": 1235,
+      "prices": {
+        "1": 0.45,
+        "6": 0.27
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02MALSKOMIHNIC-MALSKO",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783012208.0,
+      "volume": 1907.7,
+      "n_trades": 51,
+      "prices": {
+        "1": 0.95,
+        "6": 0.95,
+        "24": 0.95
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL16-B77.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1784268000.0,
+      "volume": 1564.08,
+      "n_trades": 141,
+      "prices": {
+        "1": 0.99,
+        "6": 0.97,
+        "24": 0.53
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG03-B77.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1785823200.0,
+      "volume": 3339.24,
+      "n_trades": 183,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.5
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG162200GUEDIA-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786926600.0,
+      "volume": 7307.06,
+      "n_trades": 159,
+      "prices": {
+        "1": 0.87,
+        "6": 0.64
+      }
+    },
+    {
+      "ticker": "KXFIRSTHURRICANE-26DEC01EPAC-GEN",
+      "series": "KXFIRSTHURRICANE",
+      "outcome": 0,
+      "close_ts": 1784907613.0,
+      "volume": 30268.05,
+      "n_trades": 209,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01,
+        "72": 0.01,
+        "168": 0.04
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL03-T67",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783152000.0,
+      "volume": 299.18,
+      "n_trades": 17,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL26-T83",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785139200.0,
+      "volume": 345.0,
+      "n_trades": 9,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26AUG18-B79.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1787126400.0,
+      "volume": 156.13,
+      "n_trades": 11,
+      "prices": {
+        "1": 0.02,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG082015PDPPDC-PDC",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786246790.0,
+      "volume": 2078.98,
+      "n_trades": 112,
+      "prices": {
+        "1": 0.81,
+        "6": 0.45,
+        "24": 0.66
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG22-B78.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787464800.0,
+      "volume": 926.29,
+      "n_trades": 75,
+      "prices": {
+        "1": 0.05,
+        "6": 0.02,
+        "24": 0.76
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26AUG01GOROSI-OSI",
+      "series": "KXHNLGAME",
+      "outcome": 1,
+      "close_ts": 1785617575.0,
+      "volume": 49038.64,
+      "n_trades": 745,
+      "prices": {
+        "1": 0.92,
+        "6": 0.31
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02POTTAGBOUSOR-POTTAG",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1783006216.0,
+      "volume": 1221.19,
+      "n_trades": 21,
+      "prices": {
+        "1": 0.28,
+        "6": 0.23
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL292030CDJTEL-CDJ",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785384583.0,
+      "volume": 15270.42,
+      "n_trades": 155,
+      "prices": {
+        "1": 0.12,
+        "6": 0.54,
+        "24": 0.78
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG03-T78",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785823200.0,
+      "volume": 1560.01,
+      "n_trades": 76,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.15
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG09RANLBY-TIE",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1786291471.0,
+      "volume": 13076.5,
+      "n_trades": 315,
+      "prices": {
+        "1": 0.26,
+        "6": 0.27
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL30-B76.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1785484800.0,
+      "volume": 272.18,
+      "n_trades": 9,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG062130ADMRDA-RDA",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1786076394.0,
+      "volume": 4622.31,
+      "n_trades": 212,
+      "prices": {
+        "1": 0.85,
+        "6": 0.51
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG24-B75.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787637600.0,
+      "volume": 380.18,
+      "n_trades": 52,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.11
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG231900ODTGUE-GUE",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1787537683.0,
+      "volume": 3228.48,
+      "n_trades": 118,
+      "prices": {
+        "1": 0.88,
+        "6": 0.58
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL24-T74",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1784959200.0,
+      "volume": 208.75,
+      "n_trades": 22,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.03
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG16ULSGAW-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1786885542.0,
+      "volume": 48082.59,
+      "n_trades": 1933,
+      "prices": {
+        "1": 0.69,
+        "6": 0.28
+      }
+    },
+    {
+      "ticker": "KXMYSLGAME-26AUG22TERMEL-MEL",
+      "series": "KXMYSLGAME",
+      "outcome": 0,
+      "close_ts": 1787411763.0,
+      "volume": 4203.16,
+      "n_trades": 127,
+      "prices": {
+        "1": 0.02
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26JUL26HORNJA-HOR",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785088936.0,
+      "volume": 115616.2,
+      "n_trades": 2421,
+      "prices": {
+        "1": 0.18,
+        "6": 0.25
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG19-B75.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787205600.0,
+      "volume": 178.11,
+      "n_trades": 32,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.08
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG10MIHNICMERSHN-MIHNIC",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1786485608.0,
+      "volume": 684764.49,
+      "n_trades": 4330,
+      "prices": {
+        "1": 0.49,
+        "6": 0.28,
+        "24": 0.24
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL27-T89",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1785225600.0,
+      "volume": 4272.32,
+      "n_trades": 182,
+      "prices": {
+        "1": 0.99,
+        "6": 0.97,
+        "24": 0.78
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL232130DIABLE-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784867684.0,
+      "volume": 24187.71,
+      "n_trades": 1134,
+      "prices": {
+        "1": 0.35,
+        "6": 0.64,
+        "24": 0.75
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL08-B79.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783584000.0,
+      "volume": 1833.63,
+      "n_trades": 89,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.07
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL16-B84.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784275200.0,
+      "volume": 901.09,
+      "n_trades": 60,
+      "prices": {
+        "1": 0.01,
+        "6": 0.04,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26JUL31-B72.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1785564000.0,
+      "volume": 504.03,
+      "n_trades": 31,
+      "prices": {
+        "1": 0.02,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL07-T82",
+      "series": "KXLOWTLV",
+      "outcome": 1,
+      "close_ts": 1783497600.0,
+      "volume": 2425.81,
+      "n_trades": 235,
+      "prices": {
+        "1": 0.87,
+        "6": 0.94,
+        "24": 0.95
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL01-B72.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1782979200.0,
+      "volume": 1492.29,
+      "n_trades": 49,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.12
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG24-B79.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787637600.0,
+      "volume": 1149.51,
+      "n_trades": 37,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.27
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02ALEJOIERJMAR-ALEJOI",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783012817.0,
+      "volume": 1498.75,
+      "n_trades": 23,
+      "prices": {
+        "1": 0.85,
+        "6": 0.89
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG221800DIAPDP-DIA",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1787447688.0,
+      "volume": 11371.07,
+      "n_trades": 181,
+      "prices": {
+        "1": 0.05,
+        "6": 0.67
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG17-B73.5",
+      "series": "KXLOWTHOU",
+      "outcome": 1,
+      "close_ts": 1787032800.0,
+      "volume": 6934.17,
+      "n_trades": 214,
+      "prices": {
+        "1": 0.99,
+        "6": 0.99,
+        "24": 0.1
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26AUG02ULSANY-ANY",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785673963.0,
+      "volume": 57157.32,
+      "n_trades": 1472,
+      "prices": {
+        "1": 0.23,
+        "6": 0.26,
+        "24": 0.24
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG182335CDJTDT-CDJ",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1787118287.0,
+      "volume": 12551.3,
+      "n_trades": 351,
+      "prices": {
+        "1": 0.26,
+        "6": 0.38,
+        "24": 0.65
+      }
+    },
+    {
+      "ticker": "KXLOWTHOU-26AUG19-B73.5",
+      "series": "KXLOWTHOU",
+      "outcome": 0,
+      "close_ts": 1787205600.0,
+      "volume": 278.95,
+      "n_trades": 8,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXDENSUPERLIGAGAME-26AUG02FCMHOR-TIE",
+      "series": "KXDENSUPERLIGAGAME",
+      "outcome": 0,
+      "close_ts": 1785679379.0,
+      "volume": 22199.04,
+      "n_trades": 485,
+      "prices": {
+        "1": 0.04,
+        "6": 0.17,
+        "24": 0.19
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL02-B70.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783065600.0,
+      "volume": 1046.68,
+      "n_trades": 40,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.01
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL26GWAJEJ-TIE",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1785069709.0,
+      "volume": 68679.44,
+      "n_trades": 2399,
+      "prices": {
+        "1": 0.36,
+        "6": 0.28,
+        "24": 0.28
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26JUL242030PDPTDQ-TDQ",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1784953797.0,
+      "volume": 2187.42,
+      "n_trades": 195,
+      "prices": {
+        "1": 0.81,
+        "6": 0.54
+      }
+    },
+    {
+      "ticker": "KXKLEAGUEGAME-26JUL11ULSJEO-ULS",
+      "series": "KXKLEAGUEGAME",
+      "outcome": 0,
+      "close_ts": 1783773071.0,
+      "volume": 42343.18,
+      "n_trades": 1084,
+      "prices": {
+        "1": 0.16,
+        "6": 0.38,
+        "24": 0.36
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL23-B86.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1784880000.0,
+      "volume": 602.93,
+      "n_trades": 45,
+      "prices": {
+        "1": 0.01,
+        "6": 0.01,
+        "24": 0.16
+      }
+    },
+    {
+      "ticker": "KXLOWTLV-26JUL06-B77.5",
+      "series": "KXLOWTLV",
+      "outcome": 0,
+      "close_ts": 1783411200.0,
+      "volume": 629.35,
+      "n_trades": 35,
+      "prices": {
+        "1": 0.02,
+        "6": 0.02,
+        "24": 0.02
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG062130ADMRDA-ADM",
+      "series": "KXLMBGAME",
+      "outcome": 1,
+      "close_ts": 1786076394.0,
+      "volume": 5590.46,
+      "n_trades": 215,
+      "prices": {
+        "1": 0.18,
+        "6": 0.52
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26AUG09ROUSUTMIHNIC-ROUSUT",
+      "series": "KXWTADOUBLES",
+      "outcome": 0,
+      "close_ts": 1786300198.0,
+      "volume": 34861.37,
+      "n_trades": 437,
+      "prices": {
+        "1": 0.34,
+        "6": 0.63
+      }
+    },
+    {
+      "ticker": "KXHNLGAME-26JUL31DINSLA-SLA",
+      "series": "KXHNLGAME",
+      "outcome": 0,
+      "close_ts": 1785527521.0,
+      "volume": 84640.59,
+      "n_trades": 699,
+      "prices": {
+        "1": 0.02,
+        "6": 0.08,
+        "24": 0.08,
+        "72": 0.09
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02STASTEHAVUDV-STASTE",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783002301.0,
+      "volume": 1830.4,
+      "n_trades": 27,
+      "prices": {
+        "1": 0.7,
+        "6": 0.69
+      }
+    },
+    {
+      "ticker": "KXWTADOUBLES-26JUL02GUOMLABURSTO-GUOMLA",
+      "series": "KXWTADOUBLES",
+      "outcome": 1,
+      "close_ts": 1783000502.0,
+      "volume": 1470.7,
+      "n_trades": 13,
+      "prices": {
+        "1": 0.92,
+        "6": 0.86
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG022105ADMTDT-TDT",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1785731390.0,
+      "volume": 9384.17,
+      "n_trades": 524,
+      "prices": {
+        "1": 0.24,
+        "6": 0.59
+      }
+    },
+    {
+      "ticker": "KXLMBGAME-26AUG212130TDTCDJ-CDJ",
+      "series": "KXLMBGAME",
+      "outcome": 0,
+      "close_ts": 1787371208.0,
+      "volume": 2755.94,
+      "n_trades": 129,
+      "prices": {
+        "1": 0.33,
+        "6": 0.46,
+        "24": 0.58
+      }
+    }
+  ]
+}

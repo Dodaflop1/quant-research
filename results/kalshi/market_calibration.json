@@ -1,0 +1,275 @@
+{
+  "by_horizon": {
+    "1": {
+      "label": "1h before close",
+      "n": 398,
+      "base_rate": 0.35175879396984927,
+      "brier": 0.10636608040201005,
+      "log_loss": 0.3310177288648351,
+      "skill_vs_climatology": 0.5335323200442968,
+      "reliability": 0.002939341345137831,
+      "resolution": 0.12447071864833652,
+      "uncertainty": 0.22802454483472642,
+      "residual": -0.0001270871295176862,
+      "spiegelhalter_z": 0.19524411433422523,
+      "spiegelhalter_p": 0.8452018452930179,
+      "curve": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "n": 151,
+          "mean_forecast": 0.02152317880794702,
+          "observed_frequency": 0.019867549668874173,
+          "ci_low": 0.00677927946976414,
+          "ci_high": 0.056779867426160466
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "n": 32,
+          "mean_forecast": 0.1453125,
+          "observed_frequency": 0.09375,
+          "ci_low": 0.032400962626319516,
+          "ci_high": 0.24218499335778831
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.30000000000000004,
+          "n": 34,
+          "mean_forecast": 0.2526470588235294,
+          "observed_frequency": 0.20588235294117646,
+          "ci_low": 0.1034939602235132,
+          "ci_high": 0.3679871610821398
+        },
+        {
+          "lower": 0.30000000000000004,
+          "upper": 0.4,
+          "n": 30,
+          "mean_forecast": 0.3483333333333334,
+          "observed_frequency": 0.36666666666666664,
+          "ci_low": 0.21873702204017678,
+          "ci_high": 0.5448675356639506
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "n": 22,
+          "mean_forecast": 0.44,
+          "observed_frequency": 0.5454545454545454,
+          "ci_low": 0.34659473289041554,
+          "ci_high": 0.7307998556799515
+        },
+        {
+          "lower": 0.6000000000000001,
+          "upper": 0.7000000000000001,
+          "n": 25,
+          "mean_forecast": 0.6548,
+          "observed_frequency": 0.72,
+          "ci_low": 0.5242302810344169,
+          "ci_high": 0.8571632616261843
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "n": 23,
+          "mean_forecast": 0.8365217391304348,
+          "observed_frequency": 0.6956521739130435,
+          "ci_low": 0.49133870939427393,
+          "ci_high": 0.8439617197902755
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "n": 56,
+          "mean_forecast": 0.9680357142857143,
+          "observed_frequency": 0.9464285714285714,
+          "ci_low": 0.8539246046357077,
+          "ci_high": 0.9816145520713321
+        }
+      ]
+    },
+    "6": {
+      "label": "6h before close",
+      "n": 379,
+      "base_rate": 0.35356200527704484,
+      "brier": 0.14976622691292876,
+      "log_loss": 0.4369569764524191,
+      "skill_vs_climatology": 0.34472827901309777,
+      "reliability": 0.00858809387552641,
+      "resolution": 0.08738627610670889,
+      "uncertainty": 0.22855591370151976,
+      "residual": 8.495442591488489e-06,
+      "spiegelhalter_z": 1.8415677708163778,
+      "spiegelhalter_p": 0.06553839896211248,
+      "curve": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "n": 115,
+          "mean_forecast": 0.017130434782608697,
+          "observed_frequency": 0.02608695652173913,
+          "ci_low": 0.008910883301638285,
+          "ci_high": 0.07390186913521882
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.30000000000000004,
+          "n": 52,
+          "mean_forecast": 0.2567307692307692,
+          "observed_frequency": 0.3269230769230769,
+          "ci_low": 0.2152190173110406,
+          "ci_high": 0.46244064860111084
+        },
+        {
+          "lower": 0.30000000000000004,
+          "upper": 0.4,
+          "n": 23,
+          "mean_forecast": 0.35130434782608694,
+          "observed_frequency": 0.17391304347826086,
+          "ci_low": 0.06978540350612772,
+          "ci_high": 0.37138054785295666
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "n": 33,
+          "mean_forecast": 0.4490909090909091,
+          "observed_frequency": 0.42424242424242425,
+          "ci_low": 0.272353589950299,
+          "ci_high": 0.5919302630853998
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6000000000000001,
+          "n": 54,
+          "mean_forecast": 0.5453703703703704,
+          "observed_frequency": 0.5740740740740741,
+          "ci_low": 0.44162497846346305,
+          "ci_high": 0.6966837820134256
+        },
+        {
+          "lower": 0.6000000000000001,
+          "upper": 0.7000000000000001,
+          "n": 32,
+          "mean_forecast": 0.651875,
+          "observed_frequency": 0.625,
+          "ci_low": 0.45254100589525126,
+          "ci_high": 0.7706633153404079
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "n": 34,
+          "mean_forecast": 0.9720588235294116,
+          "observed_frequency": 0.9705882352941176,
+          "ci_low": 0.8508409778365519,
+          "ci_high": 0.9947892280744034
+        }
+      ]
+    },
+    "24": {
+      "label": "24h before close",
+      "n": 243,
+      "base_rate": 0.2839506172839506,
+      "brier": 0.15290082304526748,
+      "log_loss": 0.46345642703957624,
+      "skill_vs_climatology": 0.24798928035982026,
+      "reliability": 0.02025853636925255,
+      "resolution": 0.07178186008662536,
+      "uncertainty": 0.20332266422801404,
+      "residual": 0.001101482534626247,
+      "spiegelhalter_z": 1.454554348921322,
+      "spiegelhalter_p": 0.14579267699128798,
+      "curve": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "n": 79,
+          "mean_forecast": 0.03493670886075949,
+          "observed_frequency": 0.02531645569620253,
+          "ci_low": 0.006970221164761904,
+          "ci_high": 0.08768753532473128
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "n": 31,
+          "mean_forecast": 0.13806451612903226,
+          "observed_frequency": 0.16129032258064516,
+          "ci_low": 0.07092519905439934,
+          "ci_high": 0.3263470272497887
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.30000000000000004,
+          "n": 29,
+          "mean_forecast": 0.25931034482758625,
+          "observed_frequency": 0.2413793103448276,
+          "ci_low": 0.12218268185062131,
+          "ci_high": 0.4210795221832869
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "n": 20,
+          "mean_forecast": 0.4619999999999999,
+          "observed_frequency": 0.7,
+          "ci_low": 0.4810232237710206,
+          "ci_high": 0.854524726031006
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6000000000000001,
+          "n": 20,
+          "mean_forecast": 0.5409999999999999,
+          "observed_frequency": 0.6,
+          "ci_low": 0.3865779423152061,
+          "ci_high": 0.7811960325858074
+        }
+      ]
+    }
+  },
+  "common_sample": {},
+  "composition": {
+    "n": 398,
+    "distinct_series": 12,
+    "top_series_share": 0.2236180904522613,
+    "top": [
+      [
+        "KXLOWTLV",
+        89
+      ],
+      [
+        "KXLMBGAME",
+        86
+      ],
+      [
+        "KXWTADOUBLES",
+        63
+      ],
+      [
+        "KXKLEAGUEGAME",
+        51
+      ],
+      [
+        "KXLOWTHOU",
+        45
+      ],
+      [
+        "KXHNLGAME",
+        20
+      ],
+      [
+        "KXDENSUPERLIGAGAME",
+        18
+      ],
+      [
+        "KXSWISSLEAGUEGAME",
+        12
+      ]
+    ],
+    "fraction_outside_10_90": 0.5175879396984925
+  },
+  "n_markets": 398,
+  "n_complete": 6
+}
