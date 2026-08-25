@@ -29,12 +29,17 @@ import requests
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
-from quant.common.db.schema import OrderBookLevel, OrderBookSnapshot
+from quant.common.db.schema import OrderBookLevel, OrderBookSnapshot, Trade
 
 log = logging.getLogger(__name__)
 
 PROD_BASE = "https://external-api.kalshi.com/trade-api/v2"
 DEMO_BASE = "https://external-api.demo.kalshi.co/trade-api/v2"
+
+# Trades live behind two endpoints split at a rolling cutoff; see
+# :meth:`KalshiClient.iter_all_trades`.
+LIVE_TRADES_PATH = "/markets/trades"
+HISTORICAL_TRADES_PATH = "/historical/trades"
 
 
 class KalshiAuthError(RuntimeError):
@@ -242,6 +247,81 @@ class KalshiClient:
         """Raw order book. ``depth=0`` requests all levels."""
         return self.get(f"/markets/{ticker}/orderbook", {"depth": depth})
 
+    def iter_trade_pages(
+        self,
+        path: str,
+        ticker: Optional[str] = None,
+        min_ts: Optional[int] = None,
+        max_ts: Optional[int] = None,
+        limit: int = 1000,
+    ) -> Iterator[RawResponse]:
+        """Yield raw trade pages, following the pagination cursor.
+
+        Pages are yielded rather than individual trades so the caller can write
+        each response verbatim before parsing anything - the same
+        raw-payload-first discipline the order book collector uses.
+
+        ``path`` is either :data:`LIVE_TRADES_PATH` or
+        :data:`HISTORICAL_TRADES_PATH`; see :func:`iter_all_trades` for why both
+        exist and when each applies.
+        """
+        cursor: Optional[str] = None
+        seen: set[str] = set()
+        while True:
+            params: dict[str, Any] = {"limit": limit}
+            if ticker:
+                params["ticker"] = ticker
+            if min_ts is not None:
+                params["min_ts"] = int(min_ts)
+            if max_ts is not None:
+                params["max_ts"] = int(max_ts)
+            if cursor:
+                params["cursor"] = cursor
+
+            raw = self.get(path, params)
+            yield raw
+
+            cursor = (raw.payload or {}).get("cursor") or None
+            if not cursor:
+                return
+            if cursor in seen:
+                # A server that echoes a cursor forever turns an unattended
+                # backfill into an infinite loop that writes duplicate pages
+                # until the disk fills. Cheap to guard, expensive to discover.
+                log.warning("%s repeated cursor %r, stopping this window", path, cursor)
+                return
+            seen.add(cursor)
+
+    def iter_all_trades(
+        self,
+        ticker: Optional[str] = None,
+        min_ts: Optional[int] = None,
+        max_ts: Optional[int] = None,
+        limit: int = 1000,
+    ) -> Iterator[RawResponse]:
+        """Yield trade pages from both the live and historical endpoints.
+
+        Kalshi splits trades across two endpoints at a rolling cutoff: roughly
+        the last three months are served by ``/markets/trades`` and everything
+        older by ``/historical/trades``. The cutoff moves daily and is not
+        published as a timestamp, so hardcoding one would silently start losing
+        the seam as the window slides.
+
+        Instead both endpoints are queried over the same window and the caller
+        deduplicates on ``trade_id``. The overlap costs a few redundant requests
+        and removes an entire class of quiet data loss.
+        """
+        for path in (LIVE_TRADES_PATH, HISTORICAL_TRADES_PATH):
+            try:
+                yield from self.iter_trade_pages(
+                    path, ticker=ticker, min_ts=min_ts, max_ts=max_ts, limit=limit
+                )
+            except KalshiAPIError as exc:
+                # One endpoint refusing a window must not abort the other. A 404
+                # here usually means the window falls entirely on the far side
+                # of the cutoff, which is expected, not exceptional.
+                log.warning("%s failed for window: %s", path, exc)
+
 
 # -- parsing ---------------------------------------------------------------
 
@@ -286,4 +366,73 @@ def parse_orderbook(
         contract_id=ticker,
         yes_bids=[OrderBookLevel(price=p, size=s) for p, s in yes_bids if s > 0],
         yes_asks=[OrderBookLevel(price=p, size=s) for p, s in yes_asks if s > 0],
+    )
+
+
+def _first_present(record: dict, *names: str) -> Any:
+    """Return the first field that is present and not None.
+
+    Live Kalshi payloads carry unit-suffixed field names (``count_fp``,
+    ``yes_price_dollars``) that do not appear in some of the documentation. The
+    bare names are kept as fallbacks rather than assumed absent: a parser that
+    reads only the documented names returned zero rows against production on
+    2026-08-23, which is the kind of failure that looks like "no data" rather
+    than "wrong parser".
+    """
+    for name in names:
+        if record.get(name) is not None:
+            return record[name]
+    return None
+
+
+def _trade_time(value: Any) -> datetime:
+    """Parse ``created_time``, which may be ISO 8601 or a Unix timestamp."""
+    if isinstance(value, (int, float)):
+        return datetime.fromtimestamp(float(value), tz=timezone.utc)
+    text = str(value).strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    parsed = datetime.fromisoformat(text)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def parse_trade(record: dict) -> Trade:
+    """Convert one raw trade print into a :class:`Trade`.
+
+    Taker side is recorded in YES terms. Kalshi reports ``taker_outcome_side``
+    as the outcome the aggressor bought, so a taker who bought NO is a seller of
+    YES: buying NO at ``q`` and selling YES at ``100 - q`` are the same trade
+    seen from opposite sides of the book. Collapsing both into a single YES-terms
+    direction is what makes buy- and sell-initiated flow comparable across
+    markets, which the bivariate Hawkes fit depends on.
+    """
+    price_dollars = _first_present(record, "yes_price_dollars")
+    if price_dollars is not None:
+        price_cents = float(price_dollars) * 100.0
+    else:
+        raw_price = _first_present(record, "yes_price")
+        if raw_price is None:
+            raise ValueError(f"trade has no YES price field: {sorted(record)}")
+        price_cents = float(raw_price)
+
+    size = _first_present(record, "count_fp", "count")
+    if size is None:
+        raise ValueError(f"trade has no size field: {sorted(record)}")
+
+    outcome = (record.get("taker_outcome_side") or "").lower()
+    if outcome == "yes":
+        taker_side = "buy"
+    elif outcome == "no":
+        taker_side = "sell"
+    else:
+        raise ValueError(f"unrecognised taker_outcome_side {outcome!r}")
+
+    return Trade(
+        timestamp=_trade_time(_first_present(record, "created_time", "ts")),
+        contract_id=record["ticker"],
+        price=price_cents,
+        size=float(size),
+        taker_side=taker_side,
     )

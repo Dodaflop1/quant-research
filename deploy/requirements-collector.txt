@@ -1,0 +1,13 @@
+# Collector-only dependencies.
+#
+# The full requirements.txt pulls streamlit, plotly, scikit-learn, jupyter and
+# the rest of the analysis stack. None of that runs on the collection box, and
+# installing it there costs a long build on a small ARM instance and widens the
+# attack surface of a machine holding a key that can place trades.
+#
+# Analysis happens where the data is pulled back to, not where it is collected.
+
+requests>=2.31,<3
+python-dotenv>=1.0
+cryptography>=42          # RSA-PSS request signing for Kalshi
+pydantic>=2.6,<3

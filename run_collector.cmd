@@ -1,16 +1,18 @@
 @echo off
-REM Start the Kalshi collector.
+REM Start the Kalshi collector with a PINNED universe.
 REM
-REM Double-click this, or run it from any directory. %~dp0 is the folder this
-REM file lives in, so nothing depends on where the shell happens to be - which
-REM is what kept breaking when commands used relative paths.
+REM --tickers-file is the important part. Without it, discovery re-selects by
+REM live volume on every start, so each restart silently swaps out part of the
+REM panel. A coverage audit of the first 39 hours found 298 distinct tickers
+REM across three restarts and NOT ONE that spanned the whole window. Pinning
+REM keeps every series continuous through a restart.
 REM
-REM The trailing pause keeps the window open if the collector exits, so a crash
-REM message stays on screen instead of vanishing with the console.
+REM data\universe.txt holds the 150 tickers running since 2026-08-23 19:46 UTC.
+REM To choose a fresh universe instead, run discover_universe.cmd first.
 
 cd /d "%~dp0"
 
-.venv\Scripts\python.exe scripts\collect_kalshi.py --auto --min-volume 100 --max-markets 150 --interval 60 --out .\data %*
+.venv\Scripts\python.exe scripts\collect_kalshi.py --auto --tickers-file .\data\universe.txt --interval 60 --out .\data %*
 
 echo.
 echo ==========================================================

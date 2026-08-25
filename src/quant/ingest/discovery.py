@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Iterable, Optional, Protocol
 
 from quant.kalshi.fees import basket_taker_fee_cents
@@ -102,6 +103,22 @@ class MarketFamily:
 
     status: str
     reason: str
+
+    closes_at: Optional[datetime] = None
+    """When the soonest leg stops trading; None if the payload did not say."""
+
+    @property
+    def days_to_close(self) -> Optional[float]:
+        """Days until the first leg settles.
+
+        This is the family's usable lifetime as a time series. Selecting purely
+        on volume fills the universe with same-day sports, because that is where
+        Kalshi's volume is - fine for a cross-sectional arbitrage scan, useless
+        for a panel that has to run for weeks.
+        """
+        if self.closes_at is None:
+            return None
+        return (self.closes_at - datetime.now(timezone.utc)).total_seconds() / 86400.0
 
     @property
     def n_markets(self) -> int:
@@ -175,6 +192,7 @@ _ASK_FIELDS_LEGACY = ("yes_ask",)
 _BID_FIELDS_DOLLARS = ("yes_bid_dollars",)
 _BID_FIELDS_LEGACY = ("yes_bid",)
 
+_CLOSE_FIELDS = ("close_time", "expected_expiration_time", "expiration_time")
 _VOLUME_FIELDS = ("volume_fp", "volume")
 _LIQUIDITY_FIELDS = ("liquidity_dollars", "liquidity")
 _ASK_SIZE_FIELDS = ("yes_ask_size_fp", "yes_ask_size")
@@ -239,6 +257,29 @@ def _to_cents(prices: list[tuple[float, bool]]) -> list[float]:
     return known + [v * scale for v in unknown]
 
 
+def _close_time(market: dict) -> Optional[datetime]:
+    """When this market stops trading, if the payload says."""
+    for key in _CLOSE_FIELDS:
+        raw = market.get(key)
+        if not raw:
+            continue
+        try:
+            if isinstance(raw, (int, float)):
+                return datetime.fromtimestamp(float(raw), tz=timezone.utc)
+            text = str(raw)
+            if text.endswith("Z"):
+                text = text[:-1] + "+00:00"
+            parsed = datetime.fromisoformat(text)
+            return (
+                parsed.replace(tzinfo=timezone.utc)
+                if parsed.tzinfo is None
+                else parsed.astimezone(timezone.utc)
+            )
+        except (ValueError, OSError, OverflowError):
+            continue
+    return None
+
+
 def classify(event: dict, markets: list[dict]) -> MarketFamily:
     """Build a :class:`MarketFamily` and decide whether it looks exhaustive."""
     tickers = [m.get("ticker") for m in markets if m.get("ticker")]
@@ -256,6 +297,13 @@ def classify(event: dict, markets: list[dict]) -> MarketFamily:
     # Quoted coverage is judged on the ask side: a leg with no ask cannot be
     # bought, so the long basket is not even constructible without it.
     quoted_fraction = (len(asks) / len(markets)) if markets else 0.0
+
+    # The SOONEST-closing leg, not the latest. A bucket-sum basket needs every
+    # leg live simultaneously, so the family stops being tradeable the moment
+    # its first leg settles - and as a time series it stops being complete at
+    # the same instant.
+    close_times = [t for t in (_close_time(m) for m in markets) if t is not None]
+    closes_at = min(close_times) if close_times else None
 
     volumes = [_first(m, _VOLUME_FIELDS) for m in markets]
     liquidities = [_first(m, _LIQUIDITY_FIELDS) for m in markets]
@@ -298,6 +346,7 @@ def classify(event: dict, markets: list[dict]) -> MarketFamily:
         min_liquidity=min_liquidity,
         min_ask_size=min_ask_size,
         min_bid_size=min_bid_size,
+        closes_at=closes_at,
         total_volume=sum(volumes),
         basket_fee_cents=fee,
         status=status,
@@ -361,6 +410,7 @@ def discover(
     min_volume: float = 0.0,
     min_liquidity: float = 0.0,
     min_ask_size: float = 0.0,
+    min_days_to_close: float = 0.0,
     series: Optional[Iterable[str]] = None,
     events: Optional[Iterable[str]] = None,
     max_markets: Optional[int] = None,
@@ -372,6 +422,13 @@ def discover(
 
     ``max_markets`` caps the total market count, keeping the highest-volume
     families. Truncation is recorded in the tally rather than applied silently.
+
+    ``min_days_to_close`` drops families whose soonest leg settles too soon to
+    be worth a place in a longitudinal panel. It defaults to 0, which preserves
+    the cross-sectional behaviour, but any run intended to produce a time series
+    should set it. Selecting on volume alone fills the universe with same-day
+    sports - a universe pinned on 2026-08-24 was already 25% settled contracts
+    and only a third of it would have survived a six-week collection window.
     """
     series_filter = {s.upper() for s in series} if series else None
     event_filter = {e.upper() for e in events} if events else None
@@ -412,6 +469,17 @@ def discover(
         if family.min_ask_size < min_ask_size:
             drop(f"a leg below min ask size {min_ask_size:g}")
             continue
+        if min_days_to_close > 0:
+            days = family.days_to_close
+            if days is None:
+                # No close time in the payload. Keeping it would silently
+                # readmit exactly what the filter exists to exclude, so an
+                # unknown lifetime is treated as too short and counted.
+                drop("no close time in payload")
+                continue
+            if days < min_days_to_close:
+                drop(f"closes in under {min_days_to_close:g} days")
+                continue
 
         selected.append(family)
 

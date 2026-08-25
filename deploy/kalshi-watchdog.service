@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart the Kalshi collector if its data has stopped growing
+
+[Service]
+Type=oneshot
+ExecStart=/opt/quant-research/deploy/healthcheck.sh --restart

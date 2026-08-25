@@ -1,0 +1,52 @@
+[Unit]
+Description=Kalshi order book collector
+Documentation=https://github.com/lucaebonnici/quant-research
+# time-sync.target matters more than it looks. Kalshi signs a millisecond
+# timestamp, so a box whose clock has drifted a few seconds gets 401 on every
+# request and looks exactly like a bad API key.
+After=network-online.target time-sync.target
+Wants=network-online.target
+# Disable start rate limiting entirely. It lives in [Unit], not [Service] -
+# systemd silently ignores it in [Service] and logs an Unknown key name
+# warning. See the Restart= comment below for why giving up is the wrong
+# failure mode for a collector holding unbackfillable data.
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=collector
+Group=collector
+WorkingDirectory=/opt/quant-research
+ExecStart=/opt/quant-research/.venv/bin/python \
+    scripts/collect_kalshi.py \
+    --auto \
+    --tickers-file ./data/universe.txt \
+    --interval 60 \
+    --out ./data
+
+# Restart forever, deliberately. The usual reason to give up after N failures is
+# to stop a broken unit from hammering a dependency; here the cost of staying
+# down is unbackfillable data, which is strictly worse than a retry loop. A
+# genuinely broken config shows up in `journalctl -u kalshi-collector` within
+# seconds, and 30s between attempts keeps a credential failure from becoming a
+# request flood.
+Restart=always
+RestartSec=30
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kalshi-collector
+
+# The private key on this box can place real trades, so the process gets the
+# narrowest filesystem it can still work in.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/opt/quant-research/data
+
+[Install]
+WantedBy=multi-user.target

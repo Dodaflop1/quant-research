@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from datetime import datetime, timezone
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
@@ -35,6 +36,36 @@ from quant.ingest.kalshi_collector import (  # noqa: E402
     KalshiCollector,
     install_signal_handlers,
 )
+
+
+def load_pinned_tickers(path: Path) -> set[str]:
+    """Read a newline-delimited ticker list, ignoring blanks and ``#`` comments."""
+    if not path.exists():
+        raise SystemExit(
+            f"{path} not found. Generate one from a previous run's "
+            f"data/universe.txt, or omit --tickers-file to select afresh."
+        )
+    tickers = {
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    if not tickers:
+        raise SystemExit(f"{path} contains no tickers")
+    return tickers
+
+
+def save_universe(path: Path, tickers: list[str]) -> None:
+    """Record the universe actually collected, so a restart can reproduce it."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    path.write_text(
+        f"# Kalshi collection universe, resolved {stamp}\n"
+        f"# {len(tickers)} tickers. Re-pin with --tickers-file to keep the panel\n"
+        f"# balanced across restarts.\n" + "\n".join(sorted(tickers)) + "\n",
+        encoding="utf-8",
+    )
+    logging.info("universe written to %s (%d tickers)", path, len(tickers))
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -68,6 +99,20 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     sel.add_argument(
+        "--min-days-to-close",
+        type=float,
+        default=0.0,
+        help=(
+            "drop families whose SOONEST leg settles within this many days. "
+            "Selecting on volume alone fills the universe with same-day sports, "
+            "because that is where Kalshi's volume is. A universe pinned on "
+            "2026-08-24 was already 25%% settled contracts, and only a third of "
+            "it would have survived a six-week window. Use 45 or more for a "
+            "panel intended to run for the length of the project; leave at 0 "
+            "for a one-off cross-sectional arbitrage scan."
+        ),
+    )
+    sel.add_argument(
         "--max-legs",
         type=int,
         default=10,
@@ -83,6 +128,30 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=200,
         help="cap on total markets, keeping the highest-volume families (0 for no cap)",
+    )
+    sel.add_argument(
+        "--tickers-file",
+        type=Path,
+        default=None,
+        help=(
+            "pin the universe to a newline-delimited ticker list, bypassing the "
+            "volume, liquidity and status filters. Discovery still runs, for the "
+            "family metadata, but only these tickers are collected. Use this to "
+            "keep a BALANCED PANEL across restarts: without it the universe is "
+            "re-selected from live volume on every start, so each restart "
+            "silently swaps part of the panel and no series spans the full "
+            "history. A coverage audit of the first 39 hours found 298 tickers "
+            "across three restarts and not one that covered the whole window."
+        ),
+    )
+    sel.add_argument(
+        "--save-universe",
+        type=Path,
+        default=Path("./data/universe.txt"),
+        help=(
+            "write the resolved ticker list here on every start, so the panel "
+            "that was actually collected is always recoverable and re-pinnable"
+        ),
     )
     sel.add_argument(
         "--status",
@@ -168,18 +237,63 @@ def main(argv: list[str] | None = None) -> int:
             "research data. Use it to prove the plumbing, not to collect."
         )
 
-    families, dropped = discover(
-        client,
-        statuses=args.status or None,
-        max_legs=args.max_legs or None,
-        min_volume=args.min_volume,
-        min_liquidity=args.min_liquidity,
-        min_ask_size=args.min_ask_size,
-        series=args.series or None,
-        events=args.event or None,
-        max_markets=args.max_markets or None,
-    )
-    tickers = tickers_of(families)
+    pinned = load_pinned_tickers(args.tickers_file) if args.tickers_file else None
+
+    if pinned:
+        # With a pinned universe the filters must be off. They exist to choose a
+        # universe; here the universe is already chosen, and re-applying them
+        # would drop pinned tickers whose volume has since fallen - reintroducing
+        # exactly the panel churn the pin is meant to prevent.
+        families, dropped = discover(
+            client,
+            statuses=None,
+            max_legs=None,
+            min_volume=0.0,
+            min_liquidity=0.0,
+            min_ask_size=0.0,
+            series=None,
+            events=None,
+            max_markets=None,
+        )
+        families = [f for f in families if pinned.intersection(f.market_tickers)]
+        # The families are recorded with their FULL leg list, not trimmed to the
+        # pinned set. A bucket-sum is a claim about a complete family, so
+        # metadata that quietly dropped unpinned legs would make an incomplete
+        # basket look exhaustive. Only the poll list is narrowed.
+        tickers = [t for t in tickers_of(families) if t in pinned]
+
+        missing = pinned.difference(tickers)
+        if missing:
+            # Not an error. A pinned market that has settled or delisted simply
+            # ends its series, and knowing which ones is part of describing the
+            # panel honestly.
+            logging.warning(
+                "%d pinned ticker(s) are no longer open and will not be "
+                "collected: %s%s",
+                len(missing),
+                ", ".join(sorted(missing)[:8]),
+                " ..." if len(missing) > 8 else "",
+            )
+        logging.info(
+            "universe pinned to %s: %d of %d tickers still open",
+            args.tickers_file,
+            len(tickers),
+            len(pinned),
+        )
+    else:
+        families, dropped = discover(
+            client,
+            statuses=args.status or None,
+            max_legs=args.max_legs or None,
+            min_volume=args.min_volume,
+            min_liquidity=args.min_liquidity,
+            min_ask_size=args.min_ask_size,
+            min_days_to_close=args.min_days_to_close,
+            series=args.series or None,
+            events=args.event or None,
+            max_markets=args.max_markets or None,
+        )
+        tickers = tickers_of(families)
 
     if args.discover:
         for family in families:
@@ -224,6 +338,22 @@ def main(argv: list[str] | None = None) -> int:
             args.interval,
         )
         return 1
+
+    if args.save_universe:
+        target = args.save_universe
+        if args.tickers_file and target.resolve() == args.tickers_file.resolve():
+            # The pin is a record, not a scratch file. Writing the resolved set
+            # back over it would silently drop any pinned market that has since
+            # settled - removing both the series and the evidence it was ever
+            # part of the panel - and would restamp the header on every restart,
+            # losing the date the panel was actually fixed.
+            target = target.with_name(f"{target.stem}_active{target.suffix}")
+            logging.info(
+                "not overwriting the pin at %s; writing the resolved set to %s",
+                args.tickers_file,
+                target,
+            )
+        save_universe(target, tickers)
 
     collector = KalshiCollector(
         client=client,
