@@ -48,6 +48,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+from quant.diffusion.hawkes.baseline import deseasonalise  # noqa: E402
 from quant.diffusion.hawkes.diagnostics import check_fit  # noqa: E402
 from quant.diffusion.hawkes.model import fit  # noqa: E402
 from quant.diffusion.hawkes.simulation import simulate_cluster  # noqa: E402
@@ -271,6 +272,75 @@ def study_seasonality(reps: int, T: float, rate: float, amplitude: float) -> dic
     }
 
 
+def study_correction(reps: int, T: float, rate: float, amplitude: float) -> dict:
+    """Study 4: does the seasonal time change actually fix study 3?
+
+    Two halves, and the second matters more than the first. Removing a spurious
+    branching ratio is easy if you are willing to shrink everything; the useful
+    question is whether the correction is *specific* - whether genuine
+    self-excitation survives it intact.
+    """
+    period = T / 20.0
+    print(f"\n{'=' * 72}\nSTUDY 4  Does the seasonal time change fix study 3?")
+    print(f"{'=' * 72}")
+
+    print("\n  (a) seasonal Poisson, true n = 0")
+    print(f"      {'naive':>12}{'corrected':>12}{'peak/trough':>14}")
+    naive_a, corr_a = [], []
+    for rep in range(min(reps, 8)):
+        times = simulate_seasonal_poisson(rate, amplitude, period, T, seed=9000 + rep)
+        if len(times) < 200:
+            continue
+        try:
+            n_raw = fit(times, T=T, compute_std_errors=False)
+            ops, ops_T, prof = deseasonalise(times, T, period=period, n_bins=20)
+            n_fix = fit(ops, T=ops_T, compute_std_errors=False)
+        except (RuntimeError, ValueError):
+            continue
+        naive_a.append(n_raw.branching_ratio)
+        corr_a.append(n_fix.branching_ratio)
+        print(f"      {n_raw.branching_ratio:>12.3f}{n_fix.branching_ratio:>12.3f}"
+              f"{prof.peak_to_trough:>14.2f}")
+
+    print("\n  (b) genuine Hawkes, no seasonality, true n = 0.5")
+    print(f"      {'naive':>12}{'corrected':>12}")
+    naive_b, corr_b = [], []
+    for rep in range(min(reps, 6)):
+        times, _ = simulate_cluster(0.5, 0.8, 1.6, T, seed=400 + rep)
+        try:
+            n_raw = fit(times, T=T, compute_std_errors=False)
+            ops, ops_T, _ = deseasonalise(times, T, period=period, n_bins=20)
+            n_fix = fit(ops, T=ops_T, compute_std_errors=False)
+        except (RuntimeError, ValueError):
+            continue
+        naive_b.append(n_raw.branching_ratio)
+        corr_b.append(n_fix.branching_ratio)
+        print(f"      {n_raw.branching_ratio:>12.3f}{n_fix.branching_ratio:>12.3f}")
+
+    if not naive_a or not naive_b:
+        return {"error": "no converged fits"}
+
+    ma, mca = float(np.median(naive_a)), float(np.median(corr_a))
+    mb, mcb = float(np.median(naive_b)), float(np.median(corr_b))
+    verdict = "PASS" if mca < 0.19 and abs(mcb - 0.5) < 0.1 else "FAIL"
+
+    print(f"\n  spurious n removed:   {ma:.3f} -> {mca:.3f}   (truth 0)")
+    print(f"  genuine n preserved:  {mb:.3f} -> {mcb:.3f}   (truth 0.5)")
+    print(f"  cost of the correction on real excitation: {mb - mcb:+.3f}")
+    print(f"\n  [{verdict}] the correction is specific to seasonality rather")
+    print("  than shrinking every branching ratio it touches. That specificity")
+    print("  is what licenses quoting the corrected number on real data.")
+
+    return {
+        "spurious_naive": ma,
+        "spurious_corrected": mca,
+        "genuine_naive": mb,
+        "genuine_corrected": mcb,
+        "cost_on_real_excitation": mb - mcb,
+        "verdict": verdict,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -282,7 +352,7 @@ def main(argv: list[str] | None = None) -> int:
         type=int,
         action="append",
         default=[],
-        choices=[1, 2, 3],
+        choices=[1, 2, 3, 4],
         help="run only these studies; repeatable",
     )
     p.add_argument(
@@ -294,7 +364,7 @@ def main(argv: list[str] | None = None) -> int:
     args = p.parse_args(argv)
 
     logging.basicConfig(level=logging.ERROR, format="%(levelname)s %(message)s")
-    studies = args.study or [1, 2, 3]
+    studies = args.study or [1, 2, 3, 4]
 
     results: dict = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -312,6 +382,11 @@ def main(argv: list[str] | None = None) -> int:
         )
     if 3 in studies:
         results["seasonality"] = study_seasonality(
+            args.reps, args.window, rate=1.0, amplitude=0.8
+        )
+
+    if 4 in studies:
+        results["correction"] = study_correction(
             args.reps, args.window, rate=1.0, amplitude=0.8
         )
 

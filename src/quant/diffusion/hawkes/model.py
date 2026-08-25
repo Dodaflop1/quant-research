@@ -104,6 +104,61 @@ def compensator(
     )
 
 
+def log_likelihood_on_interval(
+    times: np.ndarray,
+    mu: float,
+    alpha: float,
+    beta: float,
+    t_start: float,
+    t_end: float,
+) -> float:
+    """Log-likelihood of the events in ``(t_start, t_end]``, given ALL history.
+
+    This is what a held-out comparison needs, and it is not the same as fitting
+    the tail separately. Events before ``t_start`` still excite the process
+    inside the window, so a test-set likelihood that discards them measures a
+    different model from the one that was fitted. The conditioning history is
+    the whole array; only the summation range is restricted.
+
+    A Hawkes fit that cannot beat a homogeneous Poisson process on held-out
+    likelihood has demonstrated nothing, whatever its in-sample branching ratio
+    says - which is why this exists before any real-data fit is reported.
+    """
+    times = np.asarray(times, dtype=float)
+    if mu <= 0 or alpha <= 0 or beta <= 0 or t_end <= t_start:
+        return -np.inf
+    if len(times) == 0:
+        return -mu * (t_end - t_start)
+
+    states = _decay_states(times, beta)
+    intensities = mu + alpha * states
+    in_window = (times > t_start) & (times <= t_end)
+    if np.any(intensities[in_window] <= 0):
+        return -np.inf
+
+    log_terms = float(np.sum(np.log(np.maximum(intensities[in_window], _FLOOR))))
+    integrated = compensator(times, mu, alpha, beta, t_end) - compensator(
+        times, mu, alpha, beta, t_start
+    )
+    return log_terms - integrated
+
+
+def poisson_log_likelihood_on_interval(
+    times: np.ndarray, rate: float, t_start: float, t_end: float
+) -> float:
+    """Homogeneous Poisson log-likelihood on ``(t_start, t_end]``.
+
+    The null the Hawkes fit has to beat. Deliberately the simplest possible
+    alternative: if self-excitation is real it should clear a constant rate by
+    a wide margin, and if it does not, the branching ratio is describing noise.
+    """
+    times = np.asarray(times, dtype=float)
+    if rate <= 0 or t_end <= t_start:
+        return -np.inf
+    count = int(np.sum((times > t_start) & (times <= t_end)))
+    return count * math.log(rate) - rate * (t_end - t_start)
+
+
 def _neg_ll_log_params(params: np.ndarray, times: np.ndarray, T: float) -> float:
     """Negative log-likelihood in log-parameter space.
 
@@ -147,7 +202,20 @@ def _bounds(times: np.ndarray, T: float) -> list[tuple[float, float]]:
     rate = n / T
     gaps = np.diff(times)
     positive = gaps[gaps > 0]
-    smallest = float(positive.min()) if len(positive) else T / max(n, 1)
+    # A LOW QUANTILE, not the strict minimum. The minimum is a single order
+    # statistic and one near-simultaneous pair drags it to microseconds, which
+    # sends the beta ceiling to millions and hands the optimiser a degenerate
+    # direction to run in. On the first live fit of Kalshi trade prints every
+    # window in every market pinned the beta bound this way, because a single
+    # aggressive order emits several prints at the same instant. Aggregating
+    # prints into orders is the real fix (see hawkes.preprocess); this makes
+    # the bound robust to whatever ties survive it.
+    if len(positive) >= 100:
+        smallest = float(np.quantile(positive, 0.01))
+    elif len(positive):
+        smallest = float(positive.min())
+    else:
+        smallest = T / max(n, 1)
     typical = float(np.median(positive)) if len(positive) else T / max(n, 1)
 
     beta_lo = 1e-3 / T

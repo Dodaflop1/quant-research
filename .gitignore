@@ -17,10 +17,18 @@ env/
 *.ipynb
 
 # Data files
+#
+# Belt and braces. `data/` alone was not enough: moving the exchange-wide tape
+# into `data_fast/` put a 1.08 GB file in front of a commit, and git history is
+# forever - deleting it afterwards does not shrink the repo or unblock a push.
+# Raw collection output is .jsonl in this project and none of it ever belongs
+# in version control, wherever it lands.
 *.db
 *.sqlite3
 *.parquet
+*.jsonl
 data/
+data_*/
 logs/
 
 # IDE / Editor
