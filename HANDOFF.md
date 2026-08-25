@@ -28,13 +28,12 @@ ratio would ever have been.
 
 ## Where to start, in order
 
-1. **Event-complete universe selection** in `src/quant/ingest/discovery.py`.
-   The collector ranks individual tickers by volume; a 20-leg field spreads its
-   volume across 20 tickers so few clear the threshold, and the large-field
-   overround (243c across 293 families) has **never been tested** — 0 of 2,522
-   three-leg baskets were ever complete and nothing with 4+ legs was polled.
-   Select whole mutually-exclusive families against a leg budget, recollect,
-   then re-run `scripts/detect_bucket_sum.py`. Highest-value item open.
+1. **Fair-value model, one domain.** Structural arbitrage is finished as a line
+   of enquiry - see `docs/findings/bucket_sum_scan.md`. Both directions and
+   every field size are closed with the mechanism measured. What is untouched is
+   the model-dependent half: pick ONE domain, calibrate it, report Brier with
+   decomposition, log loss and a reliability diagram. One finished beats three
+   started, and this is the largest gap in the portfolio.
 2. **Merge sweep above 10 ms** — set `MERGE_WINDOWS` in
    `scripts/sensitivity_sweep.py` to `[0.01, 0.03, 0.1, 0.3, 1.0]` and rerun.
    Tests the microstructure reading below. The last open diffusion question.
@@ -102,7 +101,11 @@ ratio would ever have been.
    sound, and every price in Project 1 rests on it.
 2. **Fees killed 5,792 of 5,792** baskets whose bid sum exceeded 100c. Closest
    miss 0.1c. The market sits *on* the fee-adjusted no-arbitrage bound.
-3. **Large fields were never collected** — see "where to start", item 1.
+3. **Large fields are further from arbitrage than anything else.** 5,395 live
+   families: the requirement rises as `100 + N` (103c at 2 legs, 174c at 50+)
+   while the bid sum *falls* (94.0c -> 54.0c). Median short gap widens 9c ->
+   140c. The overround is spread, not mispricing - summed spread 11.3c -> 486c,
+   a 43x increase. `MAX_TRADEABLE_LEGS = 10` is generous, not wrong.
 4. **Fee ceiling** — an N-leg basket owes at least N cents. Arithmetic.
 5. **Direction asymmetry** — short needs only mutual exclusivity (flagged by the
    exchange); long needs exhaustiveness (not certified).

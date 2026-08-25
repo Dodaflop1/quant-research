@@ -68,4 +68,5 @@ results/diffusion/*
 results/kalshi/*
 !results/kalshi/complementarity.json
 !results/kalshi/bucket_sum.json
+!results/kalshi/field_size_scan.json
 *.log

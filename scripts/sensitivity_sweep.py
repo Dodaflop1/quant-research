@@ -186,7 +186,12 @@ def aggregate(payload: dict, raw_counts: dict[str, int]) -> dict[str, Any]:
 
 
 def spread(values: list[float]) -> dict[str, Any]:
-    arr = np.asarray(values, dtype=float)
+    # Drop non-finite values rather than propagating them. One market whose fit
+    # returned NaN would otherwise make the whole cell's median NaN, and a NaN
+    # in the grid reads as "this configuration failed" when in fact one of nine
+    # markets did. `count` records how many actually contributed.
+    arr = np.asarray([v for v in values if v is not None], dtype=float)
+    arr = arr[np.isfinite(arr)]
     if arr.size == 0:
         return {"median": None, "p10": None, "p90": None, "count": 0}
     return {
@@ -223,7 +228,12 @@ def table(cells: dict[str, dict], title: str, render) -> list[str]:
 def fmt_spread(block: dict) -> str:
     if not block or block.get("median") is None:
         return "–"
-    return f"{block['median']:.3f} <sub>[{block['p10']:.3f}, {block['p90']:.3f}]</sub>"
+    lo, hi = block.get("p10"), block.get("p90")
+    if lo is None or hi is None:
+        # A partial block still carries a usable centre. Crashing here throws
+        # away an hour of fitting at the formatting step.
+        return f"{block['median']:.3f}"
+    return f"{block['median']:.3f} <sub>[{lo:.3f}, {hi:.3f}]</sub>"
 
 
 def build_report(cells: dict[str, dict], meta: dict) -> str:

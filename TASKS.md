@@ -23,10 +23,9 @@ is where the remaining portfolio risk is.
 
 ## Do next, in order
 
-- [ ] **Event-complete universe selection** (`discovery.py`) — pick whole
-      mutually-exclusive families against a leg budget instead of top-N tickers
-      by volume. **The highest-value item outstanding**: it converts the
-      large-field overround from an untestable hypothesis into a testable one.
+- [ ] **Fair-value model — ONE domain.** Structural arbitrage is now closed in
+      every direction and at every field size, so this is the largest gap in the
+      portfolio and the only untouched half of Project 1.
 - [ ] **Merge sweep above 10 ms** (0.01, 0.03, 0.1, 0.3, 1.0 s) — the last open
       diffusion question. Tests whether `n` keeps climbing as the sub-second
       tail is merged away and whether the diagnostic rejections fall with it.
@@ -81,9 +80,12 @@ is where the remaining portfolio risk is.
       crossings, median bid sum 99.0¢. Every price in Project 1 rests on this.
 - [x] **Fees killed 5,792 of 5,792** baskets whose bid sum exceeded 100¢.
       Closest miss 0.1¢. The market sits *on* the fee-adjusted bound.
-- [x] **Large fields were never collected** — 0 of 2,522 three-leg baskets
-      complete, nothing with 4+ legs polled. The overround hypothesis is
-      untested and the current collection design cannot test it.
+- [x] **Large fields are further from arbitrage than anything else** — 5,395
+      families: requirement rises as `100 + N` while bid sums FALL 94.0c ->
+      54.0c; median short gap widens 9c -> 140c. Not one family inside.
+- [x] **The overround is spread, not mispricing** — summed spread 11.3c at 2
+      legs to 486c at 50+, a 43x increase. Minimum tick props up every longshot
+      ask; the bid is absent.
 - [x] **Fee ceiling** — an N-leg basket owes at least N cents. Arithmetic.
 - [x] **Direction asymmetry** — only the short side is identifiable; long needs
       exhaustiveness the exchange does not certify.
@@ -97,8 +99,8 @@ is where the remaining portfolio risk is.
 
 ## Project 1 — open
 
-- [ ] **Event-complete universe selection** — see "Do next"
-- [ ] **Re-run the bucket-sum scan** once complete families exist
+- [x] ~~Event-complete universe selection~~ — **cancelled 08-25**, the question
+      it existed to answer was settled by one API scan instead
 - [ ] **Backtest engine** — chronological replay, realistic fills
 - [ ] **Monotonicity detector** — nested threshold families
 - [ ] **Fair-value model** — ONE domain, finished

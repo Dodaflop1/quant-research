@@ -1,19 +1,23 @@
-# Bucket-sum arbitrage: priced to a tenth of a cent, and the real test was never run
+# Bucket-sum arbitrage does not exist here, and the fee schedule is why
 
-*2026-08-25. `scripts/detect_bucket_sum.py` over
-`data/raw/kalshi_orderbook_2026-08-24.jsonl`, 189,201 snapshots, 110,967
-complete baskets. Raw output in `results/kalshi/bucket_sum.json`.*
+*2026-08-25. `scripts/detect_bucket_sum.py` over 189,201 order book snapshots
+(110,967 complete baskets) and `scripts/field_size_scan.py` over 5,395 live
+families. Raw output in `results/kalshi/bucket_sum.json` and
+`results/kalshi/field_size_scan.json`.*
 
-Two results, and the second is the one that matters.
+**Every direction, every field size, closed — with the mechanism measured.**
 
-1. **On two-leg events the market is priced to within 0.1c of the
-   fee-adjusted no-arbitrage bound.** 5,792 baskets carried a bid sum above
-   100c and **every one of them — 5,792 of 5,792 — was killed by fees.**
-2. **The hypothesis this scan was built to test was never testable with the
-   data collected.** The overround argument is about *large* fields. Of 6,218
-   mutually-exclusive events in the metadata, the pinned universe covers **52**,
-   of which 50 are two-leg. The three-leg events were complete **0% of the
-   time**. No field of four or more legs was ever polled.
+1. **On two-leg events the market is priced to within 0.1c of the fee-adjusted
+   bound.** 5,792 baskets carried a bid sum above 100c and **every one of them —
+   5,792 of 5,792 — was killed by fees.**
+2. **Large fields are further from arbitrage than anything else on the
+   exchange.** The requirement rises as `100 + N` (103c at two legs, 174c at
+   fifty-plus) while the bid sum *falls* (94.0c → 54.0c). The gap widens
+   monotonically to **140c**. Not one of 5,395 families is inside a tradeable
+   short basket.
+3. **The overround is bid-ask spread, not mispricing.** Summed spread goes from
+   11.3c at two legs to **486c at fifty-plus, a 43× increase.** The minimum tick
+   props up the ask on every longshot; the bid is simply absent.
 
 ---
 
@@ -60,52 +64,66 @@ a second finding.
 It also means **this scan learned nothing new about two-leg events.** The
 complementarity result already contained it.
 
-## 2. The real finding: the experiment was not possible
+## 2. Large fields — measured, and the question is closed
 
-| legs | events | attempts | complete | complete % | median | max |
-|---|---|---|---|---|---|---|
-| 2 | 50 | 117,499 | 110,967 | **94.4%** | 99.0c | 103.0c |
-| 3 | 2 | 2,522 | **0** | **0.0%** | – | – |
-| 4+ | 0 | 0 | 0 | – | – | – |
+**An earlier version of this document said the large-field case was untested and
+that the fix was event-complete universe selection. Both were wrong.** The claim
+rested on an arithmetic sketch of mine assuming a large field's bid sum would be
+around 200c. It is not, and one scan settled it.
 
-**Not one three-leg basket was ever complete.** Two three-leg events were
-polled 2,522 times between them and never once had all three legs quoted
-simultaneously. Fields of four or more legs are not in the universe at all.
+`scripts/field_size_scan.py` runs `discover()` once with `MAX_TRADEABLE_LEGS`
+disabled and tabulates the short-side economics by field size. **5,518 families,
+5,395 with a bid on at least 80% of legs** — a hundred times the 52 families in
+the pinned collection universe.
 
-This matters because the overround finding — **243c summed across 293
-families** — was measured on *large* fields, where the minimum tick props up
-every longshot. That is where a short-side bucket sum should be most profitable,
-and the scan has no data on it.
+| legs | families | median bid sum | required | median short gap | median spread |
+|---|---|---|---|---|---|
+| 2 | 2,465 | **94.0c** | 103.0c | 9.0c | 11.3c |
+| 3–4 | 1,680 | 87.0c | 106.0c | 19.0c | 25.0c |
+| 5–9 | 460 | 89.7c | 108.0c | 18.6c | 25.6c |
+| 10–19 | 377 | 78.0c | 115.0c | 38.0c | 70.0c |
+| 20–49 | 324 | 85.0c | 130.0c | 47.0c | 92.0c |
+| **50+** | 89 | **54.0c** | **174.0c** | **140.0c** | **486.0c** |
 
-### Rough scale of what is untested
+**Not one family of any size is inside a tradeable short basket.** The closest is
+1.0c short, and it is two legs.
 
-A large field with a bid sum near 200c collects 200c and owes at most 100c, so
-gross edge is ~100c. Fees round up per leg, so a 20-leg basket owes at least
-20c, leaving ~80c net on collateral of `100 x 20 - 200 = 1,800c` — a return on
-collateral of roughly 4%. Not spectacular, but riskless and completely
-unmeasured.
+### The two quantities move apart, not together
 
-**This is an arithmetic sketch from the ask-side overround, not a measurement.**
-Bid sums for large fields have never been observed. The number could be
-anything.
+The short basket needs `100 + N` cents. That requirement rises with field size by
+construction: **103c at two legs, 174c at fifty-plus.** The sketch assumed the
+bid sum would rise faster.
 
-## 3. Why the universe misses them, and the fix
+**It falls.** 94.0c → 54.0c. So the gap widens monotonically — 9c, 19c, 18.6c,
+38c, 47c, **140c** — and a fifty-leg field is not close to arbitrage, it is
+further from it than anything else on the exchange.
 
-`scripts/collect_kalshi.py` selects the top ~150 tickers by volume, then pins
-them. Volume ranking picks *individual markets*, not *complete event families*.
-A 20-leg field has its volume spread across 20 tickers, so few or none clear the
-threshold, and any that do arrive as an incomplete basket — which this scan then
-correctly refuses to evaluate.
+### Why: the overround is spread, not mispricing
 
-**The fix is to select by event, not by ticker:** choose N mutually-exclusive
-events and pin *every* leg of each. The same polling budget covers far fewer
-events but makes each one evaluable. Given the two-leg result is already settled
-by the complementarity scan, and the large-field case is entirely unmeasured,
-the budget is currently spent on the question that is already answered.
+The median summed spread goes from **11.3c at two legs to 486c at fifty-plus, a
+43× increase.** That is the whole of the overround.
 
-Concretely, `discovery.py` should gain an event-complete selection mode:
-given a leg budget, prefer whole families over high-volume orphans, and report
-how many families fit.
+In a large field the minimum tick props up the *ask* on every longshot — you
+cannot quote below 1c — so ask sums inflate far above 100c. The *bids* on those
+same longshots are simply absent: nobody rests capital at 1c for a 1% outcome,
+as the fee analysis in section 3 shows they would be paying a 7% fee to do. So
+the ask side inflates, the bid side hollows out, and the two diverge.
+
+**The 243c overround measured across 293 families was an ask-side number.** It
+was never harvestable, in either direction: the long basket pays 243c to receive
+100c, and the short basket collects 54c against a 174c requirement.
+
+### Consequence
+
+`MAX_TRADEABLE_LEGS = 10` is not merely correct — it is generous. The comment
+above it in `discovery.py` already carried the right argument and one measured
+family (`KXPGATOUR-BMC26`, 184 legs, bid sum 98.9c against 150c required). This
+scan turns that anecdote into a distribution over 5,395 families.
+
+**No universe change is needed, and the event-complete selection work is
+cancelled.** The structural-arbitrage half of Project 1 is now a complete
+negative result: both directions, every field size, with the mechanism named and
+measured.
 
 ## What can and cannot be claimed
 
@@ -114,18 +132,26 @@ bucket-sum arbitrage does not exist net of fees, and the market sits within 0.1c
 of the bound. 110,967 baskets, one day of tape, staleness bounded at 120 s,
 partial baskets excluded, capacity taken from order-book depth.
 
-**Cannot:** anything about large fields. The overround result stands as a
-measurement of ask sums; whether it is harvestable on the short side is
-untested, and the current collection design cannot test it.
+**Can:** on large fields, that the short basket gets monotonically worse with
+size, across 5,395 live families with a bid on at least 80% of legs. The
+mechanism is arithmetic — the fee floor rises as `100 + N` while the bid sum
+falls — so it is not a snapshot artifact.
+
+**Cannot:** that no dislocation could ever occur. These are quoted states at one
+moment, and a two-leg family sitting 1.0c short would need only a one-tick move
+to cross. What is established is that the *structural* overround is not the
+source of it, and that field size is the wrong place to look.
 
 ## Actions
 
-1. **Add event-complete universe selection** to `discovery.py` and recollect.
-   This is the highest-value data change outstanding — it converts an untestable
-   hypothesis into a testable one.
-2. **Re-run this scan** once complete large fields exist in the tape.
-3. **Cite the fee schedule as the mechanism** in the methodology write-up, with
-   the 5,792/5,792 figure. It answers the "why does the edge not exist" question
-   with evidence.
-4. The two-leg result should be reported as a **consistency check** on the
-   complementarity finding, not as an independent result.
+1. ~~Add event-complete universe selection~~ — **cancelled.** The scan it was
+   meant to enable has been run a cheaper way and answered the question.
+2. **Cite the fee schedule as the mechanism** in the methodology write-up, with
+   the 5,792/5,792 figure and the field-size table. Together they answer "why
+   does this edge not exist, and why has nobody closed it" with evidence rather
+   than a story.
+3. The two-leg detector result is a **consistency check** on the complementarity
+   finding, not an independent result — same quantity, same 99.0c median.
+4. **Move Project 1 to fair value.** Structural arbitrage is finished as a line
+   of enquiry. What remains untouched is the model-dependent half: one domain,
+   calibrated, with Brier decomposition and a reliability diagram.
