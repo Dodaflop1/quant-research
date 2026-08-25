@@ -1,0 +1,55 @@
+{
+  "generated_at": "2026-08-24T20:20:33.838277+00:00",
+  "replications": 40,
+  "window": 2000.0,
+  "recovery": {
+    "mu": {
+      "truth": 0.5,
+      "mean_estimate": 0.49208344276466,
+      "bias_pct": -1.5833114470680032,
+      "mean_std_error": 0.025948197203587375,
+      "empirical_sd": 0.020473396690109124,
+      "ci_coverage_95": 0.95
+    },
+    "alpha": {
+      "truth": 0.8,
+      "mean_estimate": 0.7799507800472562,
+      "bias_pct": -2.5061524940929862,
+      "mean_std_error": 0.06223236900228539,
+      "empirical_sd": 0.06845734944201216,
+      "ci_coverage_95": 0.85
+    },
+    "beta": {
+      "truth": 1.6,
+      "mean_estimate": 1.5435092205699479,
+      "bias_pct": -3.530673714378263,
+      "mean_std_error": 0.13560464704769917,
+      "empirical_sd": 0.13749826010707591,
+      "ci_coverage_95": 0.9
+    },
+    "branching_ratio": {
+      "truth": 0.5,
+      "mean_estimate": 0.5059395725139066,
+      "empirical_sd": 0.02457698753552593
+    },
+    "n_replications": 40,
+    "n_excluded": 0
+  },
+  "negative_control": {
+    "n_fits": 38,
+    "n_excluded": 2,
+    "mean_branching_ratio": 0.06421776758723234,
+    "median_branching_ratio": 0.03310789602267934,
+    "p95_branching_ratio": 0.19194282556806247,
+    "verdict": "PASS"
+  },
+  "seasonality": {
+    "n_fits": 40,
+    "n_excluded": 0,
+    "true_branching_ratio": 0.0,
+    "mean_branching_ratio": 0.7906206471051684,
+    "median_branching_ratio": 0.7881391380639579,
+    "max_branching_ratio": 0.8117214640692704,
+    "diagnostics_rejection_rate": 0.125
+  }
+}

@@ -50,5 +50,14 @@ dist/
 htmlcov/
 
 # Results and artifacts
-results/
+#
+# `results/` is ignored wholesale, with two exceptions. Both are cited by path
+# from a methodology document, and a reader who cannot open the file the number
+# came from has to take the number on trust. They are small and they are the
+# evidence, so they are versioned. Everything else here is regenerable output.
+results/*
+!results/diffusion/
+results/diffusion/*
+!results/diffusion/hawkes_validation.json
+!results/diffusion/power_law_studies.json
 *.log
