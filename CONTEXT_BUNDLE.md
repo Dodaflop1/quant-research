@@ -2756,3 +2756,94 @@ class HawkesParameters(BaseModel):
     # not a validation failure. Suppressing it would hide the most informative
     # thing the fit can tell you about a badly specified model or a bad window.
 ```
+
+---
+---
+
+# ADDENDUM — 2026-08-25, end of day 5
+
+*Everything above was written mid-day. This section records what changed after,
+and it changes the project's headline claim. Read this before acting on
+anything above.*
+
+## The headline claim above is now retracted
+
+Sections above describe fitted branching ratios around 0.88 on the slow arm and
+treat them as evidence of reflexivity. **They are not, and the controls that
+killed them are in the repo.**
+
+- A **2x rate step** applied to data with *zero* self-excitation produces a
+  fitted branching ratio of **0.799** (0.034 with no step, 0.942 at 4x).
+- **The time-rescaling diagnostics rejected 0 of 24** on that fabricated fit.
+  They test whether the fitted intensity path explains the arrivals; a slow
+  kernel tracking a rate step does. **They cannot distinguish self-excitation
+  from a time-varying baseline.** Wherever text above treats a diagnostic pass
+  as supporting a branching ratio, that inference is invalid.
+- On the real panel, **12 of 18 windows** drift more than their own fitted model
+  allows (parametric bootstrap against the fitted Hawkes, 200 sims), and
+  **Spearman(rate ratio, n) = +0.725, p = 0.001**. The 5.62x and 4.43x windows
+  carry n = 0.937 and 0.904 — sitting on the curve traced by simulated data with
+  no excitation at all.
+- Stationarity flags and diagnostic rejections are **independent**
+  (Fisher p = 0.344), so the 61-72% rejection rate is **still unexplained**.
+
+The defensible claim is: *a branching ratio from a drift-flagged window cannot
+be read as self-excitation.* Not: the panel shows no reflexivity.
+
+## Corrections to specific numbers above
+
+| stated above | corrected |
+|---|---|
+| power-law grid `M = 20-30`, ceiling from the **median** gap | `M = 40`, ceiling from the **1st-percentile positive** gap. M=25 gives 1.4e-2 relative error at eps=3 |
+| power-law noise floor 0.060 | **0.141** — the 0.060 came from 2 surviving fits after filtering non-converged ones out, which discards exactly the runs a negative control exists to measure |
+| eps reportable | **eps is not identified** at ~2,400 events: se(n) ~ 7%, se(eps) ~ 22-54%, identified in 0/12 fits |
+
+## New results not covered above
+
+- **Power-law misspecification is ruled out** (Study C). Fitting an exponential
+  kernel to simulated power-law data reproduces none of the three real
+  signatures: no bimodality at any eps, the n/half-life relation has the
+  opposite sign, and rejection is 10% against 72%.
+- **The power-law kernel does not invent long memory** (Study D): recovers n to
+  0.007 on exponential data and pushes eps to its ceiling in 11/12 fits.
+- **Seasonality is exonerated as the driver here.** Median per-market shrink is
+  +0.000 / -0.0002 / +0.004 at periods of 900 / 3600 / 86400 s.
+- **Merge tolerance is load-bearing.** At 0.1 s, naive n jumps 0.466 -> 0.723 on
+  0.4% more prints merged. Tolerances from 0.1 ms to 10 ms are identical because
+  ~30% of prints are *exact* ties, so the region above 10 ms was never explored.
+  **This is the last open diffusion question.**
+- **Some fits capture microstructure, not diffusion.** One window fits a 45 ms
+  half-life on a span of weeks — and it is the true MLE by 130+ log-likelihood
+  units. The model is inadequate, not the optimiser.
+- **YES/NO complementarity is verified**: 108,489 two-sided books, zero
+  crossings, median bid sum 99.0c. Previously an assumption; now a measurement.
+- **Bucket-sum, short direction: fees killed 5,792 of 5,792** baskets whose bid
+  sum exceeded 100c. Closest miss 0.1c. The market sits *on* the fee-adjusted
+  bound rather than safely below it.
+- **The large-field overround was never testable.** 0 of 2,522 three-leg baskets
+  were complete; nothing with 4+ legs was polled. Cause: the collector ranks
+  individual tickers by volume, so a large field's volume spreads across its
+  legs and few clear the threshold.
+
+## How to use this bundle
+
+**Do not paste this whole file at a task.** The lesson from two delegation
+rounds is that a second model given a *description* of an interface invents it —
+hallucinated ticker lists, a `--holdout 500` for a flag that takes a fraction,
+a schema guessed rather than read. Paste **the specific source file** the task
+touches, plus this addendum for context. A skeleton with `NotImplementedError`
+bodies and contracts in the docstrings is the format that has actually worked.
+
+New files worth pasting per task:
+
+```
+scripts/nonstationarity_study.py     Study E
+scripts/window_stationarity.py       parametric-bootstrap stationarity test
+scripts/sensitivity_sweep.py         preprocessing grid over fit_diffusion
+scripts/verify_complementarity.py    order book price basis
+scripts/detect_bucket_sum.py         short-side arbitrage scan
+src/quant/diffusion/hawkes/power_law.py
+```
+
+`HANDOFF.md` is the current entry point and supersedes the orientation sections
+above.
