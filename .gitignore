@@ -60,6 +60,9 @@ results/*
 results/diffusion/*
 !results/diffusion/hawkes_validation.json
 !results/diffusion/power_law_studies.json
+!results/diffusion/nonstationarity_study.json
+!results/diffusion/sensitivity_sweep.json
+!results/diffusion/sensitivity_sweep.md
 !results/kalshi/
 results/kalshi/*
 !results/kalshi/complementarity.json
