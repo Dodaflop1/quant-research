@@ -102,7 +102,35 @@ phi(t) ~= sum_j c_j * exp(-beta_j * t),    beta_j = u_j,
 exactly.** This removes discretisation error from the branching ratio, which is
 the quantity being reported. Assert it in a test.
 
-Grid suggestion: `M = 20–30`, `beta` spanning `1/(10T)` up to `10/median_gap`.
+Grid: **`M = 40`**, `beta` spanning `1/(10T)` up to `10/q01_gap`, where `q01_gap`
+is the 1st percentile of the *positive* inter-arrival gaps.
+
+> **Corrected 2026-08-25.** This paragraph originally said `M = 20–30` and used
+> the *median* gap. Both were wrong and the implementation faithfully reproduced
+> them. Measured relative error of the approximation against the closed form:
+>
+> | tau | eps | M=25 | M=40 | M=60 | M=100 |
+> |---|---|---|---|---|---|
+> | 1.0 | 3.0 | 1.39e-02 | 5.17e-05 | 1.31e-08 | 2.69e-14 |
+> | 10.0 | 0.5 | 9.53e-03 | 9.95e-03 | 1.04e-02 | 1.08e-02 |
+>
+> For `eps >= 1` the error is grid *density*, and `M = 40` fixes it. For
+> `eps < 1` it is grid *span*: infinite mean lag means a finite grid truncates
+> the tail, more points do not help, and `beta_min = 1/(10T)` is an
+> identifiability limit set by the observation window rather than a defect.
+> Report an `eps < 1` fit with that caveat. The branching ratio is unaffected
+> either way — it is exact by construction.
+>
+> The median gap was the wrong ceiling for the same reason it was wrong in the
+> exponential estimator: a single near-simultaneous pair drags `beta_max` up by
+> orders of magnitude. Use a low quantile of the positive gaps.
+
+The grid is a property of **the series**, not of the call. Compute it once from
+the full data and the true `T`, then pass it to every downstream call. If
+`compensator(t_end)` and `compensator(t_start)` build different grids their
+difference is not an integral over the window — that bug cost 4e-4 of additivity
+against held-out gains that run as low as 0.009 per event.
+
 Check convergence by re-fitting with `M` doubled — if `n` moves materially, the
 grid is too coarse.
 
@@ -115,7 +143,7 @@ lambda(t_i) = mu + sum_j c_j * A_j(i)
 A_j(i)      = exp(-beta_j * dt_i) * (1 + A_j(i-1))
 ```
 
-Cost O(n·M) — with M = 25 that is 25× the exponential fit, which is acceptable.
+Cost O(n·M) — at M = 40 that is 40× the exponential fit, which is acceptable.
 
 Compensator:
 

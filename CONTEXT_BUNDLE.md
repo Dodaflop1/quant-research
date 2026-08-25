@@ -221,6 +221,48 @@ Blocked: fee reconciliation against a settled fill (needs a real trade).
   answer is known before it touches real data.
 - Comments explain *why*, especially where a choice looks arbitrary.
 
+---
+
+## Working with two models
+
+This project is worked by a strong general model on a limited budget and a
+capable local model with none. The split is not about which is smarter; it is
+about **which mistakes each kind of task can catch on its own.**
+
+| Delegate freely | Keep for careful review |
+|---|---|
+| Implementation from a written spec | Deciding what to build and why |
+| Writing tests | Interpreting an ambiguous result |
+| Refactoring, plumbing, CLI work | Judging whether a number is defensible |
+| Running jobs and reporting output | Diagnosing a failure no spec anticipated |
+| Data wrangling and conversion | Write-ups a research panel will read |
+
+**The rule: code has tests, interpretation has nothing.**
+
+A wrong implementation fails loudly against known-answer data — which is why
+every estimator here ships with a validation study, and why
+`docs/power_law_spec.md` specifies its four studies before any code. That
+harness *is* the acceptance test, and it makes implementation safe to hand off.
+
+A wrong interpretation fails silently. Every serious error in this project so
+far has been a **plausible-looking wrong answer that reported success**:
+
+- `alpha = 1e190` with `converged=True` — invisible at 20,000 events
+- `n = 0.664` against a truth of 0.500, with `converged=True`, from fitting raw
+  trade prints
+- a reported "shrinkage" of +0.145 that was +0.004 under the right definition
+
+None were caught by code failing. All were caught by someone reading a number
+and finding it implausible.
+
+So: implement wherever is cheapest, but **every number destined for a write-up
+gets read by the model you trust most, and every claim gets traced back to the
+code or data that produced it.**
+
+Two tasks specifically worth not delegating: verifying the YES/NO order book
+complementarity (a judgement about whether an assumption holds, with no test to
+fall back on), and `docs/results_summary.md`.
+
 ## Repo layout
 
 ```
@@ -277,7 +319,6 @@ systemctl show kalshi-collector -p NRestarts
   `/opt/quant-research/certs/kalshi_prod.pem` (server) and `certs/` (Windows),
   mode 600, owned by `collector`. Never paste its contents anywhere — move it
   as a file with `scp` only.
-
 
 
 ==============================================================================
@@ -390,7 +431,35 @@ phi(t) ~= sum_j c_j * exp(-beta_j * t),    beta_j = u_j,
 exactly.** This removes discretisation error from the branching ratio, which is
 the quantity being reported. Assert it in a test.
 
-Grid suggestion: `M = 20–30`, `beta` spanning `1/(10T)` up to `10/median_gap`.
+Grid: **`M = 40`**, `beta` spanning `1/(10T)` up to `10/q01_gap`, where `q01_gap`
+is the 1st percentile of the *positive* inter-arrival gaps.
+
+> **Corrected 2026-08-25.** This paragraph originally said `M = 20–30` and used
+> the *median* gap. Both were wrong and the implementation faithfully reproduced
+> them. Measured relative error of the approximation against the closed form:
+>
+> | tau | eps | M=25 | M=40 | M=60 | M=100 |
+> |---|---|---|---|---|---|
+> | 1.0 | 3.0 | 1.39e-02 | 5.17e-05 | 1.31e-08 | 2.69e-14 |
+> | 10.0 | 0.5 | 9.53e-03 | 9.95e-03 | 1.04e-02 | 1.08e-02 |
+>
+> For `eps >= 1` the error is grid *density*, and `M = 40` fixes it. For
+> `eps < 1` it is grid *span*: infinite mean lag means a finite grid truncates
+> the tail, more points do not help, and `beta_min = 1/(10T)` is an
+> identifiability limit set by the observation window rather than a defect.
+> Report an `eps < 1` fit with that caveat. The branching ratio is unaffected
+> either way — it is exact by construction.
+>
+> The median gap was the wrong ceiling for the same reason it was wrong in the
+> exponential estimator: a single near-simultaneous pair drags `beta_max` up by
+> orders of magnitude. Use a low quantile of the positive gaps.
+
+The grid is a property of **the series**, not of the call. Compute it once from
+the full data and the true `T`, then pass it to every downstream call. If
+`compensator(t_end)` and `compensator(t_start)` build different grids their
+difference is not an integral over the window — that bug cost 4e-4 of additivity
+against held-out gains that run as low as 0.009 per event.
+
 Check convergence by re-fitting with `M` doubled — if `n` moves materially, the
 grid is too coarse.
 
@@ -403,7 +472,7 @@ lambda(t_i) = mu + sum_j c_j * A_j(i)
 A_j(i)      = exp(-beta_j * dt_i) * (1 + A_j(i-1))
 ```
 
-Cost O(n·M) — with M = 25 that is 25× the exponential fit, which is acceptable.
+Cost O(n·M) — at M = 40 that is 40× the exponential fit, which is acceptable.
 
 Compensator:
 

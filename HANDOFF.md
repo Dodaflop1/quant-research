@@ -188,6 +188,48 @@ Blocked: fee reconciliation against a settled fill (needs a real trade).
   answer is known before it touches real data.
 - Comments explain *why*, especially where a choice looks arbitrary.
 
+---
+
+## Working with two models
+
+This project is worked by a strong general model on a limited budget and a
+capable local model with none. The split is not about which is smarter; it is
+about **which mistakes each kind of task can catch on its own.**
+
+| Delegate freely | Keep for careful review |
+|---|---|
+| Implementation from a written spec | Deciding what to build and why |
+| Writing tests | Interpreting an ambiguous result |
+| Refactoring, plumbing, CLI work | Judging whether a number is defensible |
+| Running jobs and reporting output | Diagnosing a failure no spec anticipated |
+| Data wrangling and conversion | Write-ups a research panel will read |
+
+**The rule: code has tests, interpretation has nothing.**
+
+A wrong implementation fails loudly against known-answer data — which is why
+every estimator here ships with a validation study, and why
+`docs/power_law_spec.md` specifies its four studies before any code. That
+harness *is* the acceptance test, and it makes implementation safe to hand off.
+
+A wrong interpretation fails silently. Every serious error in this project so
+far has been a **plausible-looking wrong answer that reported success**:
+
+- `alpha = 1e190` with `converged=True` — invisible at 20,000 events
+- `n = 0.664` against a truth of 0.500, with `converged=True`, from fitting raw
+  trade prints
+- a reported "shrinkage" of +0.145 that was +0.004 under the right definition
+
+None were caught by code failing. All were caught by someone reading a number
+and finding it implausible.
+
+So: implement wherever is cheapest, but **every number destined for a write-up
+gets read by the model you trust most, and every claim gets traced back to the
+code or data that produced it.**
+
+Two tasks specifically worth not delegating: verifying the YES/NO order book
+complementarity (a judgement about whether an assumption holds, with no test to
+fall back on), and `docs/results_summary.md`.
+
 ## Repo layout
 
 ```
