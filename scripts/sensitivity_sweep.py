@@ -45,7 +45,13 @@ from typing import Any
 
 import numpy as np
 
-MERGE_WINDOWS = [0.0001, 0.001, 0.01, 0.1]
+# Second pass. The first grid ran 0.0001 / 0.001 / 0.01 / 0.1 and the three
+# smallest were identical to three decimals, because ~30% of prints are *exact*
+# ties and any positive tolerance catches all of them. The whole informative
+# region is above 10 ms, where naive `n` jumped 0.466 -> 0.723 on 0.4% more
+# prints merged. 0.01 and 0.1 are kept as anchors to the first pass (and are
+# already cached, so they cost nothing to re-include).
+MERGE_WINDOWS = [0.01, 0.03, 0.1, 0.3, 1.0]
 PERIODS = [900.0, 3600.0, 86400.0]
 
 # Only the two swept flags and the fixed data/threshold are passed. Everything

@@ -1,10 +1,11 @@
 {
   "meta": {
     "merge_windows": [
-      0.0001,
-      0.001,
       0.01,
-      0.1
+      0.03,
+      0.1,
+      0.3,
+      1.0
     ],
     "periods": [
       900.0,
@@ -29,240 +30,6 @@
     "errors": {}
   },
   "cells": {
-    "merge0.0001_period900": {
-      "ok": true,
-      "merge_window": 0.0001,
-      "period": 900.0,
-      "summary": {
-        "markets": 9,
-        "n_naive": {
-          "median": 0.466336474836733,
-          "p10": 0.20874686301383866,
-          "p90": 0.8672512151727485,
-          "count": 9
-        },
-        "n_deseasonalised": {
-          "median": 0.4666906025487563,
-          "p10": 0.2101516680785852,
-          "p90": 0.8672681346841298,
-          "count": 9
-        },
-        "median_per_market_shrink": -1.9359498945714648e-05,
-        "half_life_seconds": {
-          "median": 1215.7565284689165,
-          "p10": 15.998964831753595,
-          "p90": 2189.75526456561,
-          "count": 9
-        },
-        "holdout_gain_per_event": {
-          "median": 0.25684745170036777,
-          "p10": 0.07470447222011253,
-          "p90": 0.38564784104970345,
-          "count": 9
-        },
-        "windows_passing": 5,
-        "windows_total": 18,
-        "markets_beating_poisson": 9,
-        "events_after_merge": 66260,
-        "events_raw": 95253,
-        "fraction_surviving_merge": 0.6956211352923267
-      }
-    },
-    "merge0.0001_period3600": {
-      "ok": true,
-      "merge_window": 0.0001,
-      "period": 3600.0,
-      "summary": {
-        "markets": 9,
-        "n_naive": {
-          "median": 0.466336474836733,
-          "p10": 0.20874686301383866,
-          "p90": 0.8672512151727485,
-          "count": 9
-        },
-        "n_deseasonalised": {
-          "median": 0.46729141867074675,
-          "p10": 0.21301073838468793,
-          "p90": 0.8673506367826739,
-          "count": 9
-        },
-        "median_per_market_shrink": -0.0002443844569294251,
-        "half_life_seconds": {
-          "median": 1215.6333351595954,
-          "p10": 17.33623125287668,
-          "p90": 2190.4547127026544,
-          "count": 9
-        },
-        "holdout_gain_per_event": {
-          "median": 0.25684468191197224,
-          "p10": 0.07524616098394511,
-          "p90": 0.3909408605346237,
-          "count": 9
-        },
-        "windows_passing": 5,
-        "windows_total": 18,
-        "markets_beating_poisson": 9,
-        "events_after_merge": 66260,
-        "events_raw": 95253,
-        "fraction_surviving_merge": 0.6956211352923267
-      }
-    },
-    "merge0.0001_period86400": {
-      "ok": true,
-      "merge_window": 0.0001,
-      "period": 86400.0,
-      "summary": {
-        "markets": 9,
-        "n_naive": {
-          "median": 0.466336474836733,
-          "p10": 0.20874686301383866,
-          "p90": 0.8672512151727485,
-          "count": 9
-        },
-        "n_deseasonalised": {
-          "median": 0.32138794063599174,
-          "p10": 0.16197318100123698,
-          "p90": 0.8938475492858597,
-          "count": 9
-        },
-        "median_per_market_shrink": 0.003962027898381237,
-        "half_life_seconds": {
-          "median": 1082.8473031924643,
-          "p10": 15.93924113202985,
-          "p90": 5376.129015233592,
-          "count": 9
-        },
-        "holdout_gain_per_event": {
-          "median": 0.16052421678377052,
-          "p10": 0.04515764860744794,
-          "p90": 0.38500900743851535,
-          "count": 9
-        },
-        "windows_passing": 5,
-        "windows_total": 18,
-        "markets_beating_poisson": 9,
-        "events_after_merge": 66260,
-        "events_raw": 95253,
-        "fraction_surviving_merge": 0.6956211352923267
-      }
-    },
-    "merge0.001_period900": {
-      "ok": true,
-      "merge_window": 0.001,
-      "period": 900.0,
-      "summary": {
-        "markets": 9,
-        "n_naive": {
-          "median": 0.466336474836733,
-          "p10": 0.20874686301383866,
-          "p90": 0.8672512151727485,
-          "count": 9
-        },
-        "n_deseasonalised": {
-          "median": 0.4666906025487563,
-          "p10": 0.2101516680785852,
-          "p90": 0.8672681703027185,
-          "count": 9
-        },
-        "median_per_market_shrink": -1.9359498945714648e-05,
-        "half_life_seconds": {
-          "median": 1216.3008811812467,
-          "p10": 15.998964831753595,
-          "p90": 2189.75526456561,
-          "count": 9
-        },
-        "holdout_gain_per_event": {
-          "median": 0.25684745170036777,
-          "p10": 0.07470862240065221,
-          "p90": 0.3869071158311533,
-          "count": 9
-        },
-        "windows_passing": 5,
-        "windows_total": 18,
-        "markets_beating_poisson": 9,
-        "events_after_merge": 66258,
-        "events_raw": 95253,
-        "fraction_surviving_merge": 0.6956001385783125
-      }
-    },
-    "merge0.001_period3600": {
-      "ok": true,
-      "merge_window": 0.001,
-      "period": 3600.0,
-      "summary": {
-        "markets": 9,
-        "n_naive": {
-          "median": 0.466336474836733,
-          "p10": 0.20874686301383866,
-          "p90": 0.8672512151727485,
-          "count": 9
-        },
-        "n_deseasonalised": {
-          "median": 0.46729141867074675,
-          "p10": 0.21301073838468793,
-          "p90": 0.86735116470557,
-          "count": 9
-        },
-        "median_per_market_shrink": -0.0002443844569294251,
-        "half_life_seconds": {
-          "median": 1216.1763469036862,
-          "p10": 17.33623125287668,
-          "p90": 2190.4547127026544,
-          "count": 9
-        },
-        "holdout_gain_per_event": {
-          "median": 0.25684468191197224,
-          "p10": 0.07525057755181098,
-          "p90": 0.39220001298638735,
-          "count": 9
-        },
-        "windows_passing": 5,
-        "windows_total": 18,
-        "markets_beating_poisson": 9,
-        "events_after_merge": 66258,
-        "events_raw": 95253,
-        "fraction_surviving_merge": 0.6956001385783125
-      }
-    },
-    "merge0.001_period86400": {
-      "ok": true,
-      "merge_window": 0.001,
-      "period": 86400.0,
-      "summary": {
-        "markets": 9,
-        "n_naive": {
-          "median": 0.466336474836733,
-          "p10": 0.20874686301383866,
-          "p90": 0.8672512151727485,
-          "count": 9
-        },
-        "n_deseasonalised": {
-          "median": 0.32138794063599174,
-          "p10": 0.16197318100123698,
-          "p90": 0.893841395265078,
-          "count": 9
-        },
-        "median_per_market_shrink": 0.003962027898381237,
-        "half_life_seconds": {
-          "median": 1082.8473031924643,
-          "p10": 15.93924113202985,
-          "p90": 5376.129015233592,
-          "count": 9
-        },
-        "holdout_gain_per_event": {
-          "median": 0.16052421678377052,
-          "p10": 0.0451624130668878,
-          "p90": 0.3851348883183063,
-          "count": 9
-        },
-        "windows_passing": 5,
-        "windows_total": 18,
-        "markets_beating_poisson": 9,
-        "events_after_merge": 66258,
-        "events_raw": 95253,
-        "fraction_surviving_merge": 0.6956001385783125
-      }
-    },
     "merge0.01_period900": {
       "ok": true,
       "merge_window": 0.01,
@@ -380,6 +147,123 @@
         "fraction_surviving_merge": 0.6953691747241557
       }
     },
+    "merge0.03_period900": {
+      "ok": true,
+      "merge_window": 0.03,
+      "period": 900.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.46559447538680787,
+          "p10": 0.20673771586994216,
+          "p90": 0.8659356149316624,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.46598922772658946,
+          "p10": 0.2081538748796833,
+          "p90": 0.8659549191821952,
+          "count": 9
+        },
+        "median_per_market_shrink": -1.961973234765324e-05,
+        "half_life_seconds": {
+          "median": 1218.9466166425916,
+          "p10": 17.33825313870235,
+          "p90": 2190.591535953794,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.24786421743002462,
+          "p10": 0.07511547573718609,
+          "p90": 0.3390043563118342,
+          "count": 9
+        },
+        "windows_passing": 6,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 66187,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6948547552308064
+      }
+    },
+    "merge0.03_period3600": {
+      "ok": true,
+      "merge_window": 0.03,
+      "period": 3600.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.46559447538680787,
+          "p10": 0.20673771586994216,
+          "p90": 0.8659356149316624,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.4665595563782029,
+          "p10": 0.2114234200167328,
+          "p90": 0.8660571249162964,
+          "count": 9
+        },
+        "median_per_market_shrink": -0.0002360980862776696,
+        "half_life_seconds": {
+          "median": 1218.7589801308584,
+          "p10": 18.923234022222736,
+          "p90": 2191.316519369629,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.24843423827317374,
+          "p10": 0.07566666410067055,
+          "p90": 0.33898303394128915,
+          "count": 9
+        },
+        "windows_passing": 6,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 66187,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6948547552308064
+      }
+    },
+    "merge0.03_period86400": {
+      "ok": true,
+      "merge_window": 0.03,
+      "period": 86400.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.46559447538680787,
+          "p10": 0.20673771586994216,
+          "p90": 0.8659356149316624,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.32146223418809095,
+          "p10": 0.1620086315378954,
+          "p90": 0.8930327981222655,
+          "count": 9
+        },
+        "median_per_market_shrink": 0.004213114631913345,
+        "half_life_seconds": {
+          "median": 1092.7777837217013,
+          "p10": 17.214198425657933,
+          "p90": 5383.949514260287,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.15597395008685766,
+          "p10": 0.04557043576932986,
+          "p90": 0.2977599465060412,
+          "count": 9
+        },
+        "windows_passing": 5,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 66187,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6948547552308064
+      }
+    },
     "merge0.1_period900": {
       "ok": true,
       "merge_window": 0.1,
@@ -495,6 +379,240 @@
         "events_after_merge": 65875,
         "events_raw": 95253,
         "fraction_surviving_merge": 0.6915792678445823
+      }
+    },
+    "merge0.3_period900": {
+      "ok": true,
+      "merge_window": 0.3,
+      "period": 900.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.7247569810267064,
+          "p10": 0.19849853977815965,
+          "p90": 0.8700197595492355,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.7247565675590351,
+          "p10": 0.1993569573089357,
+          "p90": 0.8700276585158776,
+          "count": 9
+        },
+        "median_per_market_shrink": -1.6110044816830538e-05,
+        "half_life_seconds": {
+          "median": 1397.6802937994657,
+          "p10": 24.271781205962355,
+          "p90": 2380.337295496479,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.2347440878045606,
+          "p10": 0.15373755178291537,
+          "p90": 0.339258099055486,
+          "count": 9
+        },
+        "windows_passing": 7,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 65683,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6895635832992136
+      }
+    },
+    "merge0.3_period3600": {
+      "ok": true,
+      "merge_window": 0.3,
+      "period": 3600.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.7247569810267064,
+          "p10": 0.19849853977815965,
+          "p90": 0.8700197595492355,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.7246279304271726,
+          "p10": 0.2030892116222615,
+          "p90": 0.8700587010262696,
+          "count": 9
+        },
+        "median_per_market_shrink": -4.8938175304935605e-05,
+        "half_life_seconds": {
+          "median": 1399.0147786906957,
+          "p10": 26.58858695378187,
+          "p90": 2379.1613263200925,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.23475269463052142,
+          "p10": 0.15441838933824883,
+          "p90": 0.3391056136382916,
+          "count": 9
+        },
+        "windows_passing": 7,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 65683,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6895635832992136
+      }
+    },
+    "merge0.3_period86400": {
+      "ok": true,
+      "merge_window": 0.3,
+      "period": 86400.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.7247569810267064,
+          "p10": 0.19849853977815965,
+          "p90": 0.8700197595492355,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.523675885250314,
+          "p10": 0.1920923986413039,
+          "p90": 0.8945675962034452,
+          "count": 9
+        },
+        "median_per_market_shrink": 0.005687465828834393,
+        "half_life_seconds": {
+          "median": 1160.5670564759018,
+          "p10": 23.552266140301494,
+          "p90": 5443.864007486783,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.16816831079449074,
+          "p10": 0.11169987238799604,
+          "p90": 0.28816268387430455,
+          "count": 9
+        },
+        "windows_passing": 6,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 65683,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6895635832992136
+      }
+    },
+    "merge1_period900": {
+      "ok": true,
+      "merge_window": 1.0,
+      "period": 900.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.7260391308555527,
+          "p10": 0.19539805110645223,
+          "p90": 0.8683741892669035,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.7260389251857007,
+          "p10": 0.19606476788638616,
+          "p90": 0.8683823455333046,
+          "count": 9
+        },
+        "median_per_market_shrink": -1.7438417490911462e-05,
+        "half_life_seconds": {
+          "median": 1402.564061485666,
+          "p10": 29.12187603468046,
+          "p90": 2411.846477176106,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.23319728234909354,
+          "p10": 0.15304081537516062,
+          "p90": 0.3266644230140833,
+          "count": 9
+        },
+        "windows_passing": 7,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 65394,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6865295581241536
+      }
+    },
+    "merge1_period3600": {
+      "ok": true,
+      "merge_window": 1.0,
+      "period": 3600.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.7260391308555527,
+          "p10": 0.19539805110645223,
+          "p90": 0.8683741892669035,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.7259188246975723,
+          "p10": 0.19986136059888604,
+          "p90": 0.868405729570662,
+          "count": 9
+        },
+        "median_per_market_shrink": -4.489481865332934e-05,
+        "half_life_seconds": {
+          "median": 1403.8925160073807,
+          "p10": 31.774314008083994,
+          "p90": 2410.776391360855,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.23315965170244862,
+          "p10": 0.15362938000144363,
+          "p90": 0.3266690434922442,
+          "count": 9
+        },
+        "windows_passing": 7,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 65394,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6865295581241536
+      }
+    },
+    "merge1_period86400": {
+      "ok": true,
+      "merge_window": 1.0,
+      "period": 86400.0,
+      "summary": {
+        "markets": 9,
+        "n_naive": {
+          "median": 0.7260391308555527,
+          "p10": 0.19539805110645223,
+          "p90": 0.8683741892669035,
+          "count": 9
+        },
+        "n_deseasonalised": {
+          "median": 0.5292355348997473,
+          "p10": 0.18804147879607525,
+          "p90": 0.89347537663373,
+          "count": 9
+        },
+        "median_per_market_shrink": 0.007815034467185566,
+        "half_life_seconds": {
+          "median": 1190.8490259715547,
+          "p10": 27.999595383825454,
+          "p90": 5505.812059273981,
+          "count": 9
+        },
+        "holdout_gain_per_event": {
+          "median": 0.1709166027766646,
+          "p10": 0.1105930068302809,
+          "p90": 0.2788328992463789,
+          "count": 9
+        },
+        "windows_passing": 6,
+        "windows_total": 18,
+        "markets_beating_poisson": 9,
+        "events_after_merge": 65394,
+        "events_raw": 95253,
+        "fraction_surviving_merge": 0.6865295581241536
       }
     }
   }

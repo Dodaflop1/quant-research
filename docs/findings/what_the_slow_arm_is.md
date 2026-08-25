@@ -120,6 +120,86 @@ shrink row is the honest number; do not quote the difference of the other two.
 
 ---
 
+## Extended merge sweep — the artifact is a band, not a slope
+
+*Added after the second sweep, `MERGE_WINDOWS = [0.01, 0.03, 0.1, 0.3, 1.0]`.*
+
+The first sweep found `n` jumping 0.466 → 0.723 at a 0.1 s merge tolerance and
+could not say whether that was the start of a slope or a step, because
+everything above 10 ms was unexplored. **It is a step.**
+
+| merge | naive `n` [p10, p90] | events surviving | diagnostics passing |
+|---|---|---|---|
+| 0.01 s | 0.466 [0.208, 0.867] | 69.5% | 5/18 |
+| 0.03 s | 0.466 [0.207, 0.866] | 69.5% | 6/18 |
+| **0.1 s** | **0.723** [0.203, 0.868] | 69.2% | 7/18 |
+| 0.3 s | 0.725 [0.198, 0.870] | 69.0% | 7/18 |
+| 1.0 s | 0.726 [0.195, 0.868] | 68.7% | 7/18 |
+
+Per step:
+
+| step | Δ`n` | Δevents | Δ`n` per 1% of events removed |
+|---|---|---|---|
+| 0.01 → 0.03 | +0.000 | 0.00% | — |
+| **0.03 → 0.1** | **+0.257** | **0.30%** | **0.86** |
+| 0.1 → 0.3 | +0.002 | 0.20% | 0.01 |
+| 0.3 → 1.0 | +0.001 | 0.30% | 0.00 |
+
+**99% of the total move happens in one step, between 30 ms and 100 ms, on 0.30%
+of the events.** Above 100 ms the branching ratio is flat to three decimals
+while merging continues to remove events at the same rate. This is a discrete
+population of near-simultaneous prints separated by tens of milliseconds — not a
+continuum of clustering that merging gradually erodes.
+
+### The direction is the surprise
+
+Merging removes events, and the naive reading is that removing artificial
+clustering should *lower* the branching ratio. It rises, by 0.26.
+
+The explanation is the one `CONTROLH-2026-R w0` already showed: with the 30–100
+ms prints intact, the likelihood spends its entire excitation budget on them —
+`beta` = 15.2, a 45 ms half-life on a window spanning weeks, `n` = 0.041.
+**The microstructure was suppressing the branching ratio by capturing the
+kernel, not inflating it.** Merge those prints away and the single available
+timescale is freed to fit structure at the diffusion scale, where `n` is higher.
+
+A one-timescale kernel can describe the millisecond band or the hour band, not
+both, and the likelihood prefers the millisecond band whenever it is present.
+That is an argument for a multi-scale kernel, and it is the one place the
+power-law work still has something to offer — Study C ruled it out as an
+explanation for the *bimodality*, not as a better description of the data.
+
+### What did not happen, and it matters
+
+**The diagnostic rejections did not follow.** 13/18 → 12/18 → 11/18, then flat
+at 11/18 for the last three cells. Removing the artifact that moves `n` by 0.26
+buys two windows. The 61–72% rejection rate is not microstructure either, and
+after four attempts — power-law misspecification (10%), preprocessing (flat),
+rate drift (independent), microstructure (buys 2 of 13) — **it remains the
+largest unexplained thing in this project.**
+
+**The bimodality did not move.** Across the entire grid the 10th percentile sits
+at 0.195–0.208 and the 90th at 0.866–0.870. Only the median travels. With nine
+markets the median is the fifth, so the jump is a re-ordering of the middle
+while both modes stay exactly where they were.
+
+**That is the useful negative.** The 0.23 / 0.88 split is invariant to a merge
+tolerance swept over two orders of magnitude and to a seasonal period swept over
+two. It is not a preprocessing artifact. Combined with Study C ruling out kernel
+misspecification and the stationarity result explaining the *high* mode as
+drift, the low mode is now the open question — and the microstructure-captured
+fits (`n` = 0.041, 0.151, 0.191, all with sub-minute half-lives) are the obvious
+candidates for what it is made of.
+
+### Consequence for the reported numbers
+
+The current default is `--merge-window 0.001`, which sits in the flat region
+*below* the step. Every branching ratio in the write-up is therefore computed
+with the 30–100 ms prints still present, and is depressed by roughly 0.26 at the
+median relative to a fit that removes them. **Either move the default to 0.1 s
+and re-run everything, or report both and say why.** The second is more honest
+and costs one extra column.
+
 ## Where this leaves the project
 
 | candidate explanation for the slow arm | status |
