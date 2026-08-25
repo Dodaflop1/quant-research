@@ -1,173 +1,143 @@
 # Tasks
 
 Goal: two defensible portfolio projects for quant researcher roles, no PhD.
-Scope doc written 2026-08-21. Today is 2026-08-24 — day 4 of a 6-week plan.
+Scope doc written 2026-08-21. Today is 2026-08-25 — day 5 of a 6-week plan.
 
 ## Status
 
-**Kalshi: ahead of schedule.** Ingestion, storage, fee model, selection layer
-and a running collector are done. Data accruing since 08-23 05:17 UTC.
+**Infrastructure is finished.** Collection runs on a server under systemd, the
+panel is pinned and verified balanced, both projects' data is in hand, and both
+methodology documents are written. Nothing on the critical path is waiting on
+setup any more.
 
-**Diffusion: unblocked and started.** The Reddit dependency is gone. Kalshi
-trade prints are *backfillable* — `/markets/trades` serves ~3 months and
-`/historical/trades` serves older, both with `min_ts`/`max_ts` and cursor
-pagination. Project 2 now runs on order flow, with Reddit as an additive second
-point process if approval ever lands.
+**The next phase is analysis, and the two projects are in opposite positions:**
 
-That single API fact removed the biggest schedule risk in the plan. There is no
-longer a no-backfill clock on Project 2.
+- **Project 2 can produce real results today.** All its data is already
+  downloaded — 151,477 slow-arm trades over 89 days, 3.56M fast-arm trades.
+- **Project 1 needs the collector to run.** Its result is a *time series*
+  question — does the short gap ever cross zero, and for how long? — and there
+  are only a few hours of series so far.
+
+So: work Project 2 now while Project 1's data accrues. That is the whole
+sequencing decision.
 
 ## Live now
 
-- Collector running: 150 markets across 71 families, 60s interval, ~35s cycles
-- 90,000+ order book snapshots, zero errors, clean 60s sampling with no gaps
-- Logging to `data/collector.log`; double-click `tail_log.cmd` to watch
+- Oracle server `159.54.168.0`, systemd + data-freshness watchdog
+- 150 pinned markets, 60s full-depth snapshots, since 2026-08-25 00:53 UTC
+- Verified: 150/150 markets full-span, zero outages, median and p95 60s
+- `ssh -i $env:USERPROFILE\.ssh\oracle_key ubuntu@159.54.168.0`
 
-## Findings so far
+## Do next, in order
 
-These are research results, not progress notes. They belong in the write-up.
+- [ ] **Deseasonalised Hawkes fit — slow arm.** 13 markets with 2,000+ trades.
+      Finding 6 rules out the naive fit, so this needs a time-varying baseline
+      or short local windows, reported both ways. **Project 2's first real
+      result, and every input already exists on disk.**
+- [ ] **Hawkes fit — fast arm.** 3.56M events over 9h13m. The contrast with the
+      slow arm is the contribution, not either fit alone.
+- [ ] **Poisson baseline on held-out likelihood.** A Hawkes fit that does not
+      beat Poisson has demonstrated nothing. Required before any fit is
+      reportable, and named as outstanding in the write-up.
+- [ ] **Verify YES/NO complementarity.** Previously filed as blocked. It is not
+      — the raw payloads are on disk and the check is an afternoon. It is
+      load-bearing for every price in Project 1 and is currently a stated
+      limitation in the methodology doc.
+- [ ] **Bucket-sum detector, short direction.** Write it now, run it in a week
+      when there is enough series to say something.
 
-- [x] **The long direction is closed at the touch.** Every family sampled had an
-      ask sum above 100c (100.4–109.2c). Summing asks means crossing the spread
-      on every leg. Whether it ever opens transiently is what the time series is
-      for.
-- [x] **Fees, not prices, bound the strategy.** The taker fee rounds UP to a
-      whole cent per leg against a fixed 100c payout, so an N-leg basket owes at
-      least N cents. Past ~10 legs no dislocation can close the gap. A 184-leg
-      field owes more than the basket can ever pay.
-- [x] **The two directions need different things.** Buying needs collective
-      exhaustiveness, which the exchange does not certify and prices cannot
-      settle. Selling needs only mutual exclusivity, which it does flag — so the
-      short direction is the identifiable one.
+## Findings — complete, and in the write-ups
+
+- [x] **Fee ceiling.** The taker fee rounds up to a whole cent per leg against a
+      fixed 100¢ payout, so an N-leg basket owes at least N cents. Past ~10 legs
+      no dislocation clears it. Arithmetic, not empirics.
+- [x] **Direction asymmetry.** Short needs only mutual exclusivity, which the
+      exchange flags. Long needs collective exhaustiveness, which it does not
+      certify and prices cannot settle. Only the short side is identifiable.
+- [x] **Long direction closed at the touch.** Every family sampled had an ask
+      sum of 100.4–109.2¢.
 - [x] **Large-field overround is structural.** The minimum tick props up every
-      longshot, so a big field's ask sum runs far above 100c by construction.
-- [x] **Capacity is not volume.** One family showed 368,438 volume and a single
-      contract resting at the ask.
-- [x] **The panel was unbalanced and nobody would have noticed.** A coverage
-      audit of the first 39.3 hours found 312,386 snapshots across 298 tickers
-      and **zero** that spanned the whole window. Discovery re-selects by live
-      volume on every start, so each of three restarts swapped part of the
-      panel: 150 entered late, 99 stopped early, 49 covered only a middle
-      slice. The log said "0 errors" throughout, and it was telling the truth —
-      it just answers a different question. Fixed by pinning the universe.
-- [x] **Sampling itself is clean.** Per market: median 60s, p95 60s, p99 60s,
-      max 66s. Two outages totalling 15.8 minutes, uptime 99.33%, and every
-      per-market gap explained by a collector outage rather than a ticker
-      quietly failing. This is the number the methodology section can defend.
-- [x] **Seasonality alone fabricates a branching ratio of 0.79.** On simulated
-      data with *zero* self-excitation — an inhomogeneous Poisson process with a
-      sinusoidal rate — a constant-baseline Hawkes fit reports n = 0.79, and the
-      residual diagnostics catch it only 12% of the time. Published order-flow
-      branching ratios sit near 0.8–0.9. This is the Hardiman–Bouchaud critique
-      of Filimonov–Sornette, reproduced on our own estimator, and it constrains
-      how the real fit has to be done. See `results/diffusion/`.
+      longshot; 243¢ across 293 families in one run.
+- [x] **Capacity is not volume.** 368,438 in volume, one contract at the ask.
+- [x] **Seasonality fabricates reflexivity.** Zero-self-excitation data yields a
+      fitted branching ratio of 0.79, and the diagnostics catch it 12% of the
+      time.
+- [x] **Noise floor 0.19.** The 95th-percentile branching ratio on Poisson data.
+      Any real estimate must clear it to mean anything.
+- [x] **Panel balance fails two ways.** Volume ranking churns composition across
+      restarts *and* fills the universe with same-day contracts. Both were
+      invisible in a log reporting "0 errors".
+- [x] **Two regimes.** 8 trades/hour on the busiest pinned market against
+      387,000/hour exchange-wide — a factor of 48,000. The projects want
+      opposite data, and both datasets already exist.
+- [x] **Taker imbalance 63/37 buy/sell**, in YES terms.
 
-## Active
+## Project 1 — Kalshi
 
-- [ ] **Restart the collector to pick up the pinned universe** — `run_collector.cmd`
-      now passes `--tickers-file .\data\universe.txt`. Until it restarts, the
-      panel is still whatever the last start chose. One restart costs ~1 minute
-      of data and makes every series from here continuous
-- [ ] **Run the trades backfill** — `python scripts/backfill_trades.py --days 90`
-      then `--report`. Resumable; interrupt it freely
-- [ ] **Move collection somewhere that stays up** — it died once already, after
-      90 minutes, for reasons still unknown. A cheap VPS with systemd removes
-      this whole class of problem
-- [ ] **Deseasonalised Hawkes fit** — the estimator is validated but a naive fit
-      on real trade times is now known to be wrong. Needs either a time-varying
-      baseline or short local windows, reported both ways
+- [ ] **Bucket-sum detector** — short direction first, it is the identifiable one
+- [ ] **Monotonicity detector** — nested threshold families
+- [ ] **Backtest engine** — chronological replay, no lookahead, realistic fills
+- [ ] **Fractional Kelly sizing** — capped by observed book depth
+- [ ] **Fair-value model** — ONE domain. Note the long-dated panel yields few
+      settled outcomes, so calibration needs a deliberately different sample
+- [ ] **Calibration** — Brier with decomposition, log loss, reliability, skill
+
+## Project 2 — Diffusion
+
+- [x] ~~Hawkes simulation, MLE, time-rescaling diagnostics~~ (08-24)
+- [x] ~~Validation: recovery, negative control, seasonality~~ (08-24)
+- [x] ~~Trades backfilled, both arms~~ (08-25)
+- [ ] **Deseasonalised fit** — see "Do next"
+- [ ] **Poisson baseline comparison**
+- [ ] **Bivariate Hawkes** — buy vs sell flow with cross-excitation. The taker
+      side is already parsed and tested, so this is modelling, not data work
+- [ ] **Power-law kernel robustness check** — the literature's critique
+      implicates kernel misspecification directly. Named in the write-up as
+      outstanding work, not optional polish
+- [ ] **Event alignment** — Fed, CPI, jobs. Announcement times are exogenous
+- [ ] **Price-discovery link** — event contracts have a known terminal value, so
+      convergence is measurable without a benchmark model to argue about
+- [ ] **Reddit as a second process** — if approval ever lands. Optional upside
+
+## Write-ups
+
+- [x] ~~docs/kalshi_methodology.md~~ (08-25) — 331 lines
+- [x] ~~docs/diffusion_methodology.md~~ (08-25) — 347 lines
+- [ ] **docs/results_summary.md** — one page. Write it after the first fits
+      exist; right now it would only restate the methodology documents
 
 ## Blocked
 
 - [ ] **Reconcile the fee model against a settled fill** — needs a real trade.
-      Rounding granularity and per-series multipliers (0 to 2) still unverified
-- [ ] **Verify YES/NO book complementarity against live payloads** — the
-      single-book schema rests on this
-- [ ] **Reddit API approval** — application submitted 08-23, no ETA. No longer
-      blocking anything; it is now upside, not a dependency
-
-## Project 1 — Kalshi
-
-- [ ] **Bucket-sum detector** — short direction first; it is the identifiable one
-- [ ] **Monotonicity detector** — nested threshold families
-- [ ] **Backtest engine** — chronological replay, no lookahead, realistic fills
-- [ ] **Fractional Kelly sizing** — capped by observed book depth
-- [ ] **Fair-value model** — pick ONE domain, Fed rates or weather
-- [ ] **Calibration** — Brier with decomposition, log loss, reliability, skill score
-
-## Project 2 — Diffusion
-
-- [x] ~~Hawkes simulation~~ (08-24) — cluster construction with parentage, plus
-      Ogata thinning for the supercritical case
-- [x] ~~Hawkes MLE~~ (08-24) — O(n) recursion, multi-start, bounded, asymptotic
-      standard errors from a numerical Hessian
-- [x] ~~Parameter recovery study~~ (08-24) — bias under 4%, CI coverage 85–95%
-- [x] ~~Negative control~~ (08-24) — Poisson data gives median n = 0.033, 95th
-      percentile 0.19. That percentile is the noise floor any real estimate
-      must clear
-- [x] ~~Time-rescaling diagnostics~~ (08-24) — KS *and* Ljung-Box, because KS
-      alone cannot see autocorrelation
-- [x] ~~Trades backfill pipeline~~ (08-24) — day-chunked, resumable, both
-      endpoints, deduplicated on trade_id
-- [ ] **Bivariate Hawkes** — buy-initiated and sell-initiated flow as two
-      processes, with cross-excitation. The taker side is already parsed
-- [ ] **Event alignment** — Fed / CPI / jobs release times. Scheduled events are
-      the clean identification: the announcement time is exogenous
-- [ ] **Price discovery link** — does branching ratio predict the speed at which
-      the market converges to its settlement value?
-- [ ] **Reddit as a second process** — if approval lands. Social → trade
-      cross-excitation is strictly more interesting than either alone
-
-## Write-ups — the actual deliverable
-
-- [ ] **docs/kalshi_methodology.md** — the fee-ceiling result and the direction
-      asymmetry are ready to write up now
-- [ ] **docs/diffusion_methodology.md** — the validation studies are ready to
-      write up now, before any real-data fit exists
-- [ ] **docs/results_summary.md** — one page
+      Rounding granularity and the per-series multiplier (0–2) are unverified,
+      and every number in the fee section inherits this
+- [ ] **Reddit API approval** — submitted 08-23, no ETA, no longer blocking
 
 ## Watch out for
 
-- **Quoting a branching ratio without deseasonalising.** We now have our own
-  simulation showing it produces 0.79 out of nothing. Doing it anyway would be
-  the single most attackable thing in either project.
+- **Quoting a branching ratio without deseasonalising.** Our own simulation
+  produces 0.79 out of nothing. The most attackable thing available.
+- **Concatenating the two order book panels.** The laptop data (08-23 → 08-24)
+  used a different universe. Two datasets, not one series.
 - **Scope creep on fair value.** One domain, finished, beats three started.
+- **Trusting the log over the files.** "0 errors" was true and useless.
 - **A finding that says "no edge" is still a finding.** The fee ceiling is
   exactly that, and it is worth more than a curve-fit backtest.
-- **Project 2 drift** — downgraded. It has code, tests and results as of day 4.
-- **Trusting the log over the files.** "0 errors" was true and useless. Every
-  claim about the data — sampling rate, coverage, panel composition — gets
-  checked against the raw files before it goes in a write-up.
 
 ## Done
 
-- [x] ~~Architecture and Pydantic schema layer~~ (08-23) — 34 tests
+- [x] ~~Architecture, Pydantic schema, fee model, REST client~~ (08-23)
 - [x] ~~Corrected Hawkes branching ratio~~ (08-23) — was `α*β/λ₀`, is `α/β`
-- [x] ~~Fixed unbuildable requirements.txt~~ (08-23) — 3 bad packages
-- [x] ~~Kalshi REST client~~ (08-23) — RSA-PSS signing, verified live
-- [x] ~~Order book collector~~ (08-23) — raw-JSONL-first durability
-- [x] ~~Kalshi fee model~~ (08-23) — exact decimal arithmetic
-- [x] ~~Production API key installed~~ (08-23) — demo and prod keys separated
-- [x] ~~Selection layer~~ (08-23) — 65k markets down to a workable universe
-- [x] ~~Fixed the payload parser~~ (08-23) — live fields are unit-suffixed
-- [x] ~~Both trade directions measured~~ (08-23) — with the identifiability asymmetry
-- [x] ~~Leg cap and fee-aware ranking~~ (08-23) — 3 families became 71
-- [x] ~~Heartbeat logging and metadata dedup~~ (08-23)
-- [x] ~~Crash resilience and file logging~~ (08-23) — after a silent death
-- [x] ~~Double-clickable launchers~~ (08-23) — no more relative-path breakage
-- [x] ~~**Collection running**~~ (08-23) — the dataset exists and is growing
-- [x] ~~Committed to git and published to GitHub~~ (08-23) — certs, .env and
-      data all confirmed ignored
-- [x] ~~Reddit API application submitted~~ (08-23) — awaiting approval
-- [x] ~~**Project 2 unblocked**~~ (08-24) — trades are backfillable; the
-      six-week collection clock does not apply
-- [x] ~~Coverage audit against the raw files~~ (08-24) — outages, true
-      per-market sampling interval, panel balance
-- [x] ~~Universe pinning~~ (08-24) — `--tickers-file` and `--save-universe`;
-      current 150-ticker panel captured to `data/universe.txt`
-- [x] ~~Fixed two bugs in the audit tool itself~~ (08-24) — it reported
-      "median 1s" for one-minute data by measuring across markets instead of
-      per market, and matched gaps to outages by exact second
-- [x] ~~Caught an optimiser runaway with the validation study~~ (08-24) —
-      unbounded log-parameters let L-BFGS-B reach alpha ≈ 1e190 and report
-      success. Invisible at 20,000 events, fatal at 2,000
+- [x] ~~Selection layer and payload parser fix~~ (08-23) — documented field
+      names returned zero rows against production
+- [x] ~~Collection running~~ (08-23)
+- [x] ~~Published to GitHub~~ (08-23) — secrets confirmed ignored
+- [x] ~~Project 2 unblocked~~ (08-24) — trades turned out to be backfillable
+- [x] ~~Hawkes estimator and validation studies~~ (08-24)
+- [x] ~~Caught an optimiser runaway~~ (08-24) — α ≈ 1e190 reported as success,
+      invisible at 20,000 events, fatal at 2,000
+- [x] ~~Coverage audit, universe pinning, expiry filter~~ (08-24/25)
+- [x] ~~**Collector on a server**~~ (08-25) — systemd, watchdog, verified clean
+- [x] ~~Trades backfilled~~ (08-25) — 151,477 slow arm, 3.56M fast arm
+- [x] ~~Both methodology documents~~ (08-25)
+- [x] ~~Committed and pushed~~ (08-25)
