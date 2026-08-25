@@ -21,6 +21,7 @@ from market_calibration import (
     volume_of,
 )
 from power_law_studies import bimodality, percentiles
+from probe_weather import describe_buckets, describe_settlement
 from sensitivity_sweep import fmt_spread, spread
 from verify_complementarity import ladder, quantiles, read_book
 from window_stationarity import dispersion, halves_ratio
@@ -335,3 +336,67 @@ def test_bimodality_without_the_mixture_fit_is_indeterminate_not_negative():
     assert result["verdict"] != "not bimodal"
     assert "indeterminate" in result["verdict"]
     assert result["gap_ratio"] > 3 / (len(values) - 1)   # the split is still visible
+
+
+# -- probe_weather ----------------------------------------------------------
+#
+# The probe's job is to report a payload shape truthfully, including when the
+# shape is not what the model expects. Both helpers are pure.
+
+
+def test_describe_buckets_counts_the_open_ends():
+    """A temperature family should have exactly one bucket with no floor and
+    one with no cap. Any other count means the payload marks open ends
+    differently — which the model must know before it builds a partition."""
+    event = {"markets": [
+        {"floor_strike": None, "cap_strike": 69, "ticker": "A", "subtitle": "69 or below"},
+        {"floor_strike": 70, "cap_strike": 71, "ticker": "B", "subtitle": "70 to 71"},
+        {"floor_strike": 86, "cap_strike": None, "ticker": "C", "subtitle": "86 or above"},
+    ]}
+    out = describe_buckets(event)
+    assert out["n_markets"] == 3
+    assert out["rows_missing_floor"] == 1
+    assert out["rows_missing_cap"] == 1
+    assert out["field_population"]["floor_strike"] == 2
+    assert "ticker" in out["all_market_fields"]
+
+
+def test_describe_buckets_survives_a_payload_with_none_of_the_expected_fields():
+    """The probe exists precisely for the case where the fields are named
+    something else. It must report that, not raise."""
+    out = describe_buckets({"markets": [{"unexpected": 1}, {"unexpected": 2}]})
+    assert out["n_markets"] == 2
+    assert out["rows_missing_floor"] == 2
+    assert all(v == 0 for v in out["field_population"].values())
+    assert out["all_market_fields"] == ["unexpected"]
+
+
+def test_describe_buckets_handles_an_event_with_no_markets():
+    out = describe_buckets({})
+    assert out["n_markets"] == 0 and out["rows"] == []
+
+
+def test_describe_settlement_finds_the_station_and_the_rounding():
+    """The half-degree bucket boundaries in the model are only correct if the
+    settled value is a whole degree from a named station. This is the check
+    that the assumption is the exchange's and not ours."""
+    out = describe_settlement({
+        "rules_primary": ("Settles to the maximum temperature recorded at KNYC "
+                          "rounded to the nearest whole degree Fahrenheit."),
+        "volume": 1234,
+    })
+    assert out["mentions_station_id"] == ["KNYC"]
+    assert out["mentions_nearest_whole"] is True
+    assert out["mentions_maximum"] is True
+    assert out["mentions_degrees"] is True
+    assert "volume" not in out["fields"]          # non-text fields are not scanned
+
+
+def test_describe_settlement_reports_absence_rather_than_assuming():
+    """No rules text means the assumption is unverified. Silence here must not
+    read the same as confirmation."""
+    out = describe_settlement({"ticker": "X"})
+    assert out["fields"] == {}
+    assert out["mentions_station_id"] == []
+    assert out["mentions_nearest_whole"] is False
+    assert out["mentions_maximum"] is False

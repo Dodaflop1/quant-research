@@ -3,7 +3,7 @@
 Goal: two defensible portfolio projects for quant researcher roles, no PhD.
 Scope doc written 2026-08-21. Today is 2026-08-25 — day 5 of a 6-week plan.
 
-**26 shipped · 22 findings held · 16 open · 2 blocked. 283 tests passing.**
+**29 shipped · 24 findings held · 14 open · 2 blocked. 402 tests passing.**
 
 ## Status
 
@@ -17,25 +17,35 @@ arrivals — has been substantially dismantled by the project's own controls. Th
 is the strongest material in the repo: a result found, doubted, tested, and
 retracted with the evidence attached.
 
-**Project 1 is the thinner half.** It has findings, a verified price basis and a
-working detector, but no backtest, no fair-value model and no calibration. That
-is where the remaining portfolio risk is.
+**Project 1 is the thinner half.** It has findings, a verified price basis, a
+working detector and now a market-calibration benchmark, but no backtest and no
+*fitted* fair-value model. The temperature model is written and tested and
+refuses to quote until its error distribution is measured, which is the honest
+state but not a result. That is where the remaining portfolio risk is.
 
 ## Do next, in order
 
-- [ ] **Fair-value model — ONE domain.** Structural arbitrage is now closed in
-      every direction and at every field size, so this is the largest gap in the
-      portfolio and the only untouched half of Project 1.
-- [ ] **Merge sweep above 10 ms** (0.01, 0.03, 0.1, 0.3, 1.0 s) — the last open
-      diffusion question. Tests whether `n` keeps climbing as the sub-second
-      tail is merged away and whether the diagnostic rejections fall with it.
+- [ ] **Run `scripts/probe_weather.py`** — measures the Kalshi temperature
+      payload and the NWS forecast shape. Blocks the pair collector, and can
+      invalidate the model outright: if the settlement rules do not name a
+      station and a whole degree, the half-degree bucket boundaries are wrong
+      on every contract.
+- [ ] **Forecast/observation pair collector** — written against the probe's
+      measured shapes, not before. ~30 days of daily requests to reach the
+      minimum the error model will accept, or an AWS Open Data backfill to get
+      there this month.
+- [ ] **Fit and score the temperature model** against settled outcomes with
+      `quant.common.statistics.calibration`. The question is not whether it
+      makes money but whether it is better calibrated than the price.
+- [ ] **Scale market calibration to ~10,000 settled markets** — 398 gave 7%
+      power against a favourite-longshot bias. One evening of API time.
+- [ ] **Backtest engine** — chronological replay, no lookahead, fills capped at
+      observed depth. Turns "detected" into "would have made money".
 - [ ] **Wire the stationarity p-value into `fit_diffusion.py`** — reported
       beside every `n`, as KS and Ljung-Box already are. A flagged window's
       branching ratio prints as uninterpretable rather than being averaged in.
 - [ ] **Recompute the bimodality on unflagged windows only** — does the
       0.23 / 0.88 split survive once drift-contaminated windows are excluded?
-- [ ] **Backtest engine** — chronological replay, no lookahead, fills capped at
-      observed depth. Turns "detected" into "would have made money".
 - [ ] **`docs/results_summary.md`** — now writable, because there are real
       results to summarise.
 
@@ -103,13 +113,20 @@ is where the remaining portfolio risk is.
       it existed to answer was settled by one API scan instead
 - [ ] **Backtest engine** — chronological replay, realistic fills
 - [ ] **Monotonicity detector** — nested threshold families
-- [ ] **Fair-value model** — ONE domain, finished
-- [ ] **Calibration** — Brier with decomposition, log loss, reliability, skill
-- [ ] **Fractional Kelly sizing** — capped by observed depth
+- [x] **Calibration metrics** — Brier with decomposition, log loss,
+      reliability, skill. Shipped with 29 tests.
+- [x] **Market calibration measured** — z = +0.20, p = 0.845 at one hour, and
+      the power analysis is the finding: 7% against a favourite-longshot bias.
+- [~] **Fair-value model — temperature** — model and trade rule written and
+      tested; refuses to quote until the forecast error distribution is fitted.
+      See `docs/fair_value_temperature.md`.
+- [x] **Fractional Kelly sizing** — capped by observed depth, sized at the
+      probability moved one standard error against the position
 
 ## Project 2 — open
 
-- [ ] **Merge sweep above 10 ms** — see "Do next"
+- [x] **Merge sweep above 10 ms** — 99% of the move sits between 30 ms and
+      100 ms on 0.30% of events, then flat. Bimodality invariant across the grid.
 - [ ] **Stationarity p-value in `fit_diffusion`** — see "Do next"
 - [ ] **Bimodality on unflagged windows** — see "Do next"
 - [ ] **Fast-arm fit** — 3.56M events
