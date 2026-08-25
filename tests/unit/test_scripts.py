@@ -16,6 +16,10 @@ import pytest
 
 from detect_bucket_sum import best_bid, parse_ts
 from field_size_scan import bucket_of
+from market_calibration import (
+    composition, is_auto_generated, outcome_of, parse_time, price_at_horizons,
+    volume_of,
+)
 from power_law_studies import bimodality, percentiles
 from sensitivity_sweep import fmt_spread, spread
 from verify_complementarity import ladder, quantiles, read_book
@@ -211,3 +215,123 @@ def test_fmt_spread_survives_a_block_missing_its_band():
     assert fmt_spread({"median": None}) == "–"
     assert fmt_spread({"median": 0.5}) != ""
     assert "0.500" in fmt_spread({"median": 0.5, "p10": 0.45, "p90": 0.55})
+
+
+# -- market_calibration -----------------------------------------------------
+#
+# Drafted by the local model, two corrected. Both of its failures were the same
+# units error: it read `horizons_hours` as seconds. The cutoff is
+# `close_ts - hours * 3600`, so a horizon of 1 reaches back an hour, and its
+# fixtures spanned a few hundred seconds — the tests asserted prices the
+# function cannot return.
+
+
+def test_volume_of_reads_volume_fp_not_volume():
+    """The live API returns `volume_fp` and omits `volume`. Reading the wrong
+    key returned 0 for every market and silently emptied the sample."""
+    assert volume_of({"volume_fp": "1234.00", "volume": 0}) == 1234.0
+    assert volume_of({"volume": 500}) == 500.0
+    assert volume_of({}) == 0.0
+    assert volume_of({"volume_fp": "bad"}) == 0.0
+
+
+def test_is_auto_generated_catches_mve_shards_and_provisional():
+    """99% of the settled feed is machine-made parlay shards. Missing either
+    flag readmits them and the sample becomes noise."""
+    assert is_auto_generated({"mve_collection_ticker": "KXMVE-SHARD1"}) is True
+    assert is_auto_generated({"is_provisional": True}) is True
+    assert is_auto_generated({"mve_collection_ticker": None, "is_provisional": False}) is False
+    assert is_auto_generated({}) is False
+
+
+def test_price_at_horizons_excludes_trades_inside_the_horizon():
+    """Lookahead: the h-hour price must not see anything after the cutoff.
+
+    Using the last trade outright gives 0.90 here, which is the settled price
+    and would make the market look clairvoyant.
+    """
+    close = 100_000.0
+    trades = [(78_000.0, 55.0), (96_000.0, 65.0), (99_900.0, 90.0)]
+    prices = price_at_horizons(trades, close, horizons_hours=[1, 6])
+    assert prices["1"] == pytest.approx(0.65)     # cutoff 96_400
+    assert prices["6"] == pytest.approx(0.55)     # cutoff 78_400
+
+
+def test_a_horizon_older_than_the_first_trade_is_absent_not_zero():
+    """A missing key means 'had not traded that far out'. A 0.0 would be scored
+    as a confident NO and would wreck the calibration curve."""
+    prices = price_at_horizons([(96_000.0, 65.0)], 100_000.0, horizons_hours=[1, 24])
+    assert prices == {"1": pytest.approx(0.65)}
+
+
+def test_price_at_horizons_handles_unsorted_input():
+    """The tape does not arrive in order."""
+    scrambled = [(96_000.0, 70.0), (90_000.0, 50.0), (95_000.0, 60.0)]
+    a = price_at_horizons(sorted(scrambled), 100_000.0, [1])
+    b = price_at_horizons(scrambled, 100_000.0, [1])
+    assert a == b == {"1": pytest.approx(0.7)}
+
+
+def test_price_at_horizons_returns_empty_for_no_trades():
+    assert price_at_horizons([], 100.0, [1, 6]) == {}
+
+
+def test_outcome_of_maps_yes_no_and_rejects_void():
+    """A voided market has no outcome. Coercing it to 0 counts a refund as a
+    NO and biases the base rate."""
+    assert outcome_of({"result": "yes"}) == 1
+    assert outcome_of({"result": "YES"}) == 1
+    assert outcome_of({"result": "no"}) == 0
+    assert outcome_of({"result": "voided"}) is None
+    assert outcome_of({"result": ""}) is None
+    assert outcome_of({}) is None
+    assert outcome_of({"result": None}) is None
+
+
+def test_composition_reports_the_concentration_that_invalidated_a_run():
+    """The 210-market run was 79% one series and reported a verdict anyway."""
+    records = ([{"series": "KXAFLGAME", "prices": {"1": 0.5}}] * 166
+               + [{"series": "KXACTBLUETOP", "prices": {"1": 0.5}}] * 44)
+    comp = composition(records)
+    assert comp["n"] == 210
+    assert comp["distinct_series"] == 2
+    assert comp["top_series_share"] == pytest.approx(166 / 210, rel=0.01)
+    assert comp["top"][0][0] == "KXAFLGAME"
+
+
+def test_parse_time_rejects_junk_instead_of_raising():
+    """One malformed timestamp mid-collection must not end a two-hour run."""
+    assert parse_time("2026-08-24T12:00:00Z") is not None
+    assert parse_time("") is None
+    assert parse_time("not-a-date") is None
+    assert parse_time(12345) is None
+    assert parse_time(None) is None
+    assert parse_time("2026-13-45T99:99:99Z") is None
+
+
+def test_bimodality_without_the_mixture_fit_is_indeterminate_not_negative():
+    """REGRESSION. `scikit-learn` is a declared dependency, but the mixture fit
+    is wrapped in a try/except. When it did not run, the old code fell through
+    to `split = False` and returned "not bimodal" — reporting a stale virtualenv
+    as evidence about the data. On a clean split the two answers are opposite.
+    """
+    import builtins
+
+    values = [0.20 + 0.01 * i for i in range(8)] + [0.86 + 0.01 * i for i in range(8)]
+    real_import = builtins.__import__
+
+    def no_sklearn(name, *args, **kwargs):
+        if name.startswith("sklearn"):
+            raise ImportError("No module named 'sklearn'")
+        return real_import(name, *args, **kwargs)
+
+    builtins.__import__ = no_sklearn
+    try:
+        result = bimodality(values)
+    finally:
+        builtins.__import__ = real_import
+
+    assert result["delta_bic"] is None
+    assert result["verdict"] != "not bimodal"
+    assert "indeterminate" in result["verdict"]
+    assert result["gap_ratio"] > 3 / (len(values) - 1)   # the split is still visible

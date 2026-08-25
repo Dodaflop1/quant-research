@@ -154,17 +154,28 @@ def bimodality(values: list[float]) -> dict[str, Any]:
         two = GaussianMixture(2, random_state=0, n_init=5).fit(x)
         delta_bic = float(one - two.bic(x))
         means = sorted(float(m) for m in two.means_.ravel())
-    except Exception as exc:  # pragma: no cover - sklearn optional
+    except Exception as exc:
         log.warning("mixture fit unavailable: %s", exc)
         means = []
 
-    split = (delta_bic is not None and delta_bic > 10.0) and gap_ratio > 3 * even_gap
+    if delta_bic is None:
+        # Not "not bimodal". The mixture half of the test did not run, so the
+        # sample was never asked the question. Returning the negative verdict
+        # here would report a missing dependency as a scientific finding, and
+        # `scikit-learn` is a declared requirement precisely so this path is
+        # a broken environment rather than a supported mode.
+        verdict = "indeterminate: mixture fit unavailable"
+    elif delta_bic > 10.0 and gap_ratio > 3 * even_gap:
+        verdict = "bimodal"
+    else:
+        verdict = "not bimodal"
+
     return out | {
         "delta_bic": delta_bic,
         "component_means": means,
         "gap_ratio": gap_ratio,
         "even_gap_ratio": float(even_gap),
-        "verdict": "bimodal" if split else "not bimodal",
+        "verdict": verdict,
     }
 
 
