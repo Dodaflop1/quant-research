@@ -11,6 +11,9 @@ would pass under a plausible but wrong simplification of the implementation.
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -21,7 +24,9 @@ from market_calibration import (
     volume_of,
 )
 from power_law_studies import bimodality, percentiles
-from probe_weather import describe_buckets, describe_settlement
+from probe_weather import (
+    _paged, describe_buckets, describe_settlement, settlement_of,
+)
 from sensitivity_sweep import fmt_spread, spread
 from verify_complementarity import ladder, quantiles, read_book
 from window_stationarity import dispersion, halves_ratio
@@ -400,3 +405,172 @@ def test_describe_settlement_reports_absence_rather_than_assuming():
     assert out["mentions_station_id"] == []
     assert out["mentions_nearest_whole"] is False
     assert out["mentions_maximum"] is False
+
+
+class _FakeClient:
+    """Minimal stand-in: hands back canned pages and counts the requests."""
+
+    def __init__(self, pages):
+        self._pages = pages
+        self.calls = []
+
+    def get(self, path, params):
+        self.calls.append(params.get("cursor"))
+        page = self._pages[len(self.calls) - 1]
+
+        class _R:
+            payload = page
+        return _R()
+
+
+def test_paged_reports_truncation_instead_of_looking_complete():
+    """REGRESSION for the failure that made this probe report nothing.
+
+    The first version stopped at its page cap and printed only how many records
+    it had seen, so "no temperature series exist" and "the scan ran out of
+    pages" were indistinguishable. They are opposite conclusions.
+    """
+    pages = [{"series": [1, 2], "cursor": "c1"},
+             {"series": [3, 4], "cursor": "c2"},
+             {"series": [5, 6], "cursor": "c3"}]
+    rows, truncated = _paged(_FakeClient(pages), "/series", {}, "series", max_pages=2)
+    assert rows == [1, 2, 3, 4]
+    assert truncated is True
+
+
+def test_paged_says_it_finished_when_the_cursor_runs_out():
+    pages = [{"series": [1], "cursor": "c1"}, {"series": [2], "cursor": None}]
+    rows, truncated = _paged(_FakeClient(pages), "/series", {}, "series", max_pages=10)
+    assert rows == [1, 2]
+    assert truncated is False
+
+
+def test_paged_passes_the_cursor_forward():
+    """Not passing it re-requests page one until the cap, which reads as a
+    complete scan of a very repetitive universe."""
+    pages = [{"series": [1], "cursor": "c1"}, {"series": [2], "cursor": None}]
+    client = _FakeClient(pages)
+    _paged(client, "/series", {"limit": 200}, "series", max_pages=10)
+    assert client.calls == [None, "c1"]
+
+
+def test_paged_handles_a_missing_key_without_inventing_rows():
+    rows, truncated = _paged(_FakeClient([{"cursor": None}]), "/series", {}, "series", 5)
+    assert rows == [] and truncated is False
+
+
+# -- market_calibration resume ----------------------------------------------
+#
+# The point of a resume is crash safety, so these test the crash, not the
+# happy path.
+
+
+def test_a_missing_cache_starts_empty():
+    from market_calibration import load_cache
+    assert load_cache(Path("nowhere/at/all.json")) == ([], set())
+
+
+def test_a_corrupt_cache_is_fatal_rather_than_silently_discarded(tmp_path):
+    """REGRESSION. Logging a warning and starting fresh would overwrite however
+    many hours of collection are in that file — turning one interrupted write
+    into total data loss. Deleting it is a decision for a person."""
+    from market_calibration import CorruptCache, load_cache
+    bad = tmp_path / "settled.json"
+    bad.write_text('{"records": [{"ticker": "A-1"', encoding="utf-8")
+    with pytest.raises(CorruptCache, match="not readable JSON"):
+        load_cache(bad)
+
+
+def test_attempted_includes_tickers_that_yielded_no_record(tmp_path):
+    """The two sets differ, and that difference is the value of the resume. A
+    market whose tape yields no price at any horizon produces no record but
+    still cost the API calls. Rebuilding "attempted" from records alone
+    re-fetches every one of them on every restart."""
+    from market_calibration import load_cache, save_cache
+    cache = tmp_path / "settled.json"
+    save_cache(cache, "settled", 100.0,
+               [{"ticker": "A-1", "prices": {"1": 0.5}}],
+               {"A-1", "B-2-no-trades", "C-3-no-trades"})
+    records, attempted = load_cache(cache)
+    assert [r["ticker"] for r in records] == ["A-1"]
+    assert attempted == {"A-1", "B-2-no-trades", "C-3-no-trades"}
+
+
+def test_a_cache_written_by_an_older_run_still_loads(tmp_path):
+    """Files already on disk have no `attempted_tickers` key. They must resume,
+    not raise — the whole point is not to throw away existing collection."""
+    from market_calibration import load_cache
+    cache = tmp_path / "settled.json"
+    cache.write_text(json.dumps({"records": [{"ticker": "A-1"}, {"ticker": "B-2"}]}),
+                     encoding="utf-8")
+    records, attempted = load_cache(cache)
+    assert len(records) == 2
+    assert attempted == {"A-1", "B-2"}
+
+
+def test_the_write_is_atomic_so_an_interrupted_flush_cannot_truncate(tmp_path):
+    """A plain write_text on a multi-megabyte file is not atomic. Flushing
+    often would then make the crash window MORE dangerous, which is backwards.
+    Simulated by failing mid-write and checking the previous file survived."""
+    import market_calibration as mc
+    cache = tmp_path / "settled.json"
+    mc.save_cache(cache, "settled", 100.0, [{"ticker": "GOOD"}], {"GOOD"})
+
+    real_replace = mc.os.replace
+    mc.os.replace = lambda *a, **k: (_ for _ in ()).throw(OSError("crash mid-rename"))
+    try:
+        with pytest.raises(OSError):
+            mc.save_cache(cache, "settled", 100.0, [{"ticker": "NEW"}], {"NEW"})
+    finally:
+        mc.os.replace = real_replace
+
+    survived = json.loads(cache.read_text(encoding="utf-8"))
+    assert [r["ticker"] for r in survived["records"]] == ["GOOD"]
+
+
+def test_saved_records_round_trip_through_the_cache(tmp_path):
+    from market_calibration import load_cache, save_cache
+    cache = tmp_path / "nested" / "settled.json"
+    rows = [{"ticker": f"T-{i}", "outcome": i % 2, "prices": {"1": 0.5}} for i in range(3)]
+    save_cache(cache, "settled", 100.0, rows, {r["ticker"] for r in rows})
+    back, attempted = load_cache(cache)
+    assert back == rows
+    assert attempted == {"T-0", "T-1", "T-2"}
+    assert not cache.with_suffix(cache.suffix + ".tmp").exists()   # temp is renamed away
+
+
+def test_settlement_of_separates_the_free_source_from_the_proprietary_one():
+    """The decisive fact about the whole temperature domain. Most daily
+    temperature series settle on The Weather Company, whose history is not
+    public; only the NWS-settled ones can be back-fitted from free data."""
+    nws = settlement_of({"settlement_sources": [
+        {"name": "NWS Climatological Report",
+         "url": "https://forecast.weather.gov/product.php?site=OKX&product=CLI&issuedby=NYC"}]})
+    assert nws["settles_on"] == "National Weather Service"
+    assert nws["cli_locations"] == ["NYC"]      # the id /products wants
+    assert nws["cli_offices"] == ["OKX"]        # NOT the id /products wants
+
+    twc = settlement_of({"settlement_sources": [
+        {"name": "The Weather Company", "url": "https://weather.com/kalshi"}]})
+    assert twc["settles_on"] == "The Weather Company (proprietary)"
+    assert twc["cli_locations"] == []
+
+
+def test_settlement_of_reports_an_absent_source_as_absent():
+    """`SNOW` and `RAINMIA` carry no settlement_sources at all. That must not
+    read as 'settles on the NWS'."""
+    out = settlement_of({})
+    assert out["settles_on"] == "none listed"
+    assert out["cli_locations"] == [] and out["urls"] == []
+
+
+def test_settlement_of_keeps_every_cli_location_in_a_multi_source_series():
+    """Hurricane series list several offices. Taking only the first would
+    silently drop locations the contract actually names."""
+    out = settlement_of({"settlement_sources": [
+        {"name": "National Weather Service",
+         "url": "https://forecast.weather.gov/product.php?site=MHX&product=CLI&issuedby=HSE"},
+        {"name": "National Weather Service",
+         "url": "https://forecast.weather.gov/product.php?site=ILM&product=CLI&issuedby=CRE"},
+    ]})
+    assert out["cli_locations"] == ["CRE", "HSE"]

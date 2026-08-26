@@ -50,6 +50,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import random
 import sys
 from collections import defaultdict
@@ -328,13 +329,92 @@ def price_at_horizons(trades: list[tuple[float, float]], close_ts: float,
     return out
 
 
+class CorruptCache(RuntimeError):
+    """The cache exists and cannot be read.
+
+    Deliberately fatal. The alternative — logging a warning and starting fresh
+    — silently discards however many hours of collection are in that file and
+    then overwrites it, which turns one interrupted write into total data loss.
+    Deleting the file is a decision for whoever is watching, not for the script.
+    """
+
+
+def load_cache(cache: Path) -> tuple[list[dict], set[str]]:
+    """Existing records and every ticker already attempted.
+
+    The two are not the same set, and that difference is the whole value of the
+    resume. A market whose trade tape yields no price at any horizon produces
+    no record, but it still cost the API calls to find that out. Reconstructing
+    "seen" from the records alone would re-fetch every one of those on every
+    restart — and in the 398-market run they outnumbered the usable markets.
+    """
+    if not cache.exists():
+        return [], set()
+    try:
+        data = json.loads(cache.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise CorruptCache(
+            f"{cache} exists but is not readable JSON ({exc}). It holds however "
+            "much collection has already happened. Inspect it, and delete or move "
+            "it deliberately if it is genuinely lost — this script will not "
+            "overwrite it for you."
+        ) from exc
+
+    records = data.get("records") or []
+    attempted = set(data.get("attempted_tickers") or [])
+    attempted |= {r.get("ticker") for r in records if r.get("ticker")}
+    attempted.discard(None)
+    log.info("resuming: %d records already collected, %d tickers already attempted",
+             len(records), len(attempted))
+    return records, attempted
+
+
+def save_cache(cache: Path, status: str, min_volume: float,
+               records: list[dict], attempted: set[str]) -> None:
+    """Write the cache atomically.
+
+    A plain `write_text` on a multi-megabyte file is not atomic: interrupt it
+    and what is left on disk is half a JSON document. Since the point of
+    flushing every N markets is to survive an interruption, doing it
+    non-atomically would make the crash window *more* dangerous the more often
+    it was flushed. Written to a sibling temp file and renamed, which is atomic
+    on both POSIX and Windows via os.replace.
+    """
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "status": status,
+        "min_volume": min_volume,
+        "horizons_hours": HORIZONS_HOURS,
+        "collected_at": datetime.now(timezone.utc).isoformat(),
+        "records": records,
+        "attempted_tickers": sorted(attempted),
+    }
+    tmp = cache.with_suffix(cache.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, indent=2, default=float), encoding="utf-8")
+    os.replace(tmp, cache)
+
+
 def collect(client: KalshiClient, status: str, max_markets: int,
             min_volume: float, cache: Path, max_pages: int,
             max_close_ts: int | None, by_series: bool = True,
             max_series: int = 120) -> list[dict]:
     log.info("paging settled markets (status=%r, max %d pages)", status, max_pages)
-    # Enough to sample from without paging the whole settled history.
-    target = max_markets * 4
+
+    records, attempted = load_cache(cache)
+    already = len(records)
+    remaining = max_markets - already
+    if remaining <= 0:
+        log.info("cache already holds %d records, at or above the target of %d; "
+                 "nothing to collect", already, max_markets)
+        return records
+    if already:
+        log.info("%d still to collect to reach %d", remaining, max_markets)
+
+    # `max_markets` is the target for the WHOLE collection, not for this run.
+    # Treating it as a per-run figure means every resume adds another full
+    # target and the sample size becomes a function of how often the run
+    # happened to crash.
+    target = remaining * 4
     candidates: list[dict] = []
     seen_status: dict[str, int] = defaultdict(int)
     skipped: dict[str, int] = defaultdict(int)
@@ -377,6 +457,9 @@ def collect(client: KalshiClient, status: str, max_markets: int,
         if opened is not None and (close - opened).total_seconds() < 3600:
             skipped["open for under an hour"] += 1
             continue
+        if m.get("ticker") in attempted:
+            skipped["already attempted in an earlier run"] += 1
+            continue
         candidates.append({
             "ticker": m.get("ticker"),
             "series": (m.get("ticker") or "").split("-")[0],
@@ -390,7 +473,7 @@ def collect(client: KalshiClient, status: str, max_markets: int,
     log.info("%d usable markets (statuses seen: %s)", len(candidates), dict(seen_status))
     for reason, count in sorted(skipped.items(), key=lambda kv: -kv[1]):
         log.info("  skipped %6d: %s", count, reason)
-    if not candidates:
+    if not candidates and not records:
         raise SystemExit(
             f"no usable markets for status={status!r}. Statuses actually seen: "
             f"{dict(seen_status) or 'none - the endpoint returned nothing'}.\n"
@@ -398,17 +481,24 @@ def collect(client: KalshiClient, status: str, max_markets: int,
             "field names, which is how to tell a wrong status filter from a "
             "wrong field name."
         )
+    if not candidates:
+        log.info("nothing new to collect; returning the %d cached records", len(records))
+        return records
 
     # Sample at random, not by volume: ranking on volume would select the most
     # liquid markets, which are exactly the ones most likely to be calibrated,
     # and the result would be an artifact of the selection.
+    # The seed is fixed, but a resumed run shuffles a different candidate list
+    # (the attempted ones are gone), so the sample is not reproducible from the
+    # seed alone across restarts. It is still a random sample of what remains,
+    # which is what matters for the estimate; it is not a replayable one.
     rng = random.Random(BASE_SEED)
     rng.shuffle(candidates)
-    chosen = candidates[:max_markets]
+    chosen = candidates[:remaining]
     log.info("sampling %d of them (seed %d)", len(chosen), BASE_SEED)
 
-    records: list[dict] = []
     longest = max(HORIZONS_HOURS) * 3600.0
+    flush_every = 50
     for i, c in enumerate(chosen, 1):
         try:
             trades: dict[str, tuple[float, float]] = {}
@@ -433,18 +523,26 @@ def collect(client: KalshiClient, status: str, max_markets: int,
             log.warning("%s: trades unavailable (%s)", c["ticker"], exc)
             continue
 
+        # Marked attempted whether or not it yielded a price. A market with no
+        # trade in any horizon window is a permanent answer, not a transient
+        # failure, and re-asking it on every restart is exactly the waste the
+        # resume exists to remove. The API error above is NOT marked, because
+        # that one may well succeed next time.
+        attempted.add(c["ticker"])
         prices = price_at_horizons(list(trades.values()), c["close_ts"], HORIZONS_HOURS)
         if prices:
             records.append({**c, "n_trades": len(trades), "prices": prices})
-        if i % 25 == 0:
-            log.info("  %d/%d markets, %d usable", i, len(chosen), len(records))
+        if i % flush_every == 0:
+            save_cache(cache, status, min_volume, records, attempted)
+            log.info("  flushed at %d/%d: %d records (%d this run)",
+                     i, len(chosen), len(records), len(records) - already)
+        elif i % 25 == 0:
+            log.info("  %d/%d markets, %d records (%d this run)",
+                     i, len(chosen), len(records), len(records) - already)
 
-    cache.parent.mkdir(parents=True, exist_ok=True)
-    cache.write_text(json.dumps({"status": status, "min_volume": min_volume,
-                                 "horizons_hours": HORIZONS_HOURS,
-                                 "collected_at": datetime.now(timezone.utc).isoformat(),
-                                 "records": records}, indent=2), encoding="utf-8")
-    log.info("wrote %s (%d markets)", cache, len(records))
+    save_cache(cache, status, min_volume, records, attempted)
+    log.info("wrote %s (%d markets, %d added this run)",
+             cache, len(records), len(records) - already)
     return records
 
 

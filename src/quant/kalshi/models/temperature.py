@@ -2,8 +2,34 @@
 
 Kalshi lists, for each of several cities, a family of mutually exclusive
 contracts on the official daily maximum temperature: ``<= 69``, ``70 to 71``,
-``72 to 73``, ... , ``>= 86``. Settlement is the integer degree Fahrenheit the
-National Weather Service publishes for the named station.
+``72 to 73``, ... , ``>= 86``.
+
+**Settlement source varies by series and decides whether this model can be
+fitted at all.** Measured off each series' own `settlement_sources` field, not
+from the help centre:
+
+- Most daily temperature series — ``KXHIGHNY``, ``KXHIGHCHI``, ``KXHIGHTPHX``
+  and the bulk of the rest — settle on **The Weather Company**, a proprietary
+  product with no public history. Their observed half cannot be retrieved for
+  free, and the vendor is itself a forecaster, so the settlement source and the
+  obvious model input are not independent.
+- A smaller set — ``KXHIGHOU``, ``KXDENHIGH``, ``KXPHILHIGH``, ``KXDVHIGH`` and
+  the legacy ``HIGH*`` series — settle on the NWS **Daily Climate Report**, a
+  free product reporting whole degrees Fahrenheit. Those are the ones this
+  model can be fitted and scored on from public data.
+
+Either way the settled value is a whole degree, which is what
+`Bucket.continuous_bounds` rests on. It is specifically NOT the station
+observation feed, which reports Celsius and can miss a spike between hourly
+readings.
+
+Two consequences the caller owns rather than this module:
+
+- The report's day runs midnight to midnight local, **except under Daylight
+  Saving Time, when it runs 01:00 to 00:59 the following day**. A collector
+  that pairs forecasts with calendar-day maxima is wrong for eight months of
+  the year, in a way that shows up as forecast error rather than as a bug.
+- Lead time must be measured to the *close* of that window, not to midnight.
 
 The public forecast is the obvious input. Turning it into a price is not
 obvious, and almost all of the work is in two places that are easy to get

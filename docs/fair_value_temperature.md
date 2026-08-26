@@ -142,16 +142,89 @@ an unmeasured assumption that produced a plausible-looking number, and this is
 the one place where such an assumption would be invisible in every downstream
 result.
 
+## What the first probe run established
+
+Run 2026-08-25 against the live exchange and api.weather.gov. Three things
+changed, and one of them would have quietly corrupted the model.
+
+**The settlement source is not the observation feed, and for most series it is
+not public either.** This is the finding that partly undercuts the domain
+choice, so it goes first.
+
+The help-centre article says daily temperature markets settle on the NWS Daily
+Climate Report. Each series' own `settlement_sources` field says otherwise for
+most of them:
+
+| settles on | examples |
+|---|---|
+| The Weather Company (proprietary) | `KXHIGHNY`, `KXHIGHCHI`, `KXHIGHTPHX`, `KXHIGHTDAL`, most of the rest |
+| NWS Daily Climate Report (free) | `KXHIGHOU`, `KXDENHIGH`, `KXPHILHIGH`, `KXDVHIGH`, legacy `HIGH*` |
+
+The Weather Company product has **no public history**, so the observed half of
+a (forecast, observed) pair cannot be retrieved for those series — and the
+vendor is itself a forecaster, which means the settlement source and the
+obvious model input are not independent. The claim in the section above, that
+weather is the one domain with a genuinely independent free public forecast,
+holds only for the NWS-settled subset. It was written from a help-centre page
+rather than from the per-series field, which is the same mistake as reading a
+payload's documentation instead of the payload.
+
+The station observation endpoint is not a substitute for either: it returns
+**Celsius**, and a maximum over hourly readings can miss a spike between them.
+It agrees with the settled value most days and disagrees exactly on the days
+the contract was interesting.
+
+The whole-degree Fahrenheit assumption behind `Bucket.continuous_bounds`
+survives in both cases.
+
+**The CLI location id was in the output all along.** Fetching the climate
+report failed with HTTP 400 twice, because the probe passed the station id
+(`KNYC`) and then the issuing office (`OKX`). `/products/types/CLI/locations/`
+wants the `issuedby` code, `NYC` — and Kalshi's own settlement URLs carry it:
+`site=OKX&product=CLI&issuedby=NYC`. The probe now parses `issuedby` and `site`
+out of those URLs and tries the contract's own ids first.
+
+### The decision this forces
+
+Three routes, and it is not obvious which is right:
+
+1. **Restrict to the NWS-settled cities.** Keeps the free-data story whole, at
+   the cost of a much smaller universe — a handful of cities rather than the
+   dozen-plus assumed here.
+2. **Model the Weather Company series anyway**, accepting a settlement source
+   whose history is unavailable and whose publisher is a competitor forecaster.
+3. **Take the observed half from Kalshi itself.** A settled event says which
+   bucket won, which is the observed high interval-censored to the bucket
+   width, measured in the settlement source's own units — and it works for both
+   settlement sources. It leaves the *forecast* half still needing an archive,
+   and it turns fitting into an interval-censored estimation problem rather
+   than a plain one.
+
+**The day is not the calendar day under Daylight Saving Time.** The report runs
+midnight to midnight local in standard time, but **01:00 to 00:59 the following
+day** under DST — eight months of the year. A collector that pairs forecasts
+with calendar-day maxima is wrong for two thirds of the sample, and wrong in a
+way that presents as forecast error rather than as a bug.
+
+**The probe's own first answer was wrong, and quietly.** It paged `/events`,
+stopped at its page cap 2,400 events in, printed the count, and reported no
+temperature series — while the cursor was still live. It also matched series on
+substrings, which put a Kelowna mayoral election, a Lowe's earnings market and
+an NFL ownership market in a temperature report, all on the "LOW" inside
+another word. Series are now enumerated through `GET /series`, selected by the
+category the exchange itself sets, and every paged loop reports whether it
+finished or hit its cap. There are four tests on that last part, because
+"nothing found" and "stopped looking" reading the same is the exact shape of
+the mistake this project keeps making.
+
 ## Next, in order
 
-1. **Run `scripts/probe_weather.py`.** Neither API is reachable from the
-   analysis container, so the ingestion layer is deliberately unwritten. The
-   probe reports the temperature series the exchange actually lists, how a
-   bucket is expressed in the payload, and — the one that can invalidate the
-   model — whether the settlement rules really do name a station and a whole
-   degree. If they do not, `Bucket.continuous_bounds` is wrong by half a degree
-   on every contract.
-2. **Write the pair collector against the measured shapes**, not before.
+1. **Rerun `scripts/probe_weather.py`** now that it enumerates properly, and
+   read the settlement source and bucket structure off a real temperature
+   series.
+2. **Write the pair collector against the measured shapes**, not before. Two
+   requests per city per day: the seven-day forecast, and the Daily Climate
+   Report for the day just closed. Respect the DST window.
 3. **Fit, and score against the settled outcomes** with the calibration module.
    The scoring question is not "does the model make money" but "is it better
    calibrated than the price", and the Brier decomposition already separates
