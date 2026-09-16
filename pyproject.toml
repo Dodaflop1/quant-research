@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "quant-research"
 version = "0.1.0"
-description = "Kalshi mispricing engine and an information diffusion model"
+description = "Reproducible quantitative research for event contracts, diffusion, and U.S. equities"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -30,6 +30,8 @@ dependencies = [
     "pydantic-settings>=2.1",
     "matplotlib>=3.8",
     "streamlit>=1.30",
+    "yfinance>=0.2",
+    "openai>=1.0",
 ]
 
 [tool.setuptools.packages.find]

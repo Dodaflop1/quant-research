@@ -1,4 +1,45 @@
-# Quant research
+# Quant Research — market ideas, rigorously tested
+
+Market hypotheses can now be generated faster than they can be rigorously tested. This repository is a research workbench for closing that gap: an AI can translate a plain-English U.S.-equities idea into a constrained, inspectable experiment, but deterministic data and quantitative code decide the result.
+
+The demo-ready MVP is intentionally narrow. It supports daily U.S. equity price data, short-horizon reversal/momentum signals, and an optional unusually-high-volume filter based on prior average volume. It does **not** execute trades, give investment advice, sell strategies, run a marketplace, handle payments, connect to a broker, or copy trade.
+
+## The research loop
+
+1. Describe an idea, such as “Do stocks that drop 5% rebound over five days?”
+2. The optional AI layer proposes a typed `Hypothesis` — it cannot generate Python or execute a backtest.
+3. The researcher inspects and edits every assumption, then explicitly confirms it.
+4. The deterministic engine calculates signals from prior closes, enters at the signal close / evaluates a fixed future close, applies round-trip transaction costs, and records every selected observation.
+5. The app reports performance, a one-sided t-test, and a nearby parameter sensitivity grid. A promising output is a starting point for more validation, not a trading recommendation.
+
+## Run the U.S. equities MVP
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt
+pip install -e .
+streamlit run app/app.py
+```
+
+The app runs offline with `examples/sample_prices.csv`; upload a daily-bar CSV with `date,ticker,close,volume` for your own experiment. If `OPENAI_API_KEY` is configured (see `.env.example`), the **Interpret with AI** button uses Structured Outputs to propose the same constrained schema. Otherwise, the form is fully usable by hand.
+
+For a more honest demo, leave **Reserve an untouched test period** enabled. Define a rule using the earlier period, then read the later panel once without changing the rule. A positive result with only a few qualifying events is a lead for further research, not investment evidence.
+
+Run the tests with:
+
+```bash
+pytest tests/unit -q
+```
+
+### Design and limitations
+
+- **AI is the interface, not the verifier.** `quant.equities.ai` creates a proposal and Pydantic validates it again before any deterministic execution.
+- The present cost model is a declared fixed bps cost on each side. It is not a liquidity, spread, borrow, corporate-action, delisting, survivorship-bias, or tax model.
+- The engine is an event-study MVP. Overlapping signals are equal-weighted by signal date; it is not a full portfolio accounting system.
+- Yahoo Finance download support is optional convenience input. Save and version any downloaded dataset before citing a result; source revisions can otherwise break reproducibility.
+- The t-test assumes independent observations, which overlapping holding periods violate. Treat it as a descriptive screen; add block bootstrap / Newey-West inference before making a serious claim.
+
+## Existing research
 
 Two research projects sharing one data and statistics layer.
 
