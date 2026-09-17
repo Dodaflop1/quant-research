@@ -1,6 +1,6 @@
 # Equities research product — development plan and working memory
 
-Updated: 2026-09-16. Status: Milestone 1 ledger implemented locally; remaining milestones are pending.
+Updated: 2026-09-16. Status: Milestone 1 complete; first workbench slice of Milestone 2 implemented locally.
 
 ## Product direction
 
@@ -14,10 +14,12 @@ Initial user hypothesis: independent researchers and students working with daily
 
 Existing prototype: Streamlit UI, typed hypothesis, CSV/Yahoo data, reversal/momentum and volume filters, optional AI interpretation, daily portfolio chart, trade records, metrics, t-test, sensitivity grid, historical split. Implementation lives in app/app.py and src/quant/equities/. Existing Kalshi/diffusion work has its own plans and must be preserved.
 
-Known gaps after Milestone 1:
+Known gaps after the first workbench slice:
 
-- Downloading begins at the experiment start without indicator warm-up; provider end-date semantics differ from inclusive UI dates. CSV and downloaded-frame validation also differ; missing tickers can silently disappear.
-- Raw JSON dominates results. The benchmark schema field does not produce a benchmark comparison. Saved, immutable experiment records are absent.
+- The data source is still re-downloaded on ordinary app reruns; there is no cached or immutable snapshot yet.
+- Coverage is reported but a missing price during an open holding still needs a defined policy. The built-in dataset intentionally contains only AAPL/MSFT and therefore cannot show SPY comparison.
+- Benchmark comparison is buy-and-hold from its first available selected-period close with no estimated costs. It does not yet measure same-date event excess return.
+- Saved, immutable experiment records are absent.
 
 Earlier chat statements about approximately 20% return and statistical significance are provisional prototype outputs. Recalculate after engine fixes; do not preserve them as validated product claims.
 
@@ -46,6 +48,8 @@ Experiment: ship three constrained templates: high-volume selloff/rebound; SPY a
 Results: plain-language summary, event/position counts, exposure, net return, maximum drawdown, strategy and SPY growth charts, underlying records and assumptions. Define “outperform”: same-date event excess return and whole-period portfolio benchmark comparison answer different questions. Align benchmark dates and price conventions; disclose different exposure and costs. Move raw JSON/advanced statistics into details.
 
 Acceptance: a user can define, confirm and finish a supported experiment; empty results explain which filters removed events; dates and percent/dollar units are clear; unsupported input produces useful feedback; main workflow passes a Streamlit UI smoke test.
+
+Completed 2026-09-16: the workbench now begins with three supported templates: high-volume selloff/rebound, SPY after consecutive down sessions, and large-gain momentum. The consecutive-down condition is implemented as actual consecutive negative closes rather than a cumulative-return shortcut. Data ingestion now shares one finite-value validator for CSV and provider data, fetches warm-up history and includes the selected-period end date for Yahoo downloads. The UI reports per-ticker coverage, explicitly warns about missing data, exposes the benchmark ticker, and overlays available SPY data with the strategy curve. Main results use readable return, drawdown, completed-trade and invested-days summaries; detailed statistics are collapsed. The local Streamlit smoke run completed with the built-in dataset. Focused tests cover templates' new signal condition, coverage, benchmark alignment and validation (11 passed).
 
 ## Milestone 3 — saved, reproducible research
 
@@ -81,4 +85,4 @@ For future equities product work, read this file and the repository instructions
 
 Update this document at the end of each implementation task with completed items, checks, unresolved issues, decision changes, and the next concrete task. Distinguish implemented behavior from proposals. Store customer learning alongside the relevant milestone. Repository files are the durable memory; do not promise recall without access to them.
 
-Next concrete task: implement Milestone 1's execution contract and ledger, unify downstream calculations, add accounting/boundary tests, and re-evaluate the saved dataset. No product code changed during this planning task.
+Next concrete task: add local saved runs and immutable data snapshots for Milestone 3, beginning with a small SQLite metadata store and a reproducible export bundle. Keep the current workbench stable while doing so.

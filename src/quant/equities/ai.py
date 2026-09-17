@@ -5,7 +5,7 @@ import os
 from .schema import Hypothesis
 
 SYSTEM = """Translate a user's U.S. equities research idea into the supplied schema.
-Only use the supported reversal or momentum signal. Never claim an expected result,
+Only use the supported reversal, momentum, or consecutive-down-session condition. Never claim an expected result,
 invent unsupported fundamentals, or produce executable code. Use the provided defaults
 when the idea is ambiguous and let the user review the resulting hypothesis."""
 

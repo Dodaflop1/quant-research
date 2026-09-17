@@ -6,8 +6,8 @@ import streamlit as st
 import altair as alt
 from quant.equities.ai import interpret
 from quant.equities.analysis import performance, statistical_test
-from quant.equities.data import download_yfinance, load_csv
-from quant.equities.engine import build_ledger
+from quant.equities.data import coverage_report, download_yfinance, load_csv
+from quant.equities.engine import benchmark_curve, build_ledger
 from quant.equities.robustness import sensitivity
 from quant.equities.schema import Hypothesis, Signal
 
@@ -16,9 +16,9 @@ st.title("From market idea to reproducible experiment")
 st.caption("AI interprets the idea. Deterministic code verifies the result. Research only — not investment advice.")
 
 # Do not display results calculated under an earlier engine after the app reloads.
-if st.session_state.get("engine_version") != 5:
+if st.session_state.get("engine_version") != 6:
     st.session_state.pop("confirmed", None)
-    st.session_state["engine_version"] = 5
+    st.session_state["engine_version"] = 6
 
 with st.sidebar:
     data_source = st.radio("Price data", ["Built-in demo", "Upload CSV", "Download Yahoo Finance"])
@@ -28,16 +28,23 @@ with st.sidebar:
     elif data_source == "Download Yahoo Finance":
         st.caption("Downloads adjusted daily prices for the confirmed tickers. Save a CSV before citing results.")
 
-defaults = dict(name="5-day reversal", tickers=["AAPL", "MSFT", "NVDA", "AMZN", "GOOGL"], signal="reversal", lookback_days=1, threshold=0.05, volume_ratio_min=None, volume_lookback_days=20, holding_days=5, direction="long", start_date=date(2023, 1, 1), end_date=date(2024, 12, 31), benchmark="SPY", transaction_cost_bps=10, top_n=5)
-st.subheader("1. Describe or define the hypothesis")
+defaults = dict(name="5-day reversal", tickers=["AAPL", "MSFT", "NVDA", "AMZN", "GOOGL"], signal="reversal", lookback_days=1, threshold=0.05, consecutive_down_days=None, volume_ratio_min=None, volume_lookback_days=20, holding_days=5, direction="long", start_date=date(2023, 1, 1), end_date=date(2024, 12, 31), benchmark="SPY", transaction_cost_bps=10, top_n=5)
+templates = {
+    "Custom or AI-assisted": defaults,
+    "High-volume selloff rebound": {**defaults, "name": "High-volume selloff rebound", "volume_ratio_min": 2.0},
+    "SPY after three down sessions": {**defaults, "name": "SPY after three down sessions", "tickers": ["SPY"], "threshold": 0.01, "consecutive_down_days": 3, "holding_days": 5, "top_n": 1},
+    "Large gain momentum": {**defaults, "name": "Large gain momentum", "signal": "momentum", "threshold": 0.05},
+}
+st.subheader("1. Experiment")
+template_name = st.selectbox("Start from a supported template", list(templates))
 idea = st.text_area("Research idea", "Do large one-day selloffs in a liquid U.S. stock basket rebound over the next five days?")
 if st.button("Interpret with AI"):
     try:
-        st.session_state["proposal"] = interpret(idea, defaults).model_dump(mode="json")
+        st.session_state["proposal"] = interpret(idea, templates[template_name]).model_dump(mode="json")
     except RuntimeError as error:
         st.warning(str(error))
 
-proposal = st.session_state.get("proposal", defaults)
+proposal = st.session_state.get("proposal", defaults) if template_name == "Custom or AI-assisted" else templates[template_name]
 with st.form("confirm_hypothesis"):
     name = st.text_input("Name", proposal["name"])
     tickers = st.text_input("Tickers", ", ".join(proposal["tickers"]))
@@ -45,6 +52,11 @@ with st.form("confirm_hypothesis"):
     signal = c1.selectbox("Signal", [item.value for item in Signal], index=[item.value for item in Signal].index(proposal["signal"]))
     lookback = c2.number_input("Lookback days", 1, 252, int(proposal["lookback_days"]))
     threshold = c3.number_input("Threshold (%)", 0.1, 100.0, float(proposal["threshold"]) * 100) / 100
+    use_consecutive_down = st.checkbox("Require consecutive down sessions", value=proposal.get("consecutive_down_days") is not None)
+    consecutive_down_days = None
+    if use_consecutive_down:
+        consecutive_down_days = st.number_input("Consecutive down sessions", 2, 20, int(proposal.get("consecutive_down_days") or 3))
+        st.caption("This condition replaces the threshold when selecting signals.")
     use_volume = st.checkbox("Require unusually high volume", value=proposal.get("volume_ratio_min") is not None)
     volume_ratio = None
     volume_window = 20
@@ -55,6 +67,7 @@ with st.form("confirm_hypothesis"):
     c4, c6 = st.columns(2)
     hold = c4.number_input("Holding days", 1, 60, int(proposal["holding_days"]))
     costs = c6.number_input("Cost / side (bps)", 0.0, 200.0, float(proposal["transaction_cost_bps"]))
+    benchmark = st.text_input("Benchmark ticker", proposal.get("benchmark", "SPY")).upper().strip()
     initial_investment = st.number_input("Starting investment ($)", min_value=100.0, value=10_000.0, step=100.0)
     start = st.date_input("Start", date.fromisoformat(str(proposal["start_date"])))
     end = st.date_input("End", date.fromisoformat(str(proposal["end_date"])))
@@ -75,7 +88,7 @@ with st.form("confirm_hypothesis"):
     confirmed = st.form_submit_button("Confirm hypothesis and run")
 
 if confirmed:
-    hypothesis = Hypothesis(name=name, tickers=tickers.split(","), signal=signal, lookback_days=lookback, threshold=threshold, volume_ratio_min=volume_ratio, volume_lookback_days=volume_window, holding_days=hold, direction="long", start_date=start, end_date=end, transaction_cost_bps=costs, top_n=len(tickers.split(",")))
+    hypothesis = Hypothesis(name=name, tickers=tickers.split(","), signal=signal, lookback_days=lookback, threshold=threshold, consecutive_down_days=consecutive_down_days, volume_ratio_min=volume_ratio, volume_lookback_days=volume_window, holding_days=hold, direction="long", start_date=start, end_date=end, benchmark=benchmark, transaction_cost_bps=costs, top_n=len(tickers.split(",")))
     st.session_state["confirmed"] = (hypothesis, initial_investment, data_source, uploaded, split_date)
 
 if "confirmed" in st.session_state:
@@ -89,12 +102,17 @@ if "confirmed" in st.session_state:
             data = load_csv(confirmed_upload)
         elif confirmed_source == "Download Yahoo Finance":
             data = download_yfinance(
-                hypothesis.tickers,
+                hypothesis.tickers + [hypothesis.benchmark],
                 str(hypothesis.start_date - timedelta(days=400)),
-                str(hypothesis.end_date),
+                str(hypothesis.end_date + timedelta(days=1)),
             )
         else:
             data = load_csv(Path("examples/sample_prices.csv"))
+        st.subheader("2. Data")
+        coverage = coverage_report(data, hypothesis.tickers + [hypothesis.benchmark], hypothesis.start_date, hypothesis.end_date)
+        st.dataframe(coverage, use_container_width=True, hide_index=True, column_config={"coverage_pct": st.column_config.NumberColumn("Coverage", format="%.1f%%")})
+        if (coverage.observations == 0).any():
+            st.warning("One or more requested tickers have no prices in the selected period. Results may omit a stock or benchmark.")
         result = build_ledger(data, hypothesis, initial_investment)
         trades = result.trades
         daily_path = result.daily
@@ -102,7 +120,7 @@ if "confirmed" in st.session_state:
         if daily_path["active_positions"].sum() == 0:
             st.warning("No qualifying, fully observable positions were found for these settings. Try a longer date range, a lower threshold, or different tickers.")
         metrics, inference = performance(returns), statistical_test(returns)
-        st.subheader("2. Results")
+        st.subheader("3. Results")
         if split_date and hypothesis.start_date < split_date <= hypothesis.end_date:
             exploratory = hypothesis.model_copy(update={"end_date": split_date - timedelta(days=1)})
             untouched = hypothesis.model_copy(update={"start_date": split_date})
@@ -117,25 +135,43 @@ if "confirmed" in st.session_state:
             explore_col, test_col = st.columns(2)
             explore_col.markdown("**Exploration period**")
             explore_col.metric("Qualifying events", len(exploratory_trades))
-            explore_col.json(performance(exploratory_path["net_return"]))
+            exploration_metrics = performance(exploratory_path["net_return"])
+            explore_col.metric("Net return", f"{exploration_metrics['total_return']:.1%}")
+            explore_col.caption(f"Maximum drawdown: {exploration_metrics['max_drawdown']:.1%}")
             test_col.markdown("**Later comparison period**")
             test_col.metric("Qualifying events", len(untouched_trades))
-            test_col.json(performance(untouched_path["net_return"]))
+            test_metrics = performance(untouched_path["net_return"])
+            test_col.metric("Net return", f"{test_metrics['total_return']:.1%}")
+            test_col.caption(f"Maximum drawdown: {test_metrics['max_drawdown']:.1%}")
             st.caption("Event count—not the number of calendar days—is the key sample-size check. The t-test below is descriptive because daily returns can overlap.")
-        st.json({"performance": metrics, "one_sided_t_test": inference, "qualifying_events": len(trades)})
+        exposure = (daily_path["active_positions"] > 0).mean() if len(daily_path) else 0.0
+        metric_a, metric_b, metric_c, metric_d = st.columns(4)
+        metric_a.metric("Net portfolio return", f"{metrics['total_return']:.1%}")
+        metric_b.metric("Maximum drawdown", f"{metrics['max_drawdown']:.1%}")
+        metric_c.metric("Completed trades", len(trades))
+        metric_d.metric("Days invested", f"{exposure:.0%}")
         curve = daily_path.copy()
         curve["cumulative_return_pct"] = (curve["portfolio_value"] / initial_investment - 1) * 100
         curve["drawdown_pct"] = (curve["portfolio_value"] / curve["portfolio_value"].cummax().clip(lower=initial_investment) - 1) * 100
         left, right = st.columns(2)
-        left.caption("Cumulative return after estimated costs")
+        benchmark = benchmark_curve(data, hypothesis.benchmark, curve.index, initial_investment)
+        comparison = curve[["cumulative_return_pct"]].rename(columns={"cumulative_return_pct": "Strategy"}).join(
+            benchmark[["benchmark_return_pct"]].rename(columns={"benchmark_return_pct": hypothesis.benchmark})
+        )
+        left.caption("Strategy and benchmark growth")
         left.altair_chart(
-            alt.Chart(curve.reset_index()).mark_line(point=True).encode(
+            alt.Chart(comparison.reset_index()).transform_fold(
+                ["Strategy", hypothesis.benchmark], as_=["series", "return_pct"]
+            ).mark_line(point=True).encode(
                 x=alt.X("date:T", title="Signal date"),
-                y=alt.Y("cumulative_return_pct:Q", title="Cumulative return (%)"),
-                tooltip=[alt.Tooltip("date:T", title="Date"), alt.Tooltip("cumulative_return_pct:Q", title="Return", format=".2f")],
+                y=alt.Y("return_pct:Q", title="Cumulative return (%)"),
+                color=alt.Color("series:N", title=""),
+                tooltip=[alt.Tooltip("date:T", title="Date"), alt.Tooltip("series:N", title="Series"), alt.Tooltip("return_pct:Q", title="Return", format=".2f")],
             ).properties(height=300),
             use_container_width=True,
         )
+        if benchmark["benchmark_return_pct"].dropna().empty:
+            left.caption(f"{hypothesis.benchmark} is not present in this dataset, so the chart shows the strategy only.")
         right.caption("Loss from the highest prior portfolio value")
         right.altair_chart(
             alt.Chart(curve.reset_index()).mark_line(point=True).encode(
@@ -153,5 +189,8 @@ if "confirmed" in st.session_state:
         st.dataframe(trades, use_container_width=True)
         if not result.skipped_signals.empty:
             st.caption(f"Excluded {len(result.skipped_signals)} signals that could not complete inside the selected period.")
+        with st.expander("Details and statistical screen"):
+            st.json({"performance": metrics, "one_sided_t_test": inference, "qualifying_events": len(trades)})
+            st.caption("The t-test is descriptive: daily returns may include overlapping positions and are not guaranteed to be independent.")
     except Exception as error:
         st.error(f"Could not run the experiment: {error}")

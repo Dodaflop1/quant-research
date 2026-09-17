@@ -3,8 +3,10 @@ import numpy as np
 import pandas as pd
 import pytest
 from quant.equities.analysis import performance, statistical_test
+from quant.equities.data import coverage_report, load_frame
 from quant.equities.engine import (
     _selected_signals,
+    benchmark_curve,
     build_ledger,
     daily_portfolio_returns,
     equity_curve,
@@ -103,3 +105,28 @@ def test_volume_filter_requires_volume_above_prior_average():
     )
     assert len(signals) == 1
     assert signals.iloc[0].volume_ratio == pytest.approx(3.0)
+
+
+def test_consecutive_down_condition_is_not_a_three_day_cumulative_return_proxy():
+    dates = pd.date_range("2023-01-02", periods=8, freq="B")
+    data = pd.DataFrame({"date": dates, "ticker": "SPY", "close": [100, 99, 98, 97, 98, 99, 100, 101], "volume": 1_000})
+    signals = _selected_signals(data, _hypothesis(tickers=["SPY"], consecutive_down_days=3, threshold=.50))
+    assert list(signals.date) == [pd.Timestamp("2023-01-05")]
+
+
+def test_coverage_and_benchmark_curve_are_aligned_to_portfolio_dates():
+    dates = pd.date_range("2023-01-02", periods=4, freq="B")
+    data = pd.DataFrame(
+        {"date": list(dates) * 2, "ticker": ["TEST"] * 4 + ["SPY"] * 4,
+         "close": [100, 101, 102, 103, 200, 202, 204, 206], "volume": 1_000}
+    )
+    coverage = coverage_report(load_frame(data), ["TEST", "SPY", "MISSING"], dates[0], dates[-1])
+    assert dict(zip(coverage.ticker, coverage.observations)) == {"MISSING": 0, "SPY": 4, "TEST": 4}
+    curve = benchmark_curve(load_frame(data), "SPY", dates, 1_000)
+    assert curve.iloc[0].benchmark_value == pytest.approx(1_000)
+    assert curve.iloc[-1].benchmark_return_pct == pytest.approx(3.0)
+
+
+def test_data_validation_rejects_missing_or_non_finite_prices():
+    with pytest.raises(ValueError, match="finite"):
+        load_frame(pd.DataFrame({"date": ["2023-01-02"], "ticker": ["TEST"], "close": [np.inf], "volume": [1_000]}))

@@ -2,7 +2,7 @@
 
 Market hypotheses can now be generated faster than they can be rigorously tested. This repository is a research workbench for closing that gap: an AI can translate a plain-English U.S.-equities idea into a constrained, inspectable experiment, but deterministic data and quantitative code decide the result.
 
-The demo-ready MVP is intentionally narrow. It supports daily U.S. equity price data, short-horizon reversal/momentum signals, and an optional unusually-high-volume filter based on prior average volume. It does **not** execute trades, give investment advice, sell strategies, run a marketplace, handle payments, connect to a broker, or copy trade.
+The demo-ready MVP is intentionally narrow. It supports daily U.S. equity price data, short-horizon reversal/momentum signals, an optional consecutive-down-session condition, and an optional unusually-high-volume filter based on prior average volume. It does **not** execute trades, give investment advice, sell strategies, run a marketplace, handle payments, connect to a broker, or copy trade.
 
 ## The research loop
 

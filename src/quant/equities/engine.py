@@ -21,12 +21,21 @@ def _selected_signals(data: pd.DataFrame, hypothesis: Hypothesis) -> pd.DataFram
     """Select close-known signals, retaining earlier rows only for feature warm-up."""
     frame = data[data.ticker.isin(hypothesis.tickers)].copy().sort_values(["ticker", "date"])
     frame["lookback_return"] = frame.groupby("ticker").close.pct_change(hypothesis.lookback_days)
+    frame["daily_return"] = frame.groupby("ticker").close.pct_change()
     frame["volume_ratio"] = frame.volume / frame.groupby("ticker").volume.transform(
         lambda values: values.shift(1).rolling(
             hypothesis.volume_lookback_days, min_periods=hypothesis.volume_lookback_days
         ).mean()
     )
-    if hypothesis.signal is Signal.reversal:
+    if hypothesis.consecutive_down_days is not None:
+        consecutive_down = frame.groupby("ticker").daily_return.transform(
+            lambda values: values.lt(0).rolling(
+                hypothesis.consecutive_down_days, min_periods=hypothesis.consecutive_down_days
+            ).sum().eq(hypothesis.consecutive_down_days)
+        )
+        eligible = frame[consecutive_down]
+        ascending = True
+    elif hypothesis.signal is Signal.reversal:
         eligible = frame[frame.lookback_return <= -hypothesis.threshold]
         ascending = True
     else:
@@ -193,4 +202,17 @@ def equity_curve(returns: pd.Series, initial_investment: float) -> pd.DataFrame:
             "drawdown": capital / peak - 1,
             "drawdown_pct": (capital / peak - 1) * 100,
         }
+    )
+
+
+def benchmark_curve(data: pd.DataFrame, benchmark: str, dates: pd.DatetimeIndex, initial_investment: float) -> pd.DataFrame:
+    """Buy-and-hold benchmark aligned to portfolio dates, without estimated trading costs."""
+    prices = data[data.ticker == benchmark.upper()].set_index("date").close.sort_index()
+    aligned = prices.reindex(dates).ffill()
+    if aligned.dropna().empty:
+        return pd.DataFrame(index=dates, columns=["benchmark_value", "benchmark_return_pct"])
+    first_price = aligned.dropna().iloc[0]
+    value = initial_investment * aligned / first_price
+    return pd.DataFrame(
+        {"benchmark_value": value, "benchmark_return_pct": (value / initial_investment - 1) * 100}, index=dates
     )

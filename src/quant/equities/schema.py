@@ -24,6 +24,9 @@ class Hypothesis(BaseModel):
     signal: Signal
     lookback_days: int = Field(ge=1, le=252)
     threshold: float = Field(gt=0, le=1, description="Absolute return threshold, decimal")
+    consecutive_down_days: Optional[int] = Field(
+        default=None, ge=2, le=20, description="Require this many consecutive negative daily closes"
+    )
     volume_ratio_min: Optional[float] = Field(
         default=None, ge=1, le=100, description="Minimum volume / prior average volume"
     )
@@ -49,6 +52,9 @@ class Hypothesis(BaseModel):
 
     @property
     def summary(self) -> str:
+        if self.consecutive_down_days is not None:
+            return (f"Long eligible stocks after {self.consecutive_down_days} consecutive down sessions, "
+                    f"hold {self.holding_days} trading days; {self.transaction_cost_bps:g} bps per side.")
         verb = "fell" if self.signal is Signal.reversal else "rose"
         volume = (
             f", with volume at least {self.volume_ratio_min:g}x its prior "
