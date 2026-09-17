@@ -54,8 +54,10 @@ def test_analysis_handles_return_series_and_sensitivity():
     assert performance(returns)["observations"] == 1
     assert statistical_test(returns)["p_value"] == 1.0
     grid = sensitivity(_data(), _hypothesis())
+    smaller_capital_grid = sensitivity(_data(), _hypothesis(), initial_investment=1_000)
     assert len(grid) == 9
     assert set(grid.columns) == {"threshold", "holding_days", "total_return", "max_drawdown", "completed_trades", "skipped_signals"}
+    pd.testing.assert_series_equal(grid.total_return, smaller_capital_grid.total_return)
     assert statistical_test(pd.Series([0.0, 0.0])) == {
         "n": 2,
         "mean_return": 0.0,
@@ -141,6 +143,17 @@ def test_missing_ticker_returns_an_empty_result_instead_of_crashing():
     result = build_ledger(_data(), _hypothesis(tickers=["MISSING"]))
     assert result.daily.empty
     assert result.trades.empty
+
+
+def test_selected_start_and_end_dates_bound_the_portfolio_graph_data():
+    data = _data()
+    early = build_ledger(data, _hypothesis(start_date=date(2023, 1, 2), end_date=date(2023, 1, 13)))
+    late = build_ledger(data, _hypothesis(start_date=date(2023, 1, 16), end_date=date(2023, 1, 17)))
+    assert early.daily.index.min() == pd.Timestamp("2023-01-02")
+    assert early.daily.index.max() == pd.Timestamp("2023-01-13")
+    assert late.daily.index.min() == pd.Timestamp("2023-01-16")
+    assert late.daily.index.max() == pd.Timestamp("2023-01-17")
+    assert early.daily.index.max() < late.daily.index.min()
 
 
 def test_each_built_in_template_has_a_completed_trade_in_the_demo_data():

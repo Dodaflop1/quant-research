@@ -65,6 +65,8 @@ Demo-quality correction 2026-09-16: all three supported templates now have at le
 
 UI reliability correction 2026-09-16: changing an experiment's end date now clamps any previously chosen earlier/later comparison split into the newly valid range, preventing a Streamlit form-rendering exception.
 
+Date-boundary correction 2026-09-16: the built-in demo now defaults to its actual January 2023 input window and its actual AAPL/MSFT/SPY ticker coverage; result charts label their x-axis as portfolio dates, and the results panel states both the active research range and loaded-data range. A focused test verifies that the ledger data used for graphs begins and ends exactly at the selected experiment dates.
+
 Remaining Milestone 3 work: add a compact run-history view and backup/import or schema-migration handling before introducing accounts or sharing.
 
 ## Milestone 4 — honest research validation

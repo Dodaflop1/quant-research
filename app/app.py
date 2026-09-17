@@ -17,10 +17,13 @@ st.title("From market idea to reproducible experiment")
 st.caption("AI interprets the idea. Deterministic code verifies the result. Research only — not investment advice.")
 
 # Do not display results calculated under an earlier engine after the app reloads.
-if st.session_state.get("engine_version") != 8:
+if st.session_state.get("engine_version") != 10:
     st.session_state.pop("confirmed", None)
     st.session_state.pop("saved_run", None)
-    st.session_state["engine_version"] = 8
+    for state_key in list(st.session_state):
+        if state_key.startswith("hypothesis_") or state_key in {"template_name", "form_baseline_run_id"}:
+            st.session_state.pop(state_key)
+    st.session_state["engine_version"] = 10
 
 store = RunStore()
 
@@ -74,7 +77,9 @@ if comparison_run_ids:
     except ValueError as error:
         st.warning(str(error))
 
-defaults = dict(name="5-day reversal", tickers=["AAPL", "MSFT", "NVDA", "AMZN", "GOOGL"], signal="reversal", lookback_days=1, threshold=0.05, consecutive_down_days=None, volume_ratio_min=None, volume_lookback_days=20, holding_days=5, direction="long", start_date=date(2023, 1, 1), end_date=date(2024, 12, 31), benchmark="SPY", transaction_cost_bps=10, top_n=5)
+# The built-in CSV is intentionally small, so its defaults use the actual demo
+# window. Researchers using uploaded/provider data can select any supported range.
+defaults = dict(name="5-day reversal", tickers=["AAPL", "MSFT"], signal="reversal", lookback_days=1, threshold=0.05, consecutive_down_days=None, volume_ratio_min=None, volume_lookback_days=20, holding_days=5, direction="long", start_date=date(2023, 1, 2), end_date=date(2023, 1, 25), benchmark="SPY", transaction_cost_bps=10, top_n=2)
 templates = {
     "Custom or AI-assisted": defaults,
     "High-volume selloff rebound": {
@@ -107,7 +112,7 @@ def apply_template_values(template: dict) -> None:
             "hypothesis_benchmark": template.get("benchmark", "SPY"),
             "hypothesis_start": start_date,
             "hypothesis_end": end_date,
-            "hypothesis_split": min(max(date(2024, 1, 1), start_date), end_date),
+            "hypothesis_split": start_date + (end_date - start_date) // 2,
         }
     )
 
@@ -135,6 +140,11 @@ proposal = (
 )
 if saved_baseline:
     st.caption(f"Editing saved snapshot {saved_baseline.run_id[:8]}. Confirming and saving creates a new revision; the original remains unchanged.")
+if saved_baseline and st.session_state.get("form_baseline_run_id") != saved_baseline.run_id:
+    apply_template_values(saved_baseline.hypothesis.model_dump(mode="json"))
+    st.session_state["form_baseline_run_id"] = saved_baseline.run_id
+elif not saved_baseline:
+    st.session_state.pop("form_baseline_run_id", None)
 if "hypothesis_name" not in st.session_state:
     apply_template_values(proposal)
 with st.form("confirm_hypothesis"):
@@ -227,7 +237,7 @@ if "confirmed" in st.session_state:
             st.warning("No qualifying, fully observable positions were found for these settings. Try a longer date range, a lower threshold, or different tickers.")
         metrics, inference = performance(returns), statistical_test(returns)
         st.subheader("3. Results")
-        if split_date and hypothesis.start_date < split_date <= hypothesis.end_date:
+        if split_date and hypothesis.start_date < split_date < hypothesis.end_date:
             exploratory = hypothesis.model_copy(update={"end_date": split_date - timedelta(days=1)})
             untouched = hypothesis.model_copy(update={"start_date": split_date})
             exploratory_result = build_ledger(data, exploratory, initial_investment)
@@ -256,6 +266,13 @@ if "confirmed" in st.session_state:
         metric_b.metric("Maximum drawdown", f"{metrics['max_drawdown']:.1%}")
         metric_c.metric("Completed trades", len(trades))
         metric_d.metric("Days invested", f"{exposure:.0%}")
+        observed_start = data.date.min().date()
+        observed_end = data.date.max().date()
+        st.caption(
+            f"Active research window: {hypothesis.start_date:%b %d, %Y} to {hypothesis.end_date:%b %d, %Y}. "
+            f"Loaded input covers {observed_start:%b %d, %Y} to {observed_end:%b %d, %Y}. "
+            "Press Confirm hypothesis and run after changing any assumption or date."
+        )
         curve = daily_path.copy()
         curve["cumulative_return_pct"] = (curve["portfolio_value"] / initial_investment - 1) * 100
         curve["drawdown_pct"] = (curve["portfolio_value"] / curve["portfolio_value"].cummax().clip(lower=initial_investment) - 1) * 100
@@ -269,7 +286,7 @@ if "confirmed" in st.session_state:
             alt.Chart(comparison.reset_index()).transform_fold(
                 ["Strategy", hypothesis.benchmark], as_=["series", "return_pct"]
             ).mark_line(point=True).encode(
-                x=alt.X("date:T", title="Signal date"),
+                x=alt.X("date:T", title="Portfolio date"),
                 y=alt.Y("return_pct:Q", title="Cumulative return (%)"),
                 color=alt.Color("series:N", title=""),
                 tooltip=[alt.Tooltip("date:T", title="Date"), alt.Tooltip("series:N", title="Series"), alt.Tooltip("return_pct:Q", title="Return", format=".2f")],
@@ -281,7 +298,7 @@ if "confirmed" in st.session_state:
         right.caption("Loss from the highest prior portfolio value")
         right.altair_chart(
             alt.Chart(curve.reset_index()).mark_line(point=True).encode(
-                x=alt.X("date:T", title="Signal date"),
+                x=alt.X("date:T", title="Portfolio date"),
                 y=alt.Y("drawdown_pct:Q", title="Drawdown (%)"),
                 tooltip=[alt.Tooltip("date:T", title="Date"), alt.Tooltip("drawdown_pct:Q", title="Drawdown", format=".2f")],
             ).properties(height=300),
@@ -290,7 +307,7 @@ if "confirmed" in st.session_state:
         st.caption("Signals are observed at a close, positions enter at the next available close, and the ledger includes cash, held shares, and both transaction-cost sides. Only positions that can fully close within the selected period are included.")
         st.dataframe(daily_path, use_container_width=True)
         st.subheader("Sensitivity (predefined nearby settings)")
-        st.dataframe(sensitivity(data, hypothesis), use_container_width=True)
+        st.dataframe(sensitivity(data, hypothesis, initial_investment=initial_investment), use_container_width=True)
         st.subheader("Executed experiment records")
         st.dataframe(trades, use_container_width=True)
         if not result.skipped_signals.empty:
