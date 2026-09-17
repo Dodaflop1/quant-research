@@ -1,4 +1,6 @@
 from datetime import date
+import io
+import zipfile
 import numpy as np
 import pandas as pd
 import pytest
@@ -15,6 +17,7 @@ from quant.equities.engine import (
 )
 from quant.equities.robustness import sensitivity
 from quant.equities.schema import Hypothesis
+from quant.equities.runs import RunStore
 
 
 def _data() -> pd.DataFrame:
@@ -130,3 +133,17 @@ def test_coverage_and_benchmark_curve_are_aligned_to_portfolio_dates():
 def test_data_validation_rejects_missing_or_non_finite_prices():
     with pytest.raises(ValueError, match="finite"):
         load_frame(pd.DataFrame({"date": ["2023-01-02"], "ticker": ["TEST"], "close": [np.inf], "volume": [1_000]}))
+
+
+def test_saved_run_reopens_identical_snapshot_and_exports_bundle(tmp_path):
+    data = _data()
+    result = build_ledger(data, _hypothesis(), 1_000)
+    store = RunStore(tmp_path / "runs")
+    saved = store.save(_hypothesis(), 1_000, "Unit test", None, data, result)
+    reopened = store.load(saved.run_id)
+    assert reopened.data_hash == saved.data_hash
+    pd.testing.assert_frame_equal(reopened.data, data)
+    pd.testing.assert_frame_equal(reopened.result.daily, result.daily)
+    assert reopened.result.trades.iloc[0].net_pnl == pytest.approx(result.trades.iloc[0].net_pnl)
+    with zipfile.ZipFile(io.BytesIO(store.export_bundle(saved.run_id))) as bundle:
+        assert {"metadata.json", "prices.csv", "daily_ledger.csv", "trades.csv", "skipped_signals.csv"} <= set(bundle.namelist())

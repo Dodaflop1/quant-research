@@ -12,7 +12,7 @@ Product development priorities and continuity notes live in
 1. Describe an idea, such as “Do stocks that drop 5% rebound over five days?”
 2. The optional AI layer proposes a typed `Hypothesis` — it cannot generate Python or execute a backtest.
 3. The researcher inspects and edits every assumption, then explicitly confirms it.
-4. The deterministic engine calculates signals from prior closes, enters at the signal close / evaluates a fixed future close, applies round-trip transaction costs, and records every selected observation.
+4. The deterministic engine calculates signals from prior closes, enters at the next available close, exits after the chosen holding period, applies declared entry and exit costs, and records a cash-and-holdings ledger.
 5. The app reports performance, a one-sided t-test, and a nearby parameter sensitivity grid. A promising output is a starting point for more validation, not a trading recommendation.
 
 ## Run the U.S. equities MVP
@@ -28,6 +28,8 @@ The app runs offline with `examples/sample_prices.csv`; upload a daily-bar CSV w
 
 For a more honest demo, leave **Reserve an untouched test period** enabled. Define a rule using the earlier period, then read the later panel once without changing the rule. A positive result with only a few qualifying events is a lead for further research, not investment evidence.
 
+Use **Save this experiment** after reviewing a result to keep a local, reproducible snapshot. It stores the normalized price input and the calculated ledger under `data/equities_runs/` (which is intentionally not committed to Git), and **Download reproducible research bundle** exports the snapshot, output records, and metadata as a ZIP file. Reopen a saved run from the sidebar to inspect the recorded result without downloading current provider data.
+
 Run the tests with:
 
 ```bash
@@ -38,8 +40,8 @@ pytest tests/unit -q
 
 - **AI is the interface, not the verifier.** `quant.equities.ai` creates a proposal and Pydantic validates it again before any deterministic execution.
 - The present cost model is a declared fixed bps cost on each side. It is not a liquidity, spread, borrow, corporate-action, delisting, survivorship-bias, or tax model.
-- The engine is an event-study MVP. Overlapping signals are equal-weighted by signal date; it is not a full portfolio accounting system.
-- Yahoo Finance download support is optional convenience input. Save and version any downloaded dataset before citing a result; source revisions can otherwise break reproducibility.
+- The engine is a narrow long-only, daily-close portfolio model. It does not model spreads, liquidity, borrowing, taxes, corporate actions, delistings, or a survivorship-free historical universe.
+- Yahoo Finance download support is optional convenience input. Saved runs snapshot the normalized downloaded data locally; unsaved provider results can change if the provider revises history.
 - The t-test assumes independent observations, which overlapping holding periods violate. Treat it as a descriptive screen; add block bootstrap / Newey-West inference before making a serious claim.
 
 ## Existing research

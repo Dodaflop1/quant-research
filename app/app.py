@@ -9,6 +9,7 @@ from quant.equities.analysis import performance, statistical_test
 from quant.equities.data import coverage_report, download_yfinance, load_csv
 from quant.equities.engine import benchmark_curve, build_ledger
 from quant.equities.robustness import sensitivity
+from quant.equities.runs import RunStore
 from quant.equities.schema import Hypothesis, Signal
 
 st.set_page_config(page_title="Quant Research", layout="wide")
@@ -16,9 +17,12 @@ st.title("From market idea to reproducible experiment")
 st.caption("AI interprets the idea. Deterministic code verifies the result. Research only — not investment advice.")
 
 # Do not display results calculated under an earlier engine after the app reloads.
-if st.session_state.get("engine_version") != 6:
+if st.session_state.get("engine_version") != 7:
     st.session_state.pop("confirmed", None)
-    st.session_state["engine_version"] = 6
+    st.session_state.pop("saved_run", None)
+    st.session_state["engine_version"] = 7
+
+store = RunStore()
 
 with st.sidebar:
     data_source = st.radio("Price data", ["Built-in demo", "Upload CSV", "Download Yahoo Finance"])
@@ -27,6 +31,22 @@ with st.sidebar:
         st.caption("Uses examples/sample_prices.csv — illustrative only.")
     elif data_source == "Download Yahoo Finance":
         st.caption("Downloads adjusted daily prices for the confirmed tickers. Save a CSV before citing results.")
+    saved_index = store.list_runs()
+    if not saved_index.empty:
+        st.divider()
+        st.caption("Saved research")
+        saved_index["label"] = saved_index.apply(
+            lambda row: f"{row['created_at'][:16]} · {row['run_id'][:8]} · {row['source']}", axis=1
+        )
+        saved_label = st.selectbox("Open a saved run", saved_index["label"])
+        if st.button("Open saved run"):
+            saved_id = saved_index.loc[saved_index.label == saved_label, "run_id"].iloc[0]
+            saved = store.load(saved_id)
+            st.session_state["confirmed"] = (
+                saved.hypothesis, saved.initial_investment, "Saved snapshot", None, saved.split_date,
+            )
+            st.session_state["saved_run"] = saved
+            st.session_state["latest_saved_run_id"] = saved.run_id
 
 defaults = dict(name="5-day reversal", tickers=["AAPL", "MSFT", "NVDA", "AMZN", "GOOGL"], signal="reversal", lookback_days=1, threshold=0.05, consecutive_down_days=None, volume_ratio_min=None, volume_lookback_days=20, holding_days=5, direction="long", start_date=date(2023, 1, 1), end_date=date(2024, 12, 31), benchmark="SPY", transaction_cost_bps=10, top_n=5)
 templates = {
@@ -90,6 +110,7 @@ with st.form("confirm_hypothesis"):
 if confirmed:
     hypothesis = Hypothesis(name=name, tickers=tickers.split(","), signal=signal, lookback_days=lookback, threshold=threshold, consecutive_down_days=consecutive_down_days, volume_ratio_min=volume_ratio, volume_lookback_days=volume_window, holding_days=hold, direction="long", start_date=start, end_date=end, benchmark=benchmark, transaction_cost_bps=costs, top_n=len(tickers.split(",")))
     st.session_state["confirmed"] = (hypothesis, initial_investment, data_source, uploaded, split_date)
+    st.session_state.pop("saved_run", None)
 
 if "confirmed" in st.session_state:
     hypothesis, initial_investment, confirmed_source, confirmed_upload, split_date = st.session_state["confirmed"]
@@ -100,6 +121,11 @@ if "confirmed" in st.session_state:
                 st.warning("Choose a CSV file in the sidebar, then confirm again.")
                 st.stop()
             data = load_csv(confirmed_upload)
+        elif confirmed_source == "Saved snapshot":
+            saved = st.session_state.get("saved_run")
+            if saved is None:
+                raise ValueError("Saved run is no longer available in this session. Choose it again from Saved research.")
+            data = saved.data
         elif confirmed_source == "Download Yahoo Finance":
             data = download_yfinance(
                 hypothesis.tickers + [hypothesis.benchmark],
@@ -113,7 +139,7 @@ if "confirmed" in st.session_state:
         st.dataframe(coverage, use_container_width=True, hide_index=True, column_config={"coverage_pct": st.column_config.NumberColumn("Coverage", format="%.1f%%")})
         if (coverage.observations == 0).any():
             st.warning("One or more requested tickers have no prices in the selected period. Results may omit a stock or benchmark.")
-        result = build_ledger(data, hypothesis, initial_investment)
+        result = saved.result if confirmed_source == "Saved snapshot" else build_ledger(data, hypothesis, initial_investment)
         trades = result.trades
         daily_path = result.daily
         returns = daily_path["net_return"]
@@ -192,5 +218,21 @@ if "confirmed" in st.session_state:
         with st.expander("Details and statistical screen"):
             st.json({"performance": metrics, "one_sided_t_test": inference, "qualifying_events": len(trades)})
             st.caption("The t-test is descriptive: daily returns may include overlapping positions and are not guaranteed to be independent.")
+        st.subheader("4. Saved research")
+        if confirmed_source == "Saved snapshot":
+            active_run_id = st.session_state.get("latest_saved_run_id")
+            st.caption(f"Opened saved snapshot {active_run_id[:8]}. Its outputs use the recorded ledger rather than fresh market data.")
+        elif st.button("Save this experiment"):
+            saved = store.save(hypothesis, initial_investment, confirmed_source, split_date, data, result)
+            st.session_state["latest_saved_run_id"] = saved.run_id
+            st.success(f"Saved run {saved.run_id[:8]} with its exact price snapshot.")
+        active_run_id = st.session_state.get("latest_saved_run_id")
+        if active_run_id:
+            st.download_button(
+                "Download reproducible research bundle",
+                data=store.export_bundle(active_run_id),
+                file_name=f"quant-research-{active_run_id[:8]}.zip",
+                mime="application/zip",
+            )
     except Exception as error:
         st.error(f"Could not run the experiment: {error}")

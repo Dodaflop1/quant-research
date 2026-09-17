@@ -1,6 +1,6 @@
 # Equities research product — development plan and working memory
 
-Updated: 2026-09-16. Status: Milestone 1 complete; first workbench slice of Milestone 2 implemented locally.
+Updated: 2026-09-16. Status: Milestones 1 and 2 complete; the reproducible-save slice of Milestone 3 is implemented locally.
 
 ## Product direction
 
@@ -14,12 +14,12 @@ Initial user hypothesis: independent researchers and students working with daily
 
 Existing prototype: Streamlit UI, typed hypothesis, CSV/Yahoo data, reversal/momentum and volume filters, optional AI interpretation, daily portfolio chart, trade records, metrics, t-test, sensitivity grid, historical split. Implementation lives in app/app.py and src/quant/equities/. Existing Kalshi/diffusion work has its own plans and must be preserved.
 
-Known gaps after the first workbench slice:
+Known gaps after the current workbench slice:
 
-- The data source is still re-downloaded on ordinary app reruns; there is no cached or immutable snapshot yet.
+- New experiments can still download fresh provider data; a saved experiment instead keeps its exact local input snapshot.
 - Coverage is reported but a missing price during an open holding still needs a defined policy. The built-in dataset intentionally contains only AAPL/MSFT and therefore cannot show SPY comparison.
 - Benchmark comparison is buy-and-hold from its first available selected-period close with no estimated costs. It does not yet measure same-date event excess return.
-- Saved, immutable experiment records are absent.
+- Saved runs are local to the machine and are not yet backed up, shared, compared side-by-side, or linked to parent runs.
 
 Earlier chat statements about approximately 20% return and statistical significance are provisional prototype outputs. Recalculate after engine fixes; do not preserve them as validated product claims.
 
@@ -57,6 +57,10 @@ Use local SQLite for experiment metadata plus immutable data files initially; no
 
 Acceptance: reopening a run reproduces its recorded result from its snapshot without network access; changing a rule creates a new run rather than overwriting history; users can compare two runs and see exactly what changed.
 
+Completed first slice 2026-09-16: `RunStore` saves every user-requested run in a local SQLite index plus a UUID-named snapshot directory under `data/equities_runs/`. A record includes the typed hypothesis, initial investment, source, split date, SHA-256 hash of normalized input data, engine version, and timestamp. Each saved run contains its price input, daily ledger, completed trades, and skipped-signal records. The sidebar can reopen the stored data and stored ledger without fetching a provider again, and the UI can download a portable ZIP bundle with metadata and all four CSV files. Changing an assumption and saving creates a new run; existing snapshots are not overwritten. Focused tests verify snapshot reopening, data hashing, ledger preservation, and bundle contents (12 passed).
+
+Remaining Milestone 3 work: show two saved runs side-by-side with a human-readable assumption diff, record explicit parent-run links when a saved run is edited, and add schema migration/backup behavior before introducing accounts or sharing.
+
 ## Milestone 4 — honest research validation
 
 Replace “untouched” with “historical comparison” by default. A reserved test needs a rule version committed before reveal and an exposure/reveal record; software cannot prove a person has never viewed that market history elsewhere. Once inspected, label it evaluated and keep tuning history visible. Keep sensitivity exploratory and do not choose the best setting automatically.
@@ -85,4 +89,4 @@ For future equities product work, read this file and the repository instructions
 
 Update this document at the end of each implementation task with completed items, checks, unresolved issues, decision changes, and the next concrete task. Distinguish implemented behavior from proposals. Store customer learning alongside the relevant milestone. Repository files are the durable memory; do not promise recall without access to them.
 
-Next concrete task: add local saved runs and immutable data snapshots for Milestone 3, beginning with a small SQLite metadata store and a reproducible export bundle. Keep the current workbench stable while doing so.
+Next concrete task: complete the saved-research workflow by comparing two saved runs and showing their changed assumptions, outcomes, and parent relationship. Keep saved snapshots local and immutable while doing so.
