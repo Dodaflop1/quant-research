@@ -17,13 +17,13 @@ st.title("From market idea to reproducible experiment")
 st.caption("AI interprets the idea. Deterministic code verifies the result. Research only — not investment advice.")
 
 # Do not display results calculated under an earlier engine after the app reloads.
-if st.session_state.get("engine_version") != 10:
+if st.session_state.get("engine_version") != 11:
     st.session_state.pop("confirmed", None)
     st.session_state.pop("saved_run", None)
     for state_key in list(st.session_state):
         if state_key.startswith("hypothesis_") or state_key in {"template_name", "form_baseline_run_id"}:
             st.session_state.pop(state_key)
-    st.session_state["engine_version"] = 10
+    st.session_state["engine_version"] = 11
 
 store = RunStore()
 
@@ -147,6 +147,17 @@ elif not saved_baseline:
     st.session_state.pop("form_baseline_run_id", None)
 if "hypothesis_name" not in st.session_state:
     apply_template_values(proposal)
+
+# The bundled sample is deliberately tiny. Do not let its form accept a range
+# for which it has no observations: that makes an unchanged chart look broken.
+date_limits: tuple[date, date] | None = None
+if data_source == "Built-in demo":
+    date_limits = (date(2023, 1, 2), date(2023, 1, 25))
+    for state_key in ("hypothesis_start", "hypothesis_end"):
+        current = st.session_state.get(state_key, date_limits[0])
+        st.session_state[state_key] = min(max(current, date_limits[0]), date_limits[1])
+    st.caption("Built-in demo data is available from Jan 2 to Jan 25, 2023. Upload a CSV or download Yahoo Finance data to study another period.")
+
 with st.form("confirm_hypothesis"):
     name = st.text_input("Name", key="hypothesis_name")
     tickers = st.text_input("Tickers", key="hypothesis_tickers")
@@ -171,8 +182,16 @@ with st.form("confirm_hypothesis"):
     costs = c6.number_input("Cost / side (bps)", 0.0, 200.0, key="hypothesis_costs")
     benchmark = st.text_input("Benchmark ticker", key="hypothesis_benchmark").upper().strip()
     initial_investment = st.number_input("Starting investment ($)", min_value=100.0, value=float(saved_baseline.initial_investment) if saved_baseline else 10_000.0, step=100.0)
-    start = st.date_input("Start", key="hypothesis_start")
-    end = st.date_input("End", key="hypothesis_end")
+    start = st.date_input(
+        "Start", key="hypothesis_start",
+        min_value=date_limits[0] if date_limits else None,
+        max_value=date_limits[1] if date_limits else None,
+    )
+    end = st.date_input(
+        "End", key="hypothesis_end",
+        min_value=date_limits[0] if date_limits else None,
+        max_value=date_limits[1] if date_limits else None,
+    )
     reserve_test = st.checkbox(
         "Compare an earlier and later period",
         value=True,

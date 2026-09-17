@@ -67,6 +67,8 @@ UI reliability correction 2026-09-16: changing an experiment's end date now clam
 
 Date-boundary correction 2026-09-16: the built-in demo now defaults to its actual January 2023 input window and its actual AAPL/MSFT/SPY ticker coverage; result charts label their x-axis as portfolio dates, and the results panel states both the active research range and loaded-data range. A focused test verifies that the ledger data used for graphs begins and ends exactly at the selected experiment dates.
 
+Date-input correction 2026-09-16: built-in-demo date controls are constrained to the dates actually present in its sample data. This prevents a user from selecting an apparently broader window that produces the same graph solely because no extra observations exist; uploaded CSV and Yahoo Finance modes remain available for wider periods.
+
 Remaining Milestone 3 work: add a compact run-history view and backup/import or schema-migration handling before introducing accounts or sharing.
 
 ## Milestone 4 — honest research validation
