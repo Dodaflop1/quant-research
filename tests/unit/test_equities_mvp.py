@@ -147,3 +147,22 @@ def test_saved_run_reopens_identical_snapshot_and_exports_bundle(tmp_path):
     assert reopened.result.trades.iloc[0].net_pnl == pytest.approx(result.trades.iloc[0].net_pnl)
     with zipfile.ZipFile(io.BytesIO(store.export_bundle(saved.run_id))) as bundle:
         assert {"metadata.json", "prices.csv", "daily_ledger.csv", "trades.csv", "skipped_signals.csv"} <= set(bundle.namelist())
+
+
+def test_saved_run_comparison_identifies_changed_rule_and_parent(tmp_path):
+    data = _data()
+    store = RunStore(tmp_path / "runs")
+    first = store.save(_hypothesis(), 1_000, "Unit test", None, data, build_ledger(data, _hypothesis(), 1_000))
+    revised_hypothesis = _hypothesis(holding_days=3)
+    second = store.save(
+        revised_hypothesis, 1_000, "Saved snapshot", None, data,
+        build_ledger(data, revised_hypothesis, 1_000), parent_run_id=first.run_id,
+    )
+    assert store.load(second.run_id).parent_run_id == first.run_id
+    comparison = store.compare(first.run_id, second.run_id)
+    changed = comparison.assumptions.set_index("assumption")
+    assert changed.loc["holding_days", "first run"] == "2"
+    assert changed.loc["holding_days", "second run"] == "3"
+    assert comparison.outcomes.loc[comparison.outcomes.outcome == "Completed trades", "first run"].iloc[0] == 1
+    with pytest.raises(ValueError, match="two different"):
+        store.compare(first.run_id, first.run_id)

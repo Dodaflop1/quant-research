@@ -29,8 +29,17 @@ class SavedRun:
     source: str
     split_date: date | None
     data_hash: str
+    parent_run_id: str | None
     data: pd.DataFrame
     result: BacktestResult
+
+
+@dataclass(frozen=True)
+class RunComparison:
+    """The changed assumptions and outcome summary for two recorded runs."""
+
+    assumptions: pd.DataFrame
+    outcomes: pd.DataFrame
 
 
 class RunStore:
@@ -59,10 +68,14 @@ class RunStore:
                     source TEXT NOT NULL,
                     split_date TEXT,
                     data_hash TEXT NOT NULL,
-                    engine_version TEXT NOT NULL
+                    engine_version TEXT NOT NULL,
+                    parent_run_id TEXT REFERENCES runs(run_id)
                 )
                 """
             )
+            columns = {row["name"] for row in connection.execute("PRAGMA table_info(runs)")}
+            if "parent_run_id" not in columns:
+                connection.execute("ALTER TABLE runs ADD COLUMN parent_run_id TEXT")
 
     @staticmethod
     def _csv_bytes(frame: pd.DataFrame, *, include_index: bool = False) -> bytes:
@@ -76,10 +89,15 @@ class RunStore:
         split_date: date | None,
         data: pd.DataFrame,
         result: BacktestResult,
+        parent_run_id: str | None = None,
     ) -> SavedRun:
         """Write a new immutable snapshot; existing saved runs are never overwritten."""
         run_id = uuid4().hex
         created_at = datetime.now(timezone.utc).isoformat()
+        if parent_run_id:
+            with self._connect() as connection:
+                if connection.execute("SELECT 1 FROM runs WHERE run_id = ?", (parent_run_id,)).fetchone() is None:
+                    raise ValueError("Parent saved experiment was not found")
         run_dir = self.root / run_id
         run_dir.mkdir()
         normalized_data = load_frame(data)
@@ -94,7 +112,12 @@ class RunStore:
         skipped.to_csv(run_dir / "skipped_signals.csv", index=False, date_format="%Y-%m-%dT%H:%M:%S")
         with self._connect() as connection:
             connection.execute(
-                "INSERT INTO runs VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                """
+                INSERT INTO runs (
+                    run_id, created_at, hypothesis_json, initial_investment, source,
+                    split_date, data_hash, engine_version, parent_run_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
                 (
                     run_id,
                     created_at,
@@ -104,6 +127,7 @@ class RunStore:
                     split_date.isoformat() if split_date else None,
                     data_hash,
                     ENGINE_VERSION,
+                    parent_run_id,
                 ),
             )
         return self.load(run_id)
@@ -111,10 +135,17 @@ class RunStore:
     def list_runs(self, limit: int = 25) -> pd.DataFrame:
         with self._connect() as connection:
             rows = connection.execute(
-                "SELECT run_id, created_at, source, initial_investment, data_hash, engine_version FROM runs ORDER BY created_at DESC LIMIT ?",
+                """
+                SELECT run_id, created_at, source, initial_investment, data_hash,
+                       engine_version, parent_run_id
+                FROM runs ORDER BY created_at DESC LIMIT ?
+                """,
                 (limit,),
             ).fetchall()
-        return pd.DataFrame(rows, columns=["run_id", "created_at", "source", "initial_investment", "data_hash", "engine_version"])
+        return pd.DataFrame(rows, columns=[
+            "run_id", "created_at", "source", "initial_investment", "data_hash",
+            "engine_version", "parent_run_id",
+        ])
 
     def load(self, run_id: str) -> SavedRun:
         with self._connect() as connection:
@@ -135,9 +166,64 @@ class RunStore:
             source=row["source"],
             split_date=date.fromisoformat(row["split_date"]) if row["split_date"] else None,
             data_hash=row["data_hash"],
+            parent_run_id=row["parent_run_id"],
             data=data,
             result=BacktestResult(daily=daily, trades=trades, skipped_signals=skipped),
         )
+
+    @staticmethod
+    def _assumption_values(saved: SavedRun) -> dict[str, object]:
+        values = saved.hypothesis.model_dump(mode="json")
+        return {
+            **values,
+            "initial_investment": saved.initial_investment,
+            "source": saved.source,
+            "split_date": saved.split_date.isoformat() if saved.split_date else None,
+            "data_sha256": saved.data_hash,
+            "parent_run_id": saved.parent_run_id,
+        }
+
+    @staticmethod
+    def _display(value: object) -> str:
+        if value is None:
+            return "—"
+        if isinstance(value, float):
+            return f"{value:g}"
+        if isinstance(value, (list, dict)):
+            return json.dumps(value, sort_keys=True)
+        return str(value)
+
+    def compare(self, first_run_id: str, second_run_id: str) -> RunComparison:
+        """Compare recorded snapshots; neither historical result is recalculated."""
+        if first_run_id == second_run_id:
+            raise ValueError("Choose two different saved experiments to compare")
+        first, second = self.load(first_run_id), self.load(second_run_id)
+        first_values, second_values = self._assumption_values(first), self._assumption_values(second)
+        changes = [
+            {"assumption": field, "first run": self._display(first_values.get(field)), "second run": self._display(second_values.get(field))}
+            for field in sorted(set(first_values) | set(second_values))
+            if first_values.get(field) != second_values.get(field)
+        ]
+
+        def outcome(saved: SavedRun) -> dict[str, float | int]:
+            daily = saved.result.daily
+            ending_value = float(daily["portfolio_value"].iloc[-1]) if not daily.empty else saved.initial_investment
+            peak = daily["portfolio_value"].cummax().clip(lower=saved.initial_investment) if not daily.empty else pd.Series(dtype=float)
+            drawdown = float((daily["portfolio_value"] / peak - 1).min()) if not daily.empty else 0.0
+            return {
+                "Net portfolio return": ending_value / saved.initial_investment - 1,
+                "Ending portfolio value": ending_value,
+                "Maximum drawdown": drawdown,
+                "Completed trades": len(saved.result.trades),
+                "Excluded signals": len(saved.result.skipped_signals),
+            }
+
+        first_outcome, second_outcome = outcome(first), outcome(second)
+        outcomes = pd.DataFrame([
+            {"outcome": metric, "first run": first_outcome[metric], "second run": second_outcome[metric]}
+            for metric in first_outcome
+        ])
+        return RunComparison(assumptions=pd.DataFrame(changes, columns=["assumption", "first run", "second run"]), outcomes=outcomes)
 
     def export_bundle(self, run_id: str) -> bytes:
         """Return a self-contained zip with data, outputs and human-readable metadata."""
@@ -150,6 +236,7 @@ class RunStore:
             "split_date": saved.split_date.isoformat() if saved.split_date else None,
             "data_sha256": saved.data_hash,
             "engine_version": ENGINE_VERSION,
+            "parent_run_id": saved.parent_run_id,
             "hypothesis": saved.hypothesis.model_dump(mode="json"),
         }
         bundle = io.BytesIO()

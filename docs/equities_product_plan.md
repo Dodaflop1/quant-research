@@ -19,7 +19,7 @@ Known gaps after the current workbench slice:
 - New experiments can still download fresh provider data; a saved experiment instead keeps its exact local input snapshot.
 - Coverage is reported but a missing price during an open holding still needs a defined policy. The built-in dataset intentionally contains only AAPL/MSFT and therefore cannot show SPY comparison.
 - Benchmark comparison is buy-and-hold from its first available selected-period close with no estimated costs. It does not yet measure same-date event excess return.
-- Saved runs are local to the machine and are not yet backed up, shared, compared side-by-side, or linked to parent runs.
+- Saved runs are local to the machine and are not yet backed up or shared.
 
 Earlier chat statements about approximately 20% return and statistical significance are provisional prototype outputs. Recalculate after engine fixes; do not preserve them as validated product claims.
 
@@ -59,7 +59,9 @@ Acceptance: reopening a run reproduces its recorded result from its snapshot wit
 
 Completed first slice 2026-09-16: `RunStore` saves every user-requested run in a local SQLite index plus a UUID-named snapshot directory under `data/equities_runs/`. A record includes the typed hypothesis, initial investment, source, split date, SHA-256 hash of normalized input data, engine version, and timestamp. Each saved run contains its price input, daily ledger, completed trades, and skipped-signal records. The sidebar can reopen the stored data and stored ledger without fetching a provider again, and the UI can download a portable ZIP bundle with metadata and all four CSV files. Changing an assumption and saving creates a new run; existing snapshots are not overwritten. Focused tests verify snapshot reopening, data hashing, ledger preservation, and bundle contents (12 passed).
 
-Remaining Milestone 3 work: show two saved runs side-by-side with a human-readable assumption diff, record explicit parent-run links when a saved run is edited, and add schema migration/backup behavior before introducing accounts or sharing.
+Completed second slice 2026-09-16: the sidebar can select two saved runs and compare their recorded return, ending value, drawdown, completed trades, and exclusions without recalculating either result. It also lists every changed typed assumption, source, date split, and input-data hash. Opening a saved run makes it an editable baseline; confirming a changed rule reuses that stored data and, when saved, creates a new run with an explicit `parent_run_id`. The SQLite initialization adds that column safely for existing local databases. Focused tests cover the comparison and parent relationship.
+
+Remaining Milestone 3 work: add a compact run-history view and backup/import or schema-migration handling before introducing accounts or sharing.
 
 ## Milestone 4 — honest research validation
 
@@ -89,4 +91,4 @@ For future equities product work, read this file and the repository instructions
 
 Update this document at the end of each implementation task with completed items, checks, unresolved issues, decision changes, and the next concrete task. Distinguish implemented behavior from proposals. Store customer learning alongside the relevant milestone. Repository files are the durable memory; do not promise recall without access to them.
 
-Next concrete task: complete the saved-research workflow by comparing two saved runs and showing their changed assumptions, outcomes, and parent relationship. Keep saved snapshots local and immutable while doing so.
+Next concrete task: make saved research portable between machines with a documented import/backup path, including version validation. Keep saved snapshots local and immutable while doing so.
