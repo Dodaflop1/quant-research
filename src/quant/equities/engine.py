@@ -20,6 +20,8 @@ class BacktestResult:
 def _selected_signals(data: pd.DataFrame, hypothesis: Hypothesis) -> pd.DataFrame:
     """Select close-known signals, retaining earlier rows only for feature warm-up."""
     frame = data[data.ticker.isin(hypothesis.tickers)].copy().sort_values(["ticker", "date"])
+    if frame.empty:
+        return pd.DataFrame(columns=["date", "ticker", "lookback_return", "daily_return", "volume_ratio", "rank"])
     frame["lookback_return"] = frame.groupby("ticker").close.pct_change(hypothesis.lookback_days)
     frame["daily_return"] = frame.groupby("ticker").close.pct_change()
     frame["volume_ratio"] = frame.volume / frame.groupby("ticker").volume.transform(
@@ -43,7 +45,11 @@ def _selected_signals(data: pd.DataFrame, hypothesis: Hypothesis) -> pd.DataFram
         ascending = False
     if hypothesis.volume_ratio_min is not None:
         eligible = eligible[eligible.volume_ratio >= hypothesis.volume_ratio_min]
+    if eligible.empty:
+        return pd.DataFrame(columns=[*frame.columns, "rank"])
     eligible = eligible[(eligible.date.dt.date >= hypothesis.start_date) & (eligible.date.dt.date <= hypothesis.end_date)].copy()
+    if eligible.empty:
+        return pd.DataFrame(columns=[*frame.columns, "rank"])
     eligible["rank"] = eligible.groupby("date").lookback_return.rank(method="first", ascending=ascending)
     return eligible[eligible["rank"] <= hypothesis.top_n].sort_values(["date", "rank", "ticker"]).reset_index(drop=True)
 

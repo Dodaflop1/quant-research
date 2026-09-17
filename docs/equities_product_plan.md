@@ -61,6 +61,8 @@ Completed first slice 2026-09-16: `RunStore` saves every user-requested run in a
 
 Completed second slice 2026-09-16: the sidebar can select two saved runs and compare their recorded return, ending value, drawdown, completed trades, and exclusions without recalculating either result. It also lists every changed typed assumption, source, date split, and input-data hash. Opening a saved run makes it an editable baseline; confirming a changed rule reuses that stored data and, when saved, creates a new run with an explicit `parent_run_id`. The SQLite initialization adds that column safely for existing local databases. Focused tests cover the comparison and parent relationship.
 
+Demo-quality correction 2026-09-16: all three supported templates now have at least one completed trade against the built-in sample. The sample includes SPY history for the consecutive-down template; the high-volume demonstration uses a visible 1.5×/five-day threshold because the sample is intentionally short; and large-gain momentum uses a 3% threshold. Missing requested tickers now return an empty result rather than raising an engine exception.
+
 Remaining Milestone 3 work: add a compact run-history view and backup/import or schema-migration handling before introducing accounts or sharing.
 
 ## Milestone 4 — honest research validation

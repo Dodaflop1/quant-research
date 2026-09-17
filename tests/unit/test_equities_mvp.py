@@ -1,11 +1,13 @@
 from datetime import date
 import io
+from pathlib import Path
 import zipfile
 import numpy as np
 import pandas as pd
 import pytest
 from quant.equities.analysis import performance, statistical_test
 from quant.equities.data import coverage_report, load_frame
+from quant.equities.data import load_csv
 from quant.equities.engine import (
     _selected_signals,
     benchmark_curve,
@@ -133,6 +135,24 @@ def test_coverage_and_benchmark_curve_are_aligned_to_portfolio_dates():
 def test_data_validation_rejects_missing_or_non_finite_prices():
     with pytest.raises(ValueError, match="finite"):
         load_frame(pd.DataFrame({"date": ["2023-01-02"], "ticker": ["TEST"], "close": [np.inf], "volume": [1_000]}))
+
+
+def test_missing_ticker_returns_an_empty_result_instead_of_crashing():
+    result = build_ledger(_data(), _hypothesis(tickers=["MISSING"]))
+    assert result.daily.empty
+    assert result.trades.empty
+
+
+def test_each_built_in_template_has_a_completed_trade_in_the_demo_data():
+    data = load_csv(Path("examples/sample_prices.csv"))
+    common = dict(direction="long", start_date=date(2023, 1, 1), end_date=date(2024, 12, 31), benchmark="SPY", transaction_cost_bps=10)
+    templates = [
+        dict(name="High-volume selloff rebound", tickers=["AAPL", "MSFT"], signal="reversal", lookback_days=1, threshold=.05, volume_ratio_min=1.5, volume_lookback_days=5, holding_days=5, top_n=2),
+        dict(name="SPY after three down sessions", tickers=["SPY"], signal="reversal", lookback_days=1, threshold=.01, consecutive_down_days=3, holding_days=5, top_n=1),
+        dict(name="Large gain momentum", tickers=["AAPL", "MSFT"], signal="momentum", lookback_days=1, threshold=.03, holding_days=5, top_n=2),
+    ]
+    for fields in templates:
+        assert not build_ledger(data, Hypothesis(**common, **fields)).trades.empty
 
 
 def test_saved_run_reopens_identical_snapshot_and_exports_bundle(tmp_path):

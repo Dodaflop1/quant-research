@@ -77,12 +77,49 @@ if comparison_run_ids:
 defaults = dict(name="5-day reversal", tickers=["AAPL", "MSFT", "NVDA", "AMZN", "GOOGL"], signal="reversal", lookback_days=1, threshold=0.05, consecutive_down_days=None, volume_ratio_min=None, volume_lookback_days=20, holding_days=5, direction="long", start_date=date(2023, 1, 1), end_date=date(2024, 12, 31), benchmark="SPY", transaction_cost_bps=10, top_n=5)
 templates = {
     "Custom or AI-assisted": defaults,
-    "High-volume selloff rebound": {**defaults, "name": "High-volume selloff rebound", "volume_ratio_min": 2.0},
+    "High-volume selloff rebound": {
+        **defaults, "name": "High-volume selloff rebound", "volume_ratio_min": 1.5,
+        "volume_lookback_days": 5,
+    },
     "SPY after three down sessions": {**defaults, "name": "SPY after three down sessions", "tickers": ["SPY"], "threshold": 0.01, "consecutive_down_days": 3, "holding_days": 5, "top_n": 1},
-    "Large gain momentum": {**defaults, "name": "Large gain momentum", "signal": "momentum", "threshold": 0.05},
+    "Large gain momentum": {**defaults, "name": "Large gain momentum", "signal": "momentum", "threshold": 0.03},
 }
+
+
+def apply_template_values(template: dict) -> None:
+    """Replace prior widget state so choosing a template changes the actual experiment."""
+    start_date = date.fromisoformat(str(template["start_date"]))
+    end_date = date.fromisoformat(str(template["end_date"]))
+    st.session_state.update(
+        {
+            "hypothesis_name": template["name"],
+            "hypothesis_tickers": ", ".join(template["tickers"]),
+            "hypothesis_signal": template["signal"],
+            "hypothesis_lookback": int(template["lookback_days"]),
+            "hypothesis_threshold": float(template["threshold"]) * 100,
+            "hypothesis_use_consecutive": template.get("consecutive_down_days") is not None,
+            "hypothesis_consecutive": int(template.get("consecutive_down_days") or 3),
+            "hypothesis_use_volume": template.get("volume_ratio_min") is not None,
+            "hypothesis_volume_ratio": float(template.get("volume_ratio_min") or 2.0),
+            "hypothesis_volume_window": int(template.get("volume_lookback_days", 20)),
+            "hypothesis_holding": int(template["holding_days"]),
+            "hypothesis_costs": float(template["transaction_cost_bps"]),
+            "hypothesis_benchmark": template.get("benchmark", "SPY"),
+            "hypothesis_start": start_date,
+            "hypothesis_end": end_date,
+            "hypothesis_split": min(max(date(2024, 1, 1), start_date), end_date),
+        }
+    )
+
+
+def select_template() -> None:
+    apply_template_values(templates[st.session_state["template_name"]])
+
+
 st.subheader("1. Experiment")
-template_name = st.selectbox("Start from a supported template", list(templates))
+template_name = st.selectbox(
+    "Start from a supported template", list(templates), key="template_name", on_change=select_template
+)
 idea = st.text_area("Research idea", "Do large one-day selloffs in a liquid U.S. stock basket rebound over the next five days?")
 if st.button("Interpret with AI"):
     try:
@@ -98,32 +135,34 @@ proposal = (
 )
 if saved_baseline:
     st.caption(f"Editing saved snapshot {saved_baseline.run_id[:8]}. Confirming and saving creates a new revision; the original remains unchanged.")
+if "hypothesis_name" not in st.session_state:
+    apply_template_values(proposal)
 with st.form("confirm_hypothesis"):
-    name = st.text_input("Name", proposal["name"])
-    tickers = st.text_input("Tickers", ", ".join(proposal["tickers"]))
+    name = st.text_input("Name", key="hypothesis_name")
+    tickers = st.text_input("Tickers", key="hypothesis_tickers")
     c1, c2, c3 = st.columns(3)
-    signal = c1.selectbox("Signal", [item.value for item in Signal], index=[item.value for item in Signal].index(proposal["signal"]))
-    lookback = c2.number_input("Lookback days", 1, 252, int(proposal["lookback_days"]))
-    threshold = c3.number_input("Threshold (%)", 0.1, 100.0, float(proposal["threshold"]) * 100) / 100
-    use_consecutive_down = st.checkbox("Require consecutive down sessions", value=proposal.get("consecutive_down_days") is not None)
+    signal = c1.selectbox("Signal", [item.value for item in Signal], key="hypothesis_signal")
+    lookback = c2.number_input("Lookback days", 1, 252, key="hypothesis_lookback")
+    threshold = c3.number_input("Threshold (%)", 0.1, 100.0, key="hypothesis_threshold") / 100
+    use_consecutive_down = st.checkbox("Require consecutive down sessions", key="hypothesis_use_consecutive")
     consecutive_down_days = None
     if use_consecutive_down:
-        consecutive_down_days = st.number_input("Consecutive down sessions", 2, 20, int(proposal.get("consecutive_down_days") or 3))
+        consecutive_down_days = st.number_input("Consecutive down sessions", 2, 20, key="hypothesis_consecutive")
         st.caption("This condition replaces the threshold when selecting signals.")
-    use_volume = st.checkbox("Require unusually high volume", value=proposal.get("volume_ratio_min") is not None)
+    use_volume = st.checkbox("Require unusually high volume", key="hypothesis_use_volume")
     volume_ratio = None
     volume_window = 20
     if use_volume:
         volume_columns = st.columns(2)
-        volume_ratio = volume_columns[0].number_input("Minimum volume / average", 1.0, 100.0, float(proposal.get("volume_ratio_min") or 2.0), step=0.1)
-        volume_window = volume_columns[1].number_input("Prior-volume window (days)", 5, 252, int(proposal.get("volume_lookback_days", 20)))
+        volume_ratio = volume_columns[0].number_input("Minimum volume / average", 1.0, 100.0, step=0.1, key="hypothesis_volume_ratio")
+        volume_window = volume_columns[1].number_input("Prior-volume window (days)", 5, 252, key="hypothesis_volume_window")
     c4, c6 = st.columns(2)
-    hold = c4.number_input("Holding days", 1, 60, int(proposal["holding_days"]))
-    costs = c6.number_input("Cost / side (bps)", 0.0, 200.0, float(proposal["transaction_cost_bps"]))
-    benchmark = st.text_input("Benchmark ticker", proposal.get("benchmark", "SPY")).upper().strip()
+    hold = c4.number_input("Holding days", 1, 60, key="hypothesis_holding")
+    costs = c6.number_input("Cost / side (bps)", 0.0, 200.0, key="hypothesis_costs")
+    benchmark = st.text_input("Benchmark ticker", key="hypothesis_benchmark").upper().strip()
     initial_investment = st.number_input("Starting investment ($)", min_value=100.0, value=float(saved_baseline.initial_investment) if saved_baseline else 10_000.0, step=100.0)
-    start = st.date_input("Start", date.fromisoformat(str(proposal["start_date"])))
-    end = st.date_input("End", date.fromisoformat(str(proposal["end_date"])))
+    start = st.date_input("Start", key="hypothesis_start")
+    end = st.date_input("End", key="hypothesis_end")
     reserve_test = st.checkbox(
         "Compare an earlier and later period",
         value=True,
@@ -134,9 +173,9 @@ with st.form("confirm_hypothesis"):
         suggested_split = min(max(date(2024, 1, 1), start), end)
         split_date = st.date_input(
             "First date of later comparison period",
-            value=suggested_split,
             min_value=start,
             max_value=end,
+            key="hypothesis_split",
         )
     confirmed = st.form_submit_button("Confirm hypothesis and run")
 
