@@ -63,6 +63,8 @@ Completed second slice 2026-09-16: the sidebar can select two saved runs and com
 
 Demo-quality correction 2026-09-16: all three supported templates now have at least one completed trade against the built-in sample. The sample includes SPY history for the consecutive-down template; the high-volume demonstration uses a visible 1.5×/five-day threshold because the sample is intentionally short; and large-gain momentum uses a 3% threshold. Missing requested tickers now return an empty result rather than raising an engine exception.
 
+UI reliability correction 2026-09-16: changing an experiment's end date now clamps any previously chosen earlier/later comparison split into the newly valid range, preventing a Streamlit form-rendering exception.
+
 Remaining Milestone 3 work: add a compact run-history view and backup/import or schema-migration handling before introducing accounts or sharing.
 
 ## Milestone 4 — honest research validation

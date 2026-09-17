@@ -171,6 +171,10 @@ with st.form("confirm_hypothesis"):
     split_date = None
     if reserve_test:
         suggested_split = min(max(date(2024, 1, 1), start), end)
+        # A user can change the date range after setting a split. Keep the
+        # persisted widget value valid rather than letting Streamlit abort the form.
+        existing_split = st.session_state.get("hypothesis_split", suggested_split)
+        st.session_state["hypothesis_split"] = min(max(existing_split, start), end)
         split_date = st.date_input(
             "First date of later comparison period",
             min_value=start,
