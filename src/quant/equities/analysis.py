@@ -16,7 +16,9 @@ def performance(returns: pd.Series) -> dict[str, float | int]:
     annualized = equity.iloc[-1] ** (1 / years) - 1 if years else 0.0
     volatility = returns.std(ddof=1) * np.sqrt(252) if len(returns) > 1 else 0.0
     sharpe = (returns.mean() / returns.std(ddof=1) * np.sqrt(252)) if returns.std(ddof=1) else 0.0
-    drawdown = equity / equity.cummax() - 1
+    # Include the initial dollar before the first return so an opening loss is a drawdown.
+    peak = pd.concat([pd.Series([1.0]), equity.reset_index(drop=True)]).cummax().iloc[1:].to_numpy()
+    drawdown = equity.to_numpy() / peak - 1
     return {"observations": int(len(returns)), "total_return": float(equity.iloc[-1] - 1), "annualized_return": float(annualized), "annualized_volatility": float(volatility), "sharpe": float(sharpe), "max_drawdown": float(drawdown.min())}
 
 

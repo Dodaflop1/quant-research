@@ -5,6 +5,7 @@ import pytest
 from quant.equities.analysis import performance, statistical_test
 from quant.equities.engine import (
     _selected_signals,
+    build_ledger,
     daily_portfolio_returns,
     equity_curve,
     portfolio_daily_path,
@@ -29,8 +30,11 @@ def _hypothesis(**changes) -> Hypothesis:
 def test_reversal_executes_deterministically_and_charges_round_trip_cost():
     trades = run_backtest(_data(), _hypothesis())
     assert len(trades) == 1
-    assert trades.iloc[0].gross_return == pytest.approx(95 / 90 - 1)
-    assert trades.iloc[0].net_return == pytest.approx(95 / 90 - 1 - .002)
+    trade = trades.iloc[0]
+    assert trade.entry_date == pd.Timestamp("2023-01-09")
+    assert trade.exit_date == pd.Timestamp("2023-01-11")
+    assert trade.gross_return == pytest.approx(96 / 92 - 1)
+    assert trade.net_return == pytest.approx((96 * .999) / (92 * 1.001) - 1)
 
 
 def test_schema_rejects_inverted_dates():
@@ -44,7 +48,7 @@ def test_analysis_handles_return_series_and_sensitivity():
     assert statistical_test(returns)["p_value"] == 1.0
     grid = sensitivity(_data(), _hypothesis())
     assert len(grid) == 9
-    assert set(grid.columns) == {"threshold", "holding_days", "sharpe", "observations"}
+    assert set(grid.columns) == {"threshold", "holding_days", "total_return", "max_drawdown", "completed_trades", "skipped_signals"}
     assert statistical_test(pd.Series([0.0, 0.0])) == {
         "n": 2,
         "mean_return": 0.0,
@@ -66,7 +70,21 @@ def test_daily_path_executes_after_signal_and_is_flat_without_positions():
     signal_day = pd.Timestamp("2023-01-06")  # the 10% drop was observed on Jan. 6
     assert path.loc[signal_day, "net_return"] == 0.0
     assert path.loc[pd.Timestamp("2023-01-09"), "active_positions"] == 1
-    assert path.loc[pd.Timestamp("2023-01-09"), "net_return"] == pytest.approx(-0.001)
+    assert path.loc[pd.Timestamp("2023-01-09"), "net_return"] == pytest.approx(-.001 / 1.001)
+
+
+def test_ledger_reconciles_cash_holdings_and_excludes_incomplete_positions():
+    result = build_ledger(_data(), _hypothesis(), initial_investment=1_000)
+    assert (result.daily.cash + result.daily.holdings_value).equals(result.daily.portfolio_value)
+    assert result.daily.iloc[-1].portfolio_value == pytest.approx(1_000 + result.trades.iloc[0].net_pnl)
+    shortened = _hypothesis(end_date=date(2023, 1, 10))
+    incomplete = build_ledger(_data(), shortened)
+    assert incomplete.trades.empty
+    assert "holding_extends_beyond_period" in set(incomplete.skipped_signals.reason)
+
+
+def test_first_day_loss_is_a_drawdown_from_starting_capital():
+    assert performance(pd.Series([-.01, .01]))["max_drawdown"] == pytest.approx(-.01)
 
 
 def test_volume_filter_requires_volume_above_prior_average():

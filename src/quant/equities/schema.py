@@ -41,6 +41,8 @@ class Hypothesis(BaseModel):
         self.tickers = sorted({ticker.upper().strip() for ticker in self.tickers})
         if self.start_date >= self.end_date:
             raise ValueError("start_date must precede end_date")
+        if self.direction is Direction.short:
+            raise ValueError("short positions are not supported by the current unlevered portfolio ledger")
         if self.top_n > len(self.tickers):
             self.top_n = len(self.tickers)
         return self

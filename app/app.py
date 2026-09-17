@@ -7,18 +7,18 @@ import altair as alt
 from quant.equities.ai import interpret
 from quant.equities.analysis import performance, statistical_test
 from quant.equities.data import download_yfinance, load_csv
-from quant.equities.engine import equity_curve, portfolio_daily_path, run_backtest
+from quant.equities.engine import build_ledger
 from quant.equities.robustness import sensitivity
-from quant.equities.schema import Direction, Hypothesis, Signal
+from quant.equities.schema import Hypothesis, Signal
 
 st.set_page_config(page_title="Quant Research", layout="wide")
 st.title("From market idea to reproducible experiment")
 st.caption("AI interprets the idea. Deterministic code verifies the result. Research only — not investment advice.")
 
 # Do not display results calculated under an earlier engine after the app reloads.
-if st.session_state.get("engine_version") != 4:
+if st.session_state.get("engine_version") != 5:
     st.session_state.pop("confirmed", None)
-    st.session_state["engine_version"] = 4
+    st.session_state["engine_version"] = 5
 
 with st.sidebar:
     data_source = st.radio("Price data", ["Built-in demo", "Upload CSV", "Download Yahoo Finance"])
@@ -52,23 +52,22 @@ with st.form("confirm_hypothesis"):
         volume_columns = st.columns(2)
         volume_ratio = volume_columns[0].number_input("Minimum volume / average", 1.0, 100.0, float(proposal.get("volume_ratio_min") or 2.0), step=0.1)
         volume_window = volume_columns[1].number_input("Prior-volume window (days)", 5, 252, int(proposal.get("volume_lookback_days", 20)))
-    c4, c5, c6 = st.columns(3)
+    c4, c6 = st.columns(2)
     hold = c4.number_input("Holding days", 1, 60, int(proposal["holding_days"]))
-    direction = c5.selectbox("Direction", [item.value for item in Direction], index=[item.value for item in Direction].index(proposal["direction"]))
     costs = c6.number_input("Cost / side (bps)", 0.0, 200.0, float(proposal["transaction_cost_bps"]))
     initial_investment = st.number_input("Starting investment ($)", min_value=100.0, value=10_000.0, step=100.0)
     start = st.date_input("Start", date.fromisoformat(str(proposal["start_date"])))
     end = st.date_input("End", date.fromisoformat(str(proposal["end_date"])))
     reserve_test = st.checkbox(
-        "Reserve an untouched test period",
+        "Compare an earlier and later period",
         value=True,
-        help="Shows the result before and after a fixed split date. Do not change the rule after viewing the test result.",
+        help="Shows the result before and after a fixed split date. It is a historical comparison unless the later period was reserved before you saw it.",
     )
     split_date = None
     if reserve_test:
         suggested_split = min(max(date(2024, 1, 1), start), end)
         split_date = st.date_input(
-            "First date of untouched test period",
+            "First date of later comparison period",
             value=suggested_split,
             min_value=start,
             max_value=end,
@@ -76,7 +75,7 @@ with st.form("confirm_hypothesis"):
     confirmed = st.form_submit_button("Confirm hypothesis and run")
 
 if confirmed:
-    hypothesis = Hypothesis(name=name, tickers=tickers.split(","), signal=signal, lookback_days=lookback, threshold=threshold, volume_ratio_min=volume_ratio, volume_lookback_days=volume_window, holding_days=hold, direction=direction, start_date=start, end_date=end, transaction_cost_bps=costs, top_n=len(tickers.split(",")))
+    hypothesis = Hypothesis(name=name, tickers=tickers.split(","), signal=signal, lookback_days=lookback, threshold=threshold, volume_ratio_min=volume_ratio, volume_lookback_days=volume_window, holding_days=hold, direction="long", start_date=start, end_date=end, transaction_cost_bps=costs, top_n=len(tickers.split(",")))
     st.session_state["confirmed"] = (hypothesis, initial_investment, data_source, uploaded, split_date)
 
 if "confirmed" in st.session_state:
@@ -91,13 +90,14 @@ if "confirmed" in st.session_state:
         elif confirmed_source == "Download Yahoo Finance":
             data = download_yfinance(
                 hypothesis.tickers,
-                str(hypothesis.start_date),
+                str(hypothesis.start_date - timedelta(days=400)),
                 str(hypothesis.end_date),
             )
         else:
             data = load_csv(Path("examples/sample_prices.csv"))
-        trades = run_backtest(data, hypothesis)
-        daily_path = portfolio_daily_path(data, hypothesis)
+        result = build_ledger(data, hypothesis, initial_investment)
+        trades = result.trades
+        daily_path = result.daily
         returns = daily_path["net_return"]
         if daily_path["active_positions"].sum() == 0:
             st.warning("No qualifying, fully observable positions were found for these settings. Try a longer date range, a lower threshold, or different tickers.")
@@ -106,24 +106,26 @@ if "confirmed" in st.session_state:
         if split_date and hypothesis.start_date < split_date <= hypothesis.end_date:
             exploratory = hypothesis.model_copy(update={"end_date": split_date - timedelta(days=1)})
             untouched = hypothesis.model_copy(update={"start_date": split_date})
-            exploratory_path = portfolio_daily_path(data, exploratory)
-            untouched_path = portfolio_daily_path(data, untouched)
-            exploratory_trades = run_backtest(data, exploratory)
-            untouched_trades = run_backtest(data, untouched)
+            exploratory_result = build_ledger(data, exploratory, initial_investment)
+            untouched_result = build_ledger(data, untouched, initial_investment)
+            exploratory_path, untouched_path = exploratory_result.daily, untouched_result.daily
+            exploratory_trades, untouched_trades = exploratory_result.trades, untouched_result.trades
             st.info(
                 f"Research split: explore before {split_date:%b %d, %Y}; evaluate from that date onward. "
-                "Treat the second panel as a test only if you keep this rule unchanged."
+                "It is a valid test only when the later period was reserved before you saw its outcome."
             )
             explore_col, test_col = st.columns(2)
             explore_col.markdown("**Exploration period**")
             explore_col.metric("Qualifying events", len(exploratory_trades))
             explore_col.json(performance(exploratory_path["net_return"]))
-            test_col.markdown("**Untouched test period**")
+            test_col.markdown("**Later comparison period**")
             test_col.metric("Qualifying events", len(untouched_trades))
             test_col.json(performance(untouched_path["net_return"]))
             st.caption("Event count—not the number of calendar days—is the key sample-size check. The t-test below is descriptive because daily returns can overlap.")
         st.json({"performance": metrics, "one_sided_t_test": inference, "qualifying_events": len(trades)})
-        curve = equity_curve(returns, initial_investment)
+        curve = daily_path.copy()
+        curve["cumulative_return_pct"] = (curve["portfolio_value"] / initial_investment - 1) * 100
+        curve["drawdown_pct"] = (curve["portfolio_value"] / curve["portfolio_value"].cummax().clip(lower=initial_investment) - 1) * 100
         left, right = st.columns(2)
         left.caption("Cumulative return after estimated costs")
         left.altair_chart(
@@ -143,11 +145,13 @@ if "confirmed" in st.session_state:
             ).properties(height=300),
             use_container_width=True,
         )
-        st.caption("The portfolio stays flat on days without active positions. Positions begin on the trading day after a signal, not at the same close that generated it.")
+        st.caption("Signals are observed at a close, positions enter at the next available close, and the ledger includes cash, held shares, and both transaction-cost sides. Only positions that can fully close within the selected period are included.")
         st.dataframe(daily_path, use_container_width=True)
         st.subheader("Sensitivity (predefined nearby settings)")
         st.dataframe(sensitivity(data, hypothesis), use_container_width=True)
         st.subheader("Executed experiment records")
         st.dataframe(trades, use_container_width=True)
+        if not result.skipped_signals.empty:
+            st.caption(f"Excluded {len(result.skipped_signals)} signals that could not complete inside the selected period.")
     except Exception as error:
         st.error(f"Could not run the experiment: {error}")

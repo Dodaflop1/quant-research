@@ -7,6 +7,11 @@ already hit, so you do not rediscover them.
 
 Then, depending on what you are asked to do:
 
+For **U.S. equities application/product development**, read
+[`docs/equities_product_plan.md`](./docs/equities_product_plan.md). It records
+the current product direction, known correctness gaps, ordered milestones and
+continuation protocol. The legacy research priorities below remain separate.
+
 | Task | Read |
 |---|---|
 | The next piece of work | [`docs/power_law_spec.md`](./docs/power_law_spec.md) |

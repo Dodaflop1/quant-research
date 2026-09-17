@@ -6,6 +6,9 @@ The demo-ready MVP is intentionally narrow. It supports daily U.S. equity price 
 
 ## The research loop
 
+Product development priorities and continuity notes live in
+[the equities product plan](docs/equities_product_plan.md).
+
 1. Describe an idea, such as “Do stocks that drop 5% rebound over five days?”
 2. The optional AI layer proposes a typed `Hypothesis` — it cannot generate Python or execute a backtest.
 3. The researcher inspects and edits every assumption, then explicitly confirms it.

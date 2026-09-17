@@ -1,7 +1,7 @@
 """Small parameter grid; a robustness display is evidence, not optimization advice."""
 from __future__ import annotations
 import pandas as pd
-from .engine import daily_portfolio_returns, run_backtest
+from .engine import build_ledger
 from .analysis import performance
 from .schema import Hypothesis
 
@@ -15,6 +15,16 @@ def sensitivity(data: pd.DataFrame, hypothesis: Hypothesis, thresholds: list[flo
             tested = Hypothesis.model_validate(
                 {**hypothesis.model_dump(), "threshold": threshold, "holding_days": holding_days}
             )
-            metrics = performance(daily_portfolio_returns(run_backtest(data, tested)))
-            rows.append({"threshold": threshold, "holding_days": holding_days, "sharpe": metrics["sharpe"], "observations": metrics["observations"]})
+            result = build_ledger(data, tested)
+            metrics = performance(result.daily["net_return"])
+            rows.append(
+                {
+                    "threshold": threshold,
+                    "holding_days": holding_days,
+                    "total_return": metrics["total_return"],
+                    "max_drawdown": metrics["max_drawdown"],
+                    "completed_trades": len(result.trades),
+                    "skipped_signals": len(result.skipped_signals),
+                }
+            )
     return pd.DataFrame(rows)
